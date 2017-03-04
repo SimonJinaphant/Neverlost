@@ -1,0 +1,6 @@
+<resources>
+    <!--
+    The following API key is restricted to our app signature. Visit the Google API Manager for more detail.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyB5Noz8rqkvPCNqJzKppBGoQ6bsnQKNSNw</string>
+</resources>
