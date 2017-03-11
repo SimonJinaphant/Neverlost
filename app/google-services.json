@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "188904114713",
+    "firebase_url": "https://cool-tooling-160507.firebaseio.com",
+    "project_id": "cool-tooling-160507",
+    "storage_bucket": "cool-tooling-160507.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:188904114713:android:9546fd2402be8186",
+        "android_client_info": {
+          "package_name": "com.neverlost.ubc.neverlost"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "188904114713-e0s7bsgfkgk1b7cm0odasjgh75cu5oe5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqaWj9mtzuSXkncfoRmlE93M3mq-b8_4Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
