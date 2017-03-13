@@ -1,6 +1,6 @@
 Neverlost
 =========
-A safety tracking app to watch over your dependants while providing them with some privacy.
+A safety tracking app for caretakers to watch over their dependants, while providing the dependants with some form of privacy.
 
 **Contributors**
 - [Simon Jinaphant](https://github.com/SimonJinaphant)
@@ -21,8 +21,6 @@ If Gradle is unable to build due to the following error error:
     * Google Play Services
     * Google Repository
 4. Rebuild your gradle.
-
-
 
 ##Firebase Cloud Messaging
 
