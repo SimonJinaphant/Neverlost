@@ -44,6 +44,17 @@ The table below outlines how messages are handled depending on the app state.
 | Foreground     | onMessageReceived()	| onMessageReceived()	| onMessageReceived                |
 | Background	 | System tray          | onMessageReceived()	| system tray and extras of intent |
 
+### Priority
+FCM has two options for assigning delivery priority of messages.
+
+- **Normal Priority**
+    - This is the default for data messages; in this priority no network connection is made on a sleeping device and the delivery may be delayed.
+    - Use this for non time-sensitive messages such as notification of new emails or data to sync.
+- **High Priority**
+    - This is the default for notification messages; in this priority FCM is allowed to wake a sleeping device when possible to transmit.
+    - Use this for important messages such as instant messaging, chat, alerts, etc...
+    - Note that this can drain your client's battery more compare to low priority mode.
+
 ### Lifespan
 FCM usually delivers messages immediately after they are sent; however if the receiving device is offline or unavailable FCM might intentionally delay the message by storing it and delivering it later.
 
@@ -53,12 +64,11 @@ FCM usually delivers messages immediately after they are sent; however if the re
 
 ###Collapsible vs Non-collapsible
 
-- Collapsible messages only show the most recent by replacing the old message that contains the same collapse key. 
+- **Collapsible** messages only show the most recent by replacing the old message that contains the same collapse key. 
     - FCM allows a max of 4 different collapse keys per devices.
     - Use this if only the latest data is important (ie: Sports app which notifies with current game score).
-- Non-collapsible is the opposite where each message will not be replaced.
+- **Non-collapsible** is the opposite where each message will not be replaced.
     - Use this if every single message is important to the client and needs to be delivered (ie: Instant messaging app).
-
 
 ### Sending a message via HTTP POST
 Using a program like [Advance REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo) you can easily send a HTTP request to the app server.
