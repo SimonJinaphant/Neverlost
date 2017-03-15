@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.neverlost.ubc.neverlost.firebase.MessagingService;
 import com.neverlost.ubc.neverlost.models.FirebaseHelpRequest;
 
 import java.lang.reflect.Type;
@@ -18,9 +19,9 @@ public class FirebaseHelpRequestSerializer implements JsonSerializer<FirebaseHel
 
         // Construct the data field for an FCM
         JsonObject jsonData = new JsonObject();
-        jsonData.addProperty("lat", src.getLat());
-        jsonData.addProperty("lng", src.getLng());
-        jsonData.addProperty("dependant", src.getDependant());
+        jsonData.addProperty(MessagingService.FCM_DATA_LAT, src.getLat());
+        jsonData.addProperty(MessagingService.FCM_DATA_LNG, src.getLng());
+        jsonData.addProperty(MessagingService.FCM_DATA_DEPENDANT, src.getDependant());
 
         // Construct the notification field for an FCM
         JsonObject jsonNotification = new JsonObject();

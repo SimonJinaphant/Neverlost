@@ -6,12 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.neverlost.ubc.neverlost.MainActivity;
 import com.neverlost.ubc.neverlost.R;
+
+import java.util.Map;
 
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -22,10 +28,17 @@ import okhttp3.RequestBody;
 public class MessagingService extends FirebaseMessagingService {
 
     public static final String FCM_TOPIC = "neverlost";
-    private static final String TAG = "FirebaseMsgService";
+    private static final String TAG = "NeverlostMsgService";
     private static final String FCM_SEND_URL = "https://fcm.googleapis.com/fcm/send";
 
+    public static final String FCM_DATA_LAT = "lat";
+    public static final String FCM_DATA_LNG = "lng";
+    public static final String FCM_DATA_DEPENDANT = "dependant";
+    public static final String NEVERLOST_FCM_RESULT = "com.neverlost.ubc.neverlost.MainActivity.FCM_RESULT";
+
     private static final OkHttpClient client = new OkHttpClient();
+    private LocalBroadcastManager broadcastManager;
+
 
     public static void sendUpstreamMessage(String jsonMessage, Callback callback) {
         MediaType jsonMediaType = MediaType.parse("application/json");
@@ -38,6 +51,11 @@ public class MessagingService extends FirebaseMessagingService {
                 .build();
 
         client.newCall(request).enqueue(callback);
+    }
+
+    @Override
+    public void onCreate(){
+        broadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
     /**
@@ -61,7 +79,38 @@ public class MessagingService extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            double lat = Double.MAX_VALUE;
+            double lng = Double.MAX_VALUE;
+            String dependant = null;
+
+            for (Map.Entry<String, String> entry : remoteMessage.getData().entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+
+                switch (key) {
+                    case MessagingService.FCM_DATA_LAT:
+                        lat = Double.parseDouble(value);
+                        break;
+                    case MessagingService.FCM_DATA_LNG:
+                        lng = Double.parseDouble(value);
+                        break;
+                    case MessagingService.FCM_DATA_DEPENDANT:
+                        dependant = value;
+                        break;
+                }
+
+                Log.d(TAG, "Key: " + key + " \t Value: " + value);
+            }
+
+            if (dependant != null) {
+                Intent intent = new Intent(NEVERLOST_FCM_RESULT);
+                intent.putExtra(MessagingService.FCM_DATA_LAT, lat);
+                intent.putExtra(MessagingService.FCM_DATA_LNG, lng);
+                intent.putExtra(MessagingService.FCM_DATA_DEPENDANT, dependant);
+
+                broadcastManager.sendBroadcast(intent);
+            }
+
         }
 
         // Check if message contains a notification payload.
