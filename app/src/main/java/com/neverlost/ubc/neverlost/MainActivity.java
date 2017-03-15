@@ -57,6 +57,10 @@ public class MainActivity extends AppCompatActivity
     private LocationManager locationManager;
     private BroadcastReceiver dependantHelpBroadcastReceiver;
 
+    // Force the Location manager to update our GPS location when the following thresholds are met
+    private final int LOCATION_UPDATE_TIME = 1000;
+    private final int LOCATION_UPDATE_DISTANCE = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,11 +70,15 @@ public class MainActivity extends AppCompatActivity
         // If a Cloud Message notification was tapped, the data payload associated with it can be
         // accessible from the Intent's EXTRA field.
         // -----------------------------------------------------------------------------------------
+        // TODO: This doesn't seem to be catching FCM notification's data
         Bundle notificationDataPayload = getIntent().getExtras();
         if (notificationDataPayload != null) {
             displayMessage("We have something!");
         }
 
+        // -----------------------------------------------------------------------------------------
+        // Listen for broadcasts coming from our local FCM Messaging Service.
+        // -----------------------------------------------------------------------------------------
         dependantHelpBroadcastReceiver = new BroadcastReceiver() {
 
             @Override
@@ -98,11 +106,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         // -----------------------------------------------------------------------------------------
-        // Subscribe to Firebase for messages.
-        // -----------------------------------------------------------------------------------------
-        FirebaseMessaging.getInstance().subscribeToTopic(MessagingService.FCM_TOPIC);
-
-        // -----------------------------------------------------------------------------------------
         // Setup the Location Manager so we can obtain GPS location
         // -----------------------------------------------------------------------------------------
         if (locationManager == null) {
@@ -117,10 +120,14 @@ public class MainActivity extends AppCompatActivity
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (location != null) {
             currentLocation = location;
-            //displayMessage("Lat: " + location.getLatitude() + " \tLng: " + location.getLongitude());
         } else {
-            //displayMessage("Unable to obtain a location");
+            displayMessage("Unable to obtain a location");
         }
+
+        // -----------------------------------------------------------------------------------------
+        // Subscribe to Firebase for messages.
+        // -----------------------------------------------------------------------------------------
+        FirebaseMessaging.getInstance().subscribeToTopic(MessagingService.FCM_TOPIC);
 
         // Setup the remaining UI elements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -168,7 +175,12 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    LOCATION_UPDATE_TIME,
+                    LOCATION_UPDATE_DISTANCE,
+                    this
+            );
         } catch (SecurityException se) {
             Log.e(TAG, se.toString());
         }
@@ -187,13 +199,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        LocalBroadcastManager.getInstance(this).registerReceiver(dependantHelpBroadcastReceiver,
-                new IntentFilter(MessagingService.NEVERLOST_FCM_RESULT));
+        LocalBroadcastManager
+                .getInstance(this)
+                .registerReceiver(dependantHelpBroadcastReceiver,
+                        new IntentFilter(MessagingService.NEVERLOST_FCM_RESULT)
+                );
     }
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(dependantHelpBroadcastReceiver);
+        LocalBroadcastManager
+                .getInstance(this)
+                .unregisterReceiver(dependantHelpBroadcastReceiver);
+
         super.onStop();
     }
 
@@ -327,25 +345,22 @@ public class MainActivity extends AppCompatActivity
     public void onLocationChanged(Location location) {
         if (location != null) {
             currentLocation = location;
-            //displayMessage("Lat: " + location.getLatitude() + " \tLng: " + location.getLongitude());
-        } else {
-            //displayMessage("Unable to obtain a location");
         }
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
+        // Override method for Location Manager. Do not delete.
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-
+        // Override method for Location Manager. Do not delete.
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-
+        // Override method for Location Manager. Do not delete.
     }
 
 }

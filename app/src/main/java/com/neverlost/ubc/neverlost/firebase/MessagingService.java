@@ -9,9 +9,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.neverlost.ubc.neverlost.MainActivity;
@@ -28,14 +25,12 @@ import okhttp3.RequestBody;
 public class MessagingService extends FirebaseMessagingService {
 
     public static final String FCM_TOPIC = "neverlost";
-    private static final String TAG = "NeverlostMsgService";
-    private static final String FCM_SEND_URL = "https://fcm.googleapis.com/fcm/send";
-
     public static final String FCM_DATA_LAT = "lat";
     public static final String FCM_DATA_LNG = "lng";
     public static final String FCM_DATA_DEPENDANT = "dependant";
     public static final String NEVERLOST_FCM_RESULT = "com.neverlost.ubc.neverlost.MainActivity.FCM_RESULT";
-
+    private static final String TAG = "NeverlostMsgService";
+    private static final String FCM_SEND_URL = "https://fcm.googleapis.com/fcm/send";
     private static final OkHttpClient client = new OkHttpClient();
     private LocalBroadcastManager broadcastManager;
 
@@ -54,7 +49,7 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     @Override
-    public void onCreate(){
+    public void onCreate() {
         broadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
