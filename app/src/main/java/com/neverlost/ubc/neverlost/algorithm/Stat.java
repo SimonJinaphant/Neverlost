@@ -1,4 +1,4 @@
-package algorithm;
+package com.neverlost.ubc.neverlost.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;

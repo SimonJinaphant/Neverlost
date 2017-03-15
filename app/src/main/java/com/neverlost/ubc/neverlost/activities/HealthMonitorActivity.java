@@ -1,10 +1,12 @@
-package com.neverlost.ubc.neverlost;
+package com.neverlost.ubc.neverlost.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.neverlost.ubc.neverlost.R;
 
 public class HealthMonitorActivity extends AppCompatActivity {
 
@@ -19,7 +21,6 @@ public class HealthMonitorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.health_minitor_layout);
-
 
 
     }
