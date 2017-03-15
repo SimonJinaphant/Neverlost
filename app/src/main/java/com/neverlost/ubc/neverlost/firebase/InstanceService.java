@@ -1,4 +1,4 @@
-package com.neverlost.ubc.neverlost;
+package com.neverlost.ubc.neverlost.firebase;
 
 import android.util.Log;
 
@@ -6,13 +6,17 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
 
-public class NeverlostFirebaseInstanceIDService extends FirebaseInstanceIdService {
+public class InstanceService extends FirebaseInstanceIdService {
     private static final String TAG = "FirebaseIDService";
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
      * the previous token had been compromised. Note that this is called when the InstanceID token
      * is initially generated so this is where you would retrieve the token.
+     * <p>
+     * -------------------------------------------------------------
+     * This method gets invoked in the app via the Android Manifest.
+     * -------------------------------------------------------------
      */
     @Override
     public void onTokenRefresh() {

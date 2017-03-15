@@ -56,7 +56,7 @@
             ========================================================================================
         -->
         <service
-            android:name=".NeverlostFirebaseMessagingService">
+            android:name=".firebase.MessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
@@ -69,7 +69,7 @@
             ========================================================================================
         -->
         <service
-            android:name=".NeverlostFirebaseInstanceIDService">
+            android:name=".firebase.InstanceService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
