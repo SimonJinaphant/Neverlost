@@ -55,10 +55,9 @@
             messages back up to the server, etc...
             ========================================================================================
         -->
-        <service
-            android:name=".NeverlostFirebaseMessagingService">
+        <service android:name=".firebase.MessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
@@ -68,23 +67,25 @@
             specific devices or making device groups.
             ========================================================================================
         -->
-        <service
-            android:name=".NeverlostFirebaseInstanceIDService">
+        <service android:name=".firebase.InstanceService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        
+
+        <activity android:name=".PrecheckActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+
+
     </application>
 
 </manifest>
