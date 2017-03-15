@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -57,6 +58,10 @@ public class MainActivity extends AppCompatActivity
     private LocationManager locationManager;
     private BroadcastReceiver dependantHelpBroadcastReceiver;
 
+    // Vibration to alert the caretaker that something has happened to their dependant
+    private Vibrator vibrationService;
+    private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
+
     // Force the Location manager to update our GPS location when the following thresholds are met
     private final int LOCATION_UPDATE_TIME = 1000;
     private final int LOCATION_UPDATE_DISTANCE = 0;
@@ -73,7 +78,11 @@ public class MainActivity extends AppCompatActivity
         // TODO: This doesn't seem to be catching FCM notification's data
         Bundle notificationDataPayload = getIntent().getExtras();
         if (notificationDataPayload != null) {
-            displayMessage("We have something!");
+            for (String key : notificationDataPayload.keySet()) {
+                Object value = notificationDataPayload.get(key);
+                Log.d(TAG, "Bundle Key: " + key + " \t Value: " + value);
+            }
+            displayMessage("Got something!");
         }
 
         // -----------------------------------------------------------------------------------------
@@ -94,8 +103,16 @@ public class MainActivity extends AppCompatActivity
                 );
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(dependant));
+                vibrationService.vibrate(vibrationPattern, -1);
             }
         };
+
+        // -----------------------------------------------------------------------------------------
+        // Obtain access to the phone's vibration services to alert the user of incoming messages
+        // -----------------------------------------------------------------------------------------
+        if (vibrationService == null) {
+            vibrationService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        }
 
         // -----------------------------------------------------------------------------------------
         // Check to see if we can access the GPS.
@@ -121,13 +138,13 @@ public class MainActivity extends AppCompatActivity
         if (location != null) {
             currentLocation = location;
         } else {
-            displayMessage("Unable to obtain a location");
+            displayMessage("Unable to obtain your location");
         }
 
         // -----------------------------------------------------------------------------------------
         // Subscribe to Firebase for messages.
         // -----------------------------------------------------------------------------------------
-        FirebaseMessaging.getInstance().subscribeToTopic(MessagingService.FCM_TOPIC);
+        FirebaseMessaging.getInstance().subscribeToTopic(MessagingService.FCM_TOPIC_NEVERLOST);
 
         // Setup the remaining UI elements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -141,7 +158,7 @@ public class MainActivity extends AppCompatActivity
                 MessagingService.sendUpstreamMessage(message, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        displayMessage("Neverlost failed to send help over the network...good luck...");
+                        displayMessage("Neverlost failed to send help over the network; good luck...");
                     }
 
                     @Override
@@ -179,7 +196,7 @@ public class MainActivity extends AppCompatActivity
                     LocationManager.GPS_PROVIDER,
                     LOCATION_UPDATE_TIME,
                     LOCATION_UPDATE_DISTANCE,
-                    this
+                    MainActivity.this
             );
         } catch (SecurityException se) {
             Log.e(TAG, se.toString());
