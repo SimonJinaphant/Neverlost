@@ -1,5 +1,7 @@
 package com.neverlost.ubc.neverlost;
 
+import android.location.Location;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
@@ -18,13 +20,12 @@ public class MessageUtils {
      * Helper function to generate a correctly formatted JSON string to send to FCM.
      *
      * @param dependant - The name of the person in need of help.
-     * @param lat       - The dependant's latitude.
-     * @param lng       - The dependant's longitude.
+     * @param location  - The location of the dependant.
      * @return - Correctly formatted JSON string according to FCM guidelines.
      */
-    public static String generateHelpMessageJSON(String dependant, double lat, double lng) {
+    public static String generateHelpMessageJSON(String dependant, Location location) {
         FirebaseHelpRequest help = new FirebaseHelpRequest(FCM_TOPIC_TO + MessagingService.FCM_TOPIC,
-                dependant, lat, lng);
+                dependant, location.getLatitude(), location.getLongitude());
 
         Gson json = new GsonBuilder()
                 .registerTypeAdapter(FirebaseHelpRequest.class,

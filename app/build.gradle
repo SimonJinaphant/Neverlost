@@ -43,6 +43,7 @@ dependencies {
 
     // Google and Firebase services
     compile 'com.google.android.gms:play-services-maps:10.2.0'
+    compile 'com.google.android.gms:play-services-location:10.2.0'
     compile 'com.google.firebase:firebase-messaging:10.2.0'
 
     // HTTP REST and JSON libraries
