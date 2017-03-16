@@ -15,7 +15,6 @@ public class HealthMonitorActivity extends AppCompatActivity {
     ImageButton hearRate        = (ImageButton) findViewById(R.id.heartRateButton);
     TextView    hearRateValue   = (TextView) findViewById(R.id.heartRateValue);
     TextView    name            = (TextView) findViewById(R.id.name);
-    TextView    age             = (TextView) findViewById(R.id.age);
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
