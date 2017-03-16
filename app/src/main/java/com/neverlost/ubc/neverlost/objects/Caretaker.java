@@ -1,4 +1,4 @@
-package objects;
+package com.neverlost.ubc.neverlost.objects;
 
 /**
  * Created by clarence on 2017-03-11.

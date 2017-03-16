@@ -13,8 +13,6 @@ public class Stat {
 
     public Stat(){}
 
-
-
     static public double computeMean(List<Double> list){
 
         Double sum = 0.0;
