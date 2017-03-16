@@ -5,4 +5,12 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string name="facebook_app_id">1199462790172717</string>
+
+
+    <string name="fb_login_protocol_scheme">fb1199462790172717</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -4,40 +4,30 @@ package com.neverlost.ubc.neverlost;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.cpen321.floatproject.R;
-import com.cpen321.floatproject.database.DB;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.Profile;
-import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
-/**
- * Created by sfarinas on 10/26/2016.
- */
+
 public class MainFragment extends Fragment {
 
-    private TextView mTextDetails;
 
     private CallbackManager mCallbackManager;
-    private Profile mprofile;
-    private ProfileTracker mprofiletracker;
 
     private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
+
+            Intent i = new Intent(getActivity(),MainActivity.class);
+            startActivity(i);
+
 
         }
 
@@ -50,6 +40,10 @@ public class MainFragment extends Fragment {
         public void onError(FacebookException error) {
 
         }
+
+        //getprofile
+
+
     };
 
 
