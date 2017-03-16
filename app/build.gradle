@@ -49,6 +49,9 @@ dependencies {
     // HTTP REST and JSON libraries
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile 'com.google.code.gson:gson:2.8.0'
+
+    //bar graph library
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
