@@ -29,7 +29,7 @@ public class login extends AppCompatActivity {
             t.setBackgroundColor(getResources().getColor(R.color.black));
         }
         else{
-            Intent i = new Intent(this,PrecheckActivity.class);
+            Intent i = new Intent(this,FeatureSelectActivity.class);
             startActivity(i);
         }
 
