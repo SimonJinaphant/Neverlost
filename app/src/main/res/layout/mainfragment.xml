@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.neverlost.ubc.neverlost.MainFragment">
+    tools:context="com.neverlost.ubc.neverlost.activities.MainFragment">
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"

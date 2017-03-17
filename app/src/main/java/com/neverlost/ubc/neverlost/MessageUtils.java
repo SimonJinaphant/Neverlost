@@ -1,5 +1,8 @@
 package com.neverlost.ubc.neverlost;
 
+import android.location.Location;
+
+import com.facebook.Profile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
@@ -8,8 +11,6 @@ import com.neverlost.ubc.neverlost.serializer.FirebaseHelpRequestSerializer;
 
 public class MessageUtils {
 
-    private static final String FCM_TOPIC_TO = "/topics/";
-
     private MessageUtils() {
         // Private constructor to prevent instantiation.
     }
@@ -17,21 +18,26 @@ public class MessageUtils {
     /**
      * Helper function to generate a correctly formatted JSON string to send to FCM.
      *
-     * @param dependant - The name of the person in need of help.
-     * @param lat       - The dependant's latitude.
-     * @param lng       - The dependant's longitude.
+     * @param dependantName - The name of the person in need of help.
+     * @param location  - The location of the dependantName.
      * @return - Correctly formatted JSON string according to FCM guidelines.
      */
-    public static String generateHelpMessageJSON(String dependant, double lat, double lng) {
-        FirebaseHelpRequest help = new FirebaseHelpRequest(FCM_TOPIC_TO + MessagingService.FCM_TOPIC,
-                dependant, lat, lng);
 
-        Gson json = new GsonBuilder()
-                .registerTypeAdapter(FirebaseHelpRequest.class,
-                        new FirebaseHelpRequestSerializer())
+    public static String generateHelpMessageJSON(String dependantName, Location location) {
+        Profile mprofile = Profile.getCurrentProfile();
+        dependantName = mprofile.getFirstName();
+        FirebaseHelpRequest helpRequest = new FirebaseHelpRequest(
+                MessagingService.FCM_TOPIC + MessagingService.FCM_TOPIC_NEVERLOST,
+                dependantName,
+                location.getLatitude(),
+                location.getLongitude()
+        );
+
+        Gson jsonMessage = new GsonBuilder()
+                .registerTypeAdapter(FirebaseHelpRequest.class, new FirebaseHelpRequestSerializer())
                 .setPrettyPrinting()
                 .create();
 
-        return json.toJson(help);
+        return jsonMessage.toJson(helpRequest);
     }
 }

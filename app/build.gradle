@@ -43,13 +43,18 @@ dependencies {
 
     // Google and Firebase services
     compile 'com.google.android.gms:play-services-maps:10.2.0'
+    compile 'com.google.android.gms:play-services-location:10.2.0'
     compile 'com.google.firebase:firebase-messaging:10.2.0'
 
     // HTTP REST and JSON libraries
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile 'com.google.code.gson:gson:2.8.0'
 
+
+    //facebook library
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    //bar graph library
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -1,12 +1,22 @@
 package com.neverlost.ubc.neverlost;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,8 +33,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.neverlost.ubc.neverlost.firebase.Authorization;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
 
 import java.io.IOException;
@@ -33,17 +43,28 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        OnMapReadyCallback {
+        OnMapReadyCallback, LocationListener {
 
     private static final String TAG = "MainActivity";
-    private final double UBC_VANCOUVER_LAT = 49.2606;
-    private final double UBC_VANCOUVER_LNG = -123.2460;
     private final int REQUEST_FINE_LOC_CODE = 391;
+
     private GoogleMap mMap;
+    private Location currentLocation;
+    private LocationManager locationManager;
+    private BroadcastReceiver dependantHelpBroadcastReceiver;
+
+    // Vibration to alert the caretaker that something has happened to their dependant
+    private Vibrator vibrationService;
+    private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
+
+    // Force the Location manager to update our GPS location when the following thresholds are met
+    private final int LOCATION_UPDATE_TIME = 1000;
+    private final int LOCATION_UPDATE_DISTANCE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,27 +75,78 @@ public class MainActivity extends AppCompatActivity
         // If a Cloud Message notification was tapped, the data payload associated with it can be
         // accessible from the Intent's EXTRA field.
         // -----------------------------------------------------------------------------------------
+        // TODO: This doesn't seem to be catching FCM notification's data
         Bundle notificationDataPayload = getIntent().getExtras();
         if (notificationDataPayload != null) {
             for (String key : notificationDataPayload.keySet()) {
                 Object value = notificationDataPayload.get(key);
-                Log.d(TAG, "Key: " + key + " \t Value: " + value);
+                Log.d(TAG, "Bundle Key: " + key + " \t Value: " + value);
             }
+            displayMessage("Got something!");
+        }
+
+        // -----------------------------------------------------------------------------------------
+        // Listen for broadcasts coming from our local FCM Messaging Service.
+        // -----------------------------------------------------------------------------------------
+        dependantHelpBroadcastReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                LatLng dependant = new LatLng(
+                        intent.getDoubleExtra(MessagingService.FCM_DATA_LAT, 0),
+                        intent.getDoubleExtra(MessagingService.FCM_DATA_LNG, 0)
+                );
+
+                mMap.addMarker(new MarkerOptions()
+                        .position(dependant)
+                        .title(intent.getStringExtra(MessagingService.FCM_DATA_DEPENDANT))
+                );
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(dependant));
+                vibrationService.vibrate(vibrationPattern, -1);
+            }
+        };
+
+        // -----------------------------------------------------------------------------------------
+        // Obtain access to the phone's vibration services to alert the user of incoming messages
+        // -----------------------------------------------------------------------------------------
+        if (vibrationService == null) {
+            vibrationService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         }
 
         // -----------------------------------------------------------------------------------------
         // Check to see if we can access the GPS.
         // -----------------------------------------------------------------------------------------
-        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, REQUEST_FINE_LOC_CODE);
+        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, REQUEST_FINE_LOC_CODE);
+        }
+
+        // -----------------------------------------------------------------------------------------
+        // Setup the Location Manager so we can obtain GPS location
+        // -----------------------------------------------------------------------------------------
+        if (locationManager == null) {
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        }
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+        }
+
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location != null) {
+            currentLocation = location;
+        } else {
+            displayMessage("Unable to obtain your location");
         }
 
         // -----------------------------------------------------------------------------------------
         // Subscribe to Firebase for messages.
         // -----------------------------------------------------------------------------------------
-        FirebaseMessaging.getInstance().subscribeToTopic(MessagingService.FCM_TOPIC);
+        FirebaseMessaging.getInstance().subscribeToTopic(MessagingService.FCM_TOPIC_NEVERLOST);
 
+        // Setup the remaining UI elements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -82,11 +154,11 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message = MessageUtils.generateHelpMessageJSON("Simon", UBC_VANCOUVER_LAT, UBC_VANCOUVER_LNG);
+                String message = MessageUtils.generateHelpMessageJSON("Simon", currentLocation);
                 MessagingService.sendUpstreamMessage(message, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        displayMessage("Neverlost failed to send help over the network...good luck...");
+                        displayMessage("Neverlost failed to send help over the network; good luck...");
                     }
 
                     @Override
@@ -114,6 +186,50 @@ public class MainActivity extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    LOCATION_UPDATE_TIME,
+                    LOCATION_UPDATE_DISTANCE,
+                    MainActivity.this
+            );
+        } catch (SecurityException se) {
+            Log.e(TAG, se.toString());
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            locationManager.removeUpdates(this);
+        } catch (SecurityException se) {
+            Log.e(TAG, se.toString());
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager
+                .getInstance(this)
+                .registerReceiver(dependantHelpBroadcastReceiver,
+                        new IntentFilter(MessagingService.NEVERLOST_FCM_RESULT)
+                );
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager
+                .getInstance(this)
+                .unregisterReceiver(dependantHelpBroadcastReceiver);
+
+        super.onStop();
     }
 
     @Override
@@ -194,10 +310,20 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // TODO: Change this to point to user's current location.
-        // Set the default location of our map to point at UBC.
-        LatLng ubc_vancouver = new LatLng(UBC_VANCOUVER_LAT, UBC_VANCOUVER_LNG);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ubc_vancouver, 15));
+        try {
+            mMap.setMyLocationEnabled(true);
+        } catch (SecurityException se) {
+            displayMessage("Unable to show current location on map");
+        }
+
+        // Show the current location on the map.
+        if (currentLocation != null) {
+            LatLng current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+        } else {
+            displayMessage("Unable to find you on the map");
+        }
+
     }
 
     /**
@@ -206,9 +332,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == REQUEST_FINE_LOC_CODE) {
-            if (permissions.length == 1 &&
+            if (permissions.length == 2 &&
                     permissions[0] == android.Manifest.permission.ACCESS_FINE_LOCATION &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                    permissions[1] == android.Manifest.permission.ACCESS_COARSE_LOCATION &&
+                    grantResults[1] == PackageManager.PERMISSION_GRANTED) {
             } else {
                 displayMessage("Neverlost requires you're location to work");
             }
@@ -230,12 +358,26 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    /**
-     * Check to see if the app has the correct authorization keys
-     */
-    private void checkAuthorization() {
-        if (!Authorization.containsRealAuthorizationKeys()) {
-
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            currentLocation = location;
         }
     }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // Override method for Location Manager. Do not delete.
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        // Override method for Location Manager. Do not delete.
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        // Override method for Location Manager. Do not delete.
+    }
+
 }

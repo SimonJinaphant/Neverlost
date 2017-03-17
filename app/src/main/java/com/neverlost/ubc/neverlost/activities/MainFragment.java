@@ -1,4 +1,4 @@
-package com.neverlost.ubc.neverlost;
+package com.neverlost.ubc.neverlost.activities;
 
 
 import android.content.Intent;
@@ -12,14 +12,20 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.neverlost.ubc.neverlost.MainActivity;
+import com.neverlost.ubc.neverlost.R;
 
 
 public class MainFragment extends Fragment {
 
 
     private CallbackManager mCallbackManager;
+    private Profile mprofile;
+    private ProfileTracker mprofiletracker;
 
     private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
         @Override
@@ -27,6 +33,22 @@ public class MainFragment extends Fragment {
 
             Intent i = new Intent(getActivity(),MainActivity.class);
             startActivity(i);
+
+            if(Profile.getCurrentProfile() == null) {
+                mprofiletracker = new ProfileTracker() {
+                    @Override
+                    protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                        // profile2 is the new mprofile
+                        mprofile = profile2;
+                        mprofiletracker.stopTracking();
+                    }
+                };
+                // no need to call startTracking() on mprofiletracker
+                // because it is called by its constructor, internally.
+            }
+            else {
+                mprofile = Profile.getCurrentProfile();
+            }
 
 
         }
@@ -45,6 +67,8 @@ public class MainFragment extends Fragment {
 
 
     };
+
+
 
 
     public MainFragment(){}

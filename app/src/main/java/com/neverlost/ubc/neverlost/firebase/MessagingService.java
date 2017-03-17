@@ -6,12 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.neverlost.ubc.neverlost.MainActivity;
 import com.neverlost.ubc.neverlost.R;
+
+import java.util.Map;
 
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -21,23 +24,56 @@ import okhttp3.RequestBody;
 
 public class MessagingService extends FirebaseMessagingService {
 
-    public static final String FCM_TOPIC = "neverlost";
-    private static final String TAG = "FirebaseMsgService";
-    private static final String FCM_SEND_URL = "https://fcm.googleapis.com/fcm/send";
-
+    // For making HTTP REST calls to the FCM server to send upstream messages
     private static final OkHttpClient client = new OkHttpClient();
+    private static final String FCM_SEND_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
+    private static final String JSON_MEDIA_TYPE = "application/json";
+
+    // FCM topics we listen for.
+    public static final String FCM_TOPIC = "/topics/";
+    public static final String FCM_TOPIC_NEVERLOST = "neverlost";
+
+    // FCM Essential JSON keys.
+    public static final String FCM_TO = "to";
+    public static final String FCM_AUTH = "Authorization";
+    public static final String FCM_AUTH_VALUE="key="+Authorization.FCM_SERVER_KEY;
+
+    // FCM JSON Notification keys.
+    public static final String FCM_NOTIFICATION = "notification";
+    public static final String FCM_NOTIFICATION_TITLE = "title";
+    public static final String FCM_NOTIFICATION_BODY = "body";
+    public static final String FCM_NOTIFICATION_SOUND = "sound";
+    public static final String FCM_NOTIFICATION_SOUND_VALUE = "default";
+
+    // FCM JSON Data and keys needed for sending dependant help messages.
+    public static final String FCM_DATA = "data";
+    public static final String FCM_DATA_LAT = "lat";
+    public static final String FCM_DATA_LNG = "lng";
+    public static final String FCM_DATA_DEPENDANT = "dependant";
+
+    // For communicating between this Service and MainActivity (or any other activity).
+    private LocalBroadcastManager broadcastManager;
+    public static final String NEVERLOST_FCM_RESULT = "com.neverlost.ubc.neverlost.MainActivity.FCM_RESULT";
+
+    private static final String TAG = "NeverlostMsgService";
+
 
     public static void sendUpstreamMessage(String jsonMessage, Callback callback) {
-        MediaType jsonMediaType = MediaType.parse("application/json");
+        MediaType jsonMediaType = MediaType.parse(JSON_MEDIA_TYPE);
         RequestBody requestBody = RequestBody.create(jsonMediaType, jsonMessage);
 
         Request request = new Request.Builder()
-                .header("Authorization", "key=" + Authorization.FCM_SERVER_KEY)
-                .url(FCM_SEND_URL)
+                .header(FCM_AUTH, FCM_AUTH_VALUE)
+                .url(FCM_SEND_MESSAGE_URL)
                 .post(requestBody)
                 .build();
 
         client.newCall(request).enqueue(callback);
+    }
+
+    @Override
+    public void onCreate() {
+        broadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
     /**
@@ -61,13 +97,44 @@ public class MessagingService extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            double lat = Double.MAX_VALUE;
+            double lng = Double.MAX_VALUE;
+            String dependant = null;
+
+            for (Map.Entry<String, String> entry : remoteMessage.getData().entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+
+                switch (key) {
+                    case MessagingService.FCM_DATA_LAT:
+                        lat = Double.parseDouble(value);
+                        break;
+                    case MessagingService.FCM_DATA_LNG:
+                        lng = Double.parseDouble(value);
+                        break;
+                    case MessagingService.FCM_DATA_DEPENDANT:
+                        dependant = value;
+                        break;
+                }
+
+                Log.d(TAG, "Key: " + key + " \t Value: " + value);
+            }
+
+            if (dependant != null) {
+                Intent intent = new Intent(NEVERLOST_FCM_RESULT);
+                intent.putExtra(MessagingService.FCM_DATA_LAT, lat);
+                intent.putExtra(MessagingService.FCM_DATA_LNG, lng);
+                intent.putExtra(MessagingService.FCM_DATA_DEPENDANT, dependant);
+
+                broadcastManager.sendBroadcast(intent);
+            }
+
         }
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getBody());
+            //sendNotification(remoteMessage.getNotification().getBody());
         }
     }
 
