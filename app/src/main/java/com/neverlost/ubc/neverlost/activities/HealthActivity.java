@@ -25,7 +25,7 @@ public class HealthActivity extends AppCompatActivity {
 
     //declare the elements in the xmls
     ImageView       prolioPic;
-    ImageButton     hearRate;
+    ImageButton     hearRateButton;
     TextView        hearRateValue;
     TextView        name;
     TextView        distanceValue;
@@ -39,7 +39,7 @@ public class HealthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_health);
 
         prolioPic       = (ImageView)   findViewById(R.id.prolioPic);
-        hearRate        = (ImageButton) findViewById(R.id.heartRateButton);
+        hearRateButton  = (ImageButton) findViewById(R.id.heartRateButton);
         hearRateValue   = (TextView)    findViewById(R.id.heartRateValue);
         name            = (TextView)    findViewById(R.id.name);
         stepButton      = (ImageButton) findViewById(R.id.stepButton);
@@ -83,6 +83,14 @@ public class HealthActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent stepBar = new Intent(view.getContext(), distanceBarActivity.class);
                 startActivity(stepBar);
+            }
+        });
+
+        hearRateButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent heartRateGraph = new Intent(view.getContext(), HeartRateActivity.class);
+                startActivity(heartRateGraph);
             }
         });
 

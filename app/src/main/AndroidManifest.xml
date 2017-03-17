@@ -75,19 +75,21 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".activities.PrecheckActivity"></activity>
+        <activity android:name=".activities.PrecheckActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".HealthMonitorActivity"> </activity>
+        <activity android:name=".HealthMonitorActivity"></activity>
         <activity android:name=".activities.distanceBarActivity" />
         <activity android:name=".activities.HealthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.HeartRateActivity"></activity>
     </application>
 
 </manifest>
