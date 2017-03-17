@@ -1,7 +1,7 @@
 package com.neverlost.ubc.neverlost.objects;
 
-import com.neverlost.ubc.neverlost.datastruct.distanceData;
-import com.neverlost.ubc.neverlost.datastruct.heartRateData;
+import com.neverlost.ubc.neverlost.datastruct.DistanceData;
+import com.neverlost.ubc.neverlost.datastruct.HeartRateData;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ import java.util.List;
 
 public class Dependent extends User {
 
-    List<heartRateData> heartRates;
-    List<distanceData> distances;
+    public List<HeartRateData> heartRates;
+    public List<DistanceData> distances;
 
-    public Dependent(String name, int age, String gender, float weight, float height,
-                     List<heartRateData> heartRates, List<distanceData> distances){
-        super(name,age,gender,weight,height);
+    public Dependent(String name, int age, double weight, double height,
+                     List<HeartRateData> heartRates, List<DistanceData> distances){
+        super(name,age,weight,height);
         this.heartRates = heartRates;
         this.distances  = distances;
     }

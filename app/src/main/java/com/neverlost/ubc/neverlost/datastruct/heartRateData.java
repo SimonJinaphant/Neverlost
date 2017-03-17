@@ -6,11 +6,11 @@ import java.util.Date;
  * Created by clarence on 2017-03-15.
  */
 
-public class heartRateData {
+public class HeartRateData {
     public int      heartRate;
     public Date     date;
 
-    public heartRateData(int heartRate, Date date){
+    public HeartRateData(int heartRate, Date date){
         this.heartRate = heartRate;
         this.date      = date;
     }
