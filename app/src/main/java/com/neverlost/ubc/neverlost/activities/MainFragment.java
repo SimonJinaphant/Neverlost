@@ -16,7 +16,6 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.neverlost.ubc.neverlost.MainActivity;
 import com.neverlost.ubc.neverlost.R;
 
 
@@ -31,8 +30,8 @@ public class MainFragment extends Fragment {
         @Override
         public void onSuccess(LoginResult loginResult) {
 
-            Intent i = new Intent(getActivity(),MainActivity.class);
-            startActivity(i);
+            Intent i = new Intent(getActivity(),PrecheckActivity.class);
+
 
             if(Profile.getCurrentProfile() == null) {
                 mprofiletracker = new ProfileTracker() {
@@ -51,6 +50,7 @@ public class MainFragment extends Fragment {
             }
 
 
+            startActivity(i);
         }
 
         @Override
