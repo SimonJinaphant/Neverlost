@@ -2,6 +2,7 @@ package com.neverlost.ubc.neverlost;
 
 import android.location.Location;
 
+import com.facebook.Profile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
@@ -21,7 +22,10 @@ public class MessageUtils {
      * @param location  - The location of the dependantName.
      * @return - Correctly formatted JSON string according to FCM guidelines.
      */
+
     public static String generateHelpMessageJSON(String dependantName, Location location) {
+        Profile mprofile = Profile.getCurrentProfile();
+        dependantName = mprofile.getFirstName();
         FirebaseHelpRequest helpRequest = new FirebaseHelpRequest(
                 MessagingService.FCM_TOPIC + MessagingService.FCM_TOPIC_NEVERLOST,
                 dependantName,
