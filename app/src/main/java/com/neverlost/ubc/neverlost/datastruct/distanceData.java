@@ -7,11 +7,11 @@ import java.util.Date;
  */
 
 public class DistanceData {
-    public int  distance;
+    public int distance;
     public Date date;
 
-    public DistanceData(int heartRate, Date date){
-        this.distance  = heartRate;
-        this.date      = date;
+    public DistanceData(int heartRate, Date date) {
+        this.distance = heartRate;
+        this.date = date;
     }
 }

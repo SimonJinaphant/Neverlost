@@ -1,12 +1,11 @@
 package com.neverlost.ubc.neverlost.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.neverlost.ubc.neverlost.MainActivity;
 import com.neverlost.ubc.neverlost.R;
 
 public class FeatureSelectActivity extends AppCompatActivity {
@@ -19,10 +18,10 @@ public class FeatureSelectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feature_select);
 
-        GPS     = (Button) findViewById(R.id.gps);
-        Health  = (Button) findViewById(R.id.health);
+        GPS = (Button) findViewById(R.id.gps);
+        Health = (Button) findViewById(R.id.health);
 
-        GPS.setOnClickListener(new View.OnClickListener(){
+        GPS.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -31,7 +30,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
             }
         });
 
-        Health.setOnClickListener(new View.OnClickListener(){
+        Health.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {

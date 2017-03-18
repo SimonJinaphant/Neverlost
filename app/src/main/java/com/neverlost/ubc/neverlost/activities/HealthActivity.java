@@ -1,8 +1,8 @@
 package com.neverlost.ubc.neverlost.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -24,28 +24,28 @@ public class HealthActivity extends AppCompatActivity {
     Dependent demoUser;
 
     //declare the elements in the xmls
-    ImageView       prolioPic;
-    ImageButton     hearRateButton;
-    TextView        hearRateValue;
-    TextView        name;
-    TextView        distanceValue;
-    ImageButton     stepButton;
-    RatingBar       healthRatingBar;
-    TextView        healthEvaluation;
+    ImageView prolioPic;
+    ImageButton hearRateButton;
+    TextView hearRateValue;
+    TextView name;
+    TextView distanceValue;
+    ImageButton stepButton;
+    RatingBar healthRatingBar;
+    TextView healthEvaluation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_health);
 
-        prolioPic       = (ImageView)   findViewById(R.id.prolioPic);
-        hearRateButton  = (ImageButton) findViewById(R.id.heartRateButton);
-        hearRateValue   = (TextView)    findViewById(R.id.heartRateValue);
-        name            = (TextView)    findViewById(R.id.name);
-        stepButton      = (ImageButton) findViewById(R.id.stepButton);
-        distanceValue   = (TextView)    findViewById(R.id.distanceValue);
-        healthRatingBar = (RatingBar)   findViewById(R.id.healthRatingBar);
-        healthEvaluation= (TextView)    findViewById(R.id.healthEval);
+        prolioPic = (ImageView) findViewById(R.id.prolioPic);
+        hearRateButton = (ImageButton) findViewById(R.id.heartRateButton);
+        hearRateValue = (TextView) findViewById(R.id.heartRateValue);
+        name = (TextView) findViewById(R.id.name);
+        stepButton = (ImageButton) findViewById(R.id.stepButton);
+        distanceValue = (TextView) findViewById(R.id.distanceValue);
+        healthRatingBar = (RatingBar) findViewById(R.id.healthRatingBar);
+        healthEvaluation = (TextView) findViewById(R.id.healthEval);
 
         //demo hardcode part
         String demoName = "Logan";
@@ -81,14 +81,14 @@ public class HealthActivity extends AppCompatActivity {
         stepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent stepBar = new Intent(view.getContext(), distanceBarActivity.class);
+                Intent stepBar = new Intent(view.getContext(), DistanceBarActivity.class);
                 startActivity(stepBar);
             }
         });
 
-        hearRateButton.setOnClickListener(new View.OnClickListener(){
+        hearRateButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 Intent heartRateGraph = new Intent(view.getContext(), HeartRateActivity.class);
                 startActivity(heartRateGraph);
             }
