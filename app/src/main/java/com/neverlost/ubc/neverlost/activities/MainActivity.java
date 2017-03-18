@@ -35,7 +35,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.neverlost.ubc.neverlost.MessageUtils;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
 
@@ -153,15 +152,16 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message = MessageUtils.generateHelpMessageJSON("Simon", currentLocation);
-                MessagingService.sendUpstreamMessage(message, new Callback() {
+
+                MessagingService.broadcastForHelp(currentLocation, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         displayMessage("Neverlost failed to send help over the network; good luck...");
+
                     }
 
                     @Override
-                    public void onResponse(Call call, final Response response) throws IOException {
+                    public void onResponse(Call call, Response response) throws IOException {
                         if (response.isSuccessful()) {
                             displayMessage("Help is on the way!");
                         } else {
@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                 });
+
             }
         });
 

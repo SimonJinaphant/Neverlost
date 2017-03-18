@@ -4,11 +4,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.facebook.Profile;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.neverlost.ubc.neverlost.R;
@@ -24,36 +26,46 @@ import okhttp3.RequestBody;
 
 public class MessagingService extends FirebaseMessagingService {
 
-    // FCM topics we listen for.
-    public static final String FCM_TOPIC = "/topics/";
+    // FCM topics and Data Key-Value we listen for.
     public static final String FCM_TOPIC_NEVERLOST = "neverlost";
-    // FCM Essential JSON keys.
-    public static final String FCM_TO = "to";
-    public static final String FCM_AUTH = "Authorization";
-    public static final String FCM_AUTH_VALUE = "key=" + Authorization.FCM_SERVER_KEY;
-    // FCM JSON Notification keys.
-    public static final String FCM_NOTIFICATION = "notification";
-    public static final String FCM_NOTIFICATION_TITLE = "title";
-    public static final String FCM_NOTIFICATION_BODY = "body";
-    public static final String FCM_NOTIFICATION_SOUND = "sound";
-    public static final String FCM_NOTIFICATION_SOUND_VALUE = "default";
-    // FCM JSON Data and keys needed for sending dependant help messages.
-    public static final String FCM_DATA = "data";
     public static final String FCM_DATA_LAT = "lat";
     public static final String FCM_DATA_LNG = "lng";
     public static final String FCM_DATA_DEPENDANT = "dependant";
-    public static final String NEVERLOST_FCM_RESULT = "com.neverlost.ubc.neverlost.MainActivity.FCM_RESULT";
-    // For making HTTP REST calls to the FCM server to send upstream messages
+
+    // FCM Essential JSON keys.
+    private static final String FCM_TOPIC = "/topics/";
+    private static final String FCM_AUTH = "Authorization";
+    private static final String FCM_AUTH_VALUE = "key=" + Authorization.FCM_SERVER_KEY;
+
+    // For making HTTP REST calls to the FCM server to send upstream messages.
     private static final OkHttpClient client = new OkHttpClient();
     private static final String FCM_SEND_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
     private static final String JSON_MEDIA_TYPE = "application/json";
+
+    // For local debug messages.
     private static final String TAG = "NeverlostMsgService";
+
     // For communicating between this Service and MainActivity (or any other activity).
+    public static final String NEVERLOST_FCM_RESULT = "com.neverlost.ubc.neverlost.MainActivity.FCM_RESULT";
     private LocalBroadcastManager broadcastManager;
 
-    public static void sendUpstreamMessage(String jsonMessage, Callback callback) {
+    public static void broadcastForHelp(Location location, Callback callback) {
+        String name = Profile.getCurrentProfile().getFirstName();
+
+        CloudMessage helpMessage = CloudMessage.builder()
+                .to(FCM_TOPIC + FCM_TOPIC_NEVERLOST)
+                .withNotification(name + " is in need of help!", name + " has pressed the panic button!")
+                .withData(MessagingService.FCM_DATA_DEPENDANT, name)
+                .withData(MessagingService.FCM_DATA_LAT, String.valueOf(location.getLatitude()))
+                .withData(MessagingService.FCM_DATA_LNG, String.valueOf(location.getLongitude()))
+                .build();
+
+        sendServerCloudMessage(helpMessage, callback);
+    }
+
+    private static void sendServerCloudMessage(CloudMessage message, Callback callback) {
         MediaType jsonMediaType = MediaType.parse(JSON_MEDIA_TYPE);
-        RequestBody requestBody = RequestBody.create(jsonMediaType, jsonMessage);
+        RequestBody requestBody = RequestBody.create(jsonMediaType, message.serializeToJson());
 
         Request request = new Request.Builder()
                 .header(FCM_AUTH, FCM_AUTH_VALUE)
