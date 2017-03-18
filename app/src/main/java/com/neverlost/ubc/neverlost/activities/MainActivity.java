@@ -70,20 +70,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         // -----------------------------------------------------------------------------------------
-        // If a Cloud Message notification was tapped, the data payload associated with it can be
-        // accessible from the Intent's EXTRA field.
-        // -----------------------------------------------------------------------------------------
-        // TODO: This doesn't seem to be catching FCM notification's data
-        Bundle notificationDataPayload = getIntent().getExtras();
-        if (notificationDataPayload != null) {
-            for (String key : notificationDataPayload.keySet()) {
-                Object value = notificationDataPayload.get(key);
-                Log.d(TAG, "Bundle Key: " + key + " \t Value: " + value);
-            }
-            displayMessage("Got something!");
-        }
-
-        // -----------------------------------------------------------------------------------------
         // Listen for broadcasts coming from our local FCM Messaging Service.
         // -----------------------------------------------------------------------------------------
         dependantHelpBroadcastReceiver = new BroadcastReceiver() {
@@ -330,7 +316,7 @@ public class MainActivity extends AppCompatActivity
      * Callback for when permissions are granted in this application/
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_FINE_LOC_CODE) {
             if (permissions.length == 2 &&
                     permissions[0] == android.Manifest.permission.ACCESS_FINE_LOCATION &&
@@ -358,6 +344,11 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * Update the current client location whenever a location change occurs.
+     *
+     * @param location - The new location value.
+     */
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {

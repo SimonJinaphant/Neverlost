@@ -32,6 +32,9 @@ public class MessagingService extends FirebaseMessagingService {
     public static final String FCM_DATA_LNG = "lng";
     public static final String FCM_DATA_DEPENDANT = "dependant";
 
+    // For communicating between this Service and MainActivity (or any other activity).
+    public static final String NEVERLOST_FCM_RESULT = "com.neverlost.ubc.neverlost.MainActivity.FCM_RESULT";
+
     // FCM Essential JSON keys.
     private static final String FCM_TOPIC = "/topics/";
     private static final String FCM_AUTH = "Authorization";
@@ -45,25 +48,36 @@ public class MessagingService extends FirebaseMessagingService {
     // For local debug messages.
     private static final String TAG = "NeverlostMsgService";
 
-    // For communicating between this Service and MainActivity (or any other activity).
-    public static final String NEVERLOST_FCM_RESULT = "com.neverlost.ubc.neverlost.MainActivity.FCM_RESULT";
+    // For broadcasting locally between activities.
     private LocalBroadcastManager broadcastManager;
 
+    /**
+     * Broadcast to care-takers by sending a Firebase Cloud Message for help.
+     *
+     * @param location - Your current location.
+     * @param callback - Callback to handle success/failed transmission cases.
+     */
     public static void broadcastForHelp(Location location, Callback callback) {
         String name = Profile.getCurrentProfile().getFirstName();
 
         CloudMessage helpMessage = CloudMessage.builder()
                 .to(FCM_TOPIC + FCM_TOPIC_NEVERLOST)
                 .withNotification(name + " is in need of help!", name + " has pressed the panic button!")
-                .withData(MessagingService.FCM_DATA_DEPENDANT, name)
-                .withData(MessagingService.FCM_DATA_LAT, String.valueOf(location.getLatitude()))
-                .withData(MessagingService.FCM_DATA_LNG, String.valueOf(location.getLongitude()))
+                .withData(FCM_DATA_DEPENDANT, name)
+                .withData(FCM_DATA_LAT, String.valueOf(location.getLatitude()))
+                .withData(FCM_DATA_LNG, String.valueOf(location.getLongitude()))
                 .build();
 
-        sendServerCloudMessage(helpMessage, callback);
+        sendUpstreamCloudMessage(helpMessage, callback);
     }
 
-    private static void sendServerCloudMessage(CloudMessage message, Callback callback) {
+    /**
+     * Submit an HTTP POST request to the Firebase Connection Server with a JSON formatted payload.
+     *
+     * @param message - The message to send in JSON format as specified by the Firebase API.
+     * @param callback - Callback to handle success/failed transmission cases.
+     */
+    private static void sendUpstreamCloudMessage(CloudMessage message, Callback callback) {
         MediaType jsonMediaType = MediaType.parse(JSON_MEDIA_TYPE);
         RequestBody requestBody = RequestBody.create(jsonMediaType, message.serializeToJson());
 
@@ -83,7 +97,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     /**
      * Called when either a notification or data message is received.
-     * <p>
+     *
      * -------------------------------------------------------------
      * This method gets invoked in the app via the Android Manifest.
      * -------------------------------------------------------------
