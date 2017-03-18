@@ -1,7 +1,7 @@
 package com.neverlost.ubc.neverlost.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class distanceBarActivity extends AppCompatActivity {
+public class DistanceBarActivity extends AppCompatActivity {
 
     BarChart distBarChart;
     TextView distDate;
@@ -51,18 +51,18 @@ public class distanceBarActivity extends AppCompatActivity {
         demoUser = new Dependent(demoName, demoAge, demoWeight, demoHeight, demoHeartRates, demoDistanceData);
         //end of demo code
 
-        distBarChart    = (BarChart) findViewById(R.id.distBarChart);
-        distDate        = (TextView) findViewById(R.id.distDate);
-        calValue        = (TextView) findViewById(R.id.calValue);
+        distBarChart = (BarChart) findViewById(R.id.distBarChart);
+        distDate = (TextView) findViewById(R.id.distDate);
+        calValue = (TextView) findViewById(R.id.calValue);
 
         Date currDate = new Date();
         SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy.MM.dd");
         distDate.setText(dateFormater.format(currDate));
 
         ArrayList<BarEntry> barEntries = new ArrayList<>();
-        barEntries.add(new BarEntry(01f,4000));
-        barEntries.add(new BarEntry(02f,2856));
-        barEntries.add(new BarEntry(03f,4102));
+        barEntries.add(new BarEntry(01f, 4000));
+        barEntries.add(new BarEntry(02f, 2856));
+        barEntries.add(new BarEntry(03f, 4102));
 
         BarDataSet barDataSet = new BarDataSet(barEntries, "Distance");
         BarData theData = new BarData(barDataSet);

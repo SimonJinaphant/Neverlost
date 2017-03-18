@@ -19,7 +19,7 @@ public class MessageUtils {
      * Helper function to generate a correctly formatted JSON string to send to FCM.
      *
      * @param dependantName - The name of the person in need of help.
-     * @param location  - The location of the dependantName.
+     * @param location      - The location of the dependantName.
      * @return - Correctly formatted JSON string according to FCM guidelines.
      */
 

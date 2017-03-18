@@ -1,4 +1,4 @@
-package com.neverlost.ubc.neverlost;
+package com.neverlost.ubc.neverlost.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,6 +35,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.neverlost.ubc.neverlost.MessageUtils;
+import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
 
 import java.io.IOException;
@@ -52,19 +54,16 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private final int REQUEST_FINE_LOC_CODE = 391;
-
+    private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
+    // Force the Location manager to update our GPS location when the following thresholds are met
+    private final int LOCATION_UPDATE_TIME = 1000;
+    private final int LOCATION_UPDATE_DISTANCE = 0;
     private GoogleMap mMap;
     private Location currentLocation;
     private LocationManager locationManager;
     private BroadcastReceiver dependantHelpBroadcastReceiver;
-
     // Vibration to alert the caretaker that something has happened to their dependant
     private Vibrator vibrationService;
-    private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
-
-    // Force the Location manager to update our GPS location when the following thresholds are met
-    private final int LOCATION_UPDATE_TIME = 1000;
-    private final int LOCATION_UPDATE_DISTANCE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

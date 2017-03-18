@@ -15,12 +15,11 @@ public class Dependent extends User {
     public List<DistanceData> distances;
 
     public Dependent(String name, int age, double weight, double height,
-                     List<HeartRateData> heartRates, List<DistanceData> distances){
-        super(name,age,weight,height);
+                     List<HeartRateData> heartRates, List<DistanceData> distances) {
+        super(name, age, weight, height);
         this.heartRates = heartRates;
-        this.distances  = distances;
+        this.distances = distances;
     }
-
 
 
 }

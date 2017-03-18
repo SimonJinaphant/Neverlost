@@ -11,8 +11,8 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.neverlost.ubc.neverlost.MainActivity;
 import com.neverlost.ubc.neverlost.R;
+import com.neverlost.ubc.neverlost.activities.MainActivity;
 
 import java.util.Map;
 
@@ -24,39 +24,32 @@ import okhttp3.RequestBody;
 
 public class MessagingService extends FirebaseMessagingService {
 
-    // For making HTTP REST calls to the FCM server to send upstream messages
-    private static final OkHttpClient client = new OkHttpClient();
-    private static final String FCM_SEND_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
-    private static final String JSON_MEDIA_TYPE = "application/json";
-
     // FCM topics we listen for.
     public static final String FCM_TOPIC = "/topics/";
     public static final String FCM_TOPIC_NEVERLOST = "neverlost";
-
     // FCM Essential JSON keys.
     public static final String FCM_TO = "to";
     public static final String FCM_AUTH = "Authorization";
-    public static final String FCM_AUTH_VALUE="key="+Authorization.FCM_SERVER_KEY;
-
+    public static final String FCM_AUTH_VALUE = "key=" + Authorization.FCM_SERVER_KEY;
     // FCM JSON Notification keys.
     public static final String FCM_NOTIFICATION = "notification";
     public static final String FCM_NOTIFICATION_TITLE = "title";
     public static final String FCM_NOTIFICATION_BODY = "body";
     public static final String FCM_NOTIFICATION_SOUND = "sound";
     public static final String FCM_NOTIFICATION_SOUND_VALUE = "default";
-
     // FCM JSON Data and keys needed for sending dependant help messages.
     public static final String FCM_DATA = "data";
     public static final String FCM_DATA_LAT = "lat";
     public static final String FCM_DATA_LNG = "lng";
     public static final String FCM_DATA_DEPENDANT = "dependant";
-
+    public static final String NEVERLOST_FCM_RESULT = "com.neverlost.ubc.neverlost.MainActivity.FCM_RESULT";
+    // For making HTTP REST calls to the FCM server to send upstream messages
+    private static final OkHttpClient client = new OkHttpClient();
+    private static final String FCM_SEND_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
+    private static final String JSON_MEDIA_TYPE = "application/json";
+    private static final String TAG = "NeverlostMsgService";
     // For communicating between this Service and MainActivity (or any other activity).
     private LocalBroadcastManager broadcastManager;
-    public static final String NEVERLOST_FCM_RESULT = "com.neverlost.ubc.neverlost.MainActivity.FCM_RESULT";
-
-    private static final String TAG = "NeverlostMsgService";
-
 
     public static void sendUpstreamMessage(String jsonMessage, Callback callback) {
         MediaType jsonMediaType = MediaType.parse(JSON_MEDIA_TYPE);
