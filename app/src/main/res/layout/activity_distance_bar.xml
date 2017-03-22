@@ -27,5 +27,26 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/distDate" />
 
+    <TextView
+        android:text="Calories Burnt: "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:layout_marginStart="15dp"
+        android:id="@+id/textView6"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="44dp" />
+
+    <TextView
+        android:text="Calories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:id="@+id/calValue"
+        android:layout_alignBaseline="@+id/textView6"
+        android:layout_alignBottom="@+id/textView6"
+        android:layout_toEndOf="@+id/distDate" />
+
 
 </RelativeLayout>

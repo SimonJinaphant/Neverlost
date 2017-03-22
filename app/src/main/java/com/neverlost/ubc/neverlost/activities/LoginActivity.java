@@ -10,8 +10,7 @@ import android.widget.TextView;
 import com.neverlost.ubc.neverlost.R;
 
 
-public class login extends AppCompatActivity {
-
+public class LoginActivity extends AppCompatActivity {
 
 
     @Override
@@ -23,19 +22,18 @@ public class login extends AppCompatActivity {
 
     public void goToApp(View view) {
         int location = locationOn();
-        if (location == 0){
+        if (location == 0) {
             TextView t = (TextView) findViewById(R.id.locationOn);
             t.setText("Please turn on location services before proceeding");
             t.setBackgroundColor(getResources().getColor(R.color.black));
-        }
-        else{
-            Intent i = new Intent(this,PrecheckActivity.class);
+        } else {
+            Intent i = new Intent(this, FeatureSelectActivity.class);
             startActivity(i);
         }
 
     }
 
-    private int locationOn(){
+    private int locationOn() {
         int off = 0;
         try {
             off = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
@@ -44,8 +42,6 @@ public class login extends AppCompatActivity {
         }
         return off;
     }
-
-
 
 
 }

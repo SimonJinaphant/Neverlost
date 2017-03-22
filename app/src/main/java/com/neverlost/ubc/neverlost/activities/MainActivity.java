@@ -1,4 +1,4 @@
-package com.neverlost.ubc.neverlost;
+package com.neverlost.ubc.neverlost.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,6 +35,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
 
 import java.io.IOException;
@@ -52,38 +53,21 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private final int REQUEST_FINE_LOC_CODE = 391;
-
+    private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
+    // Force the Location manager to update our GPS location when the following thresholds are met
+    private final int LOCATION_UPDATE_TIME = 1000;
+    private final int LOCATION_UPDATE_DISTANCE = 0;
     private GoogleMap mMap;
     private Location currentLocation;
     private LocationManager locationManager;
     private BroadcastReceiver dependantHelpBroadcastReceiver;
-
     // Vibration to alert the caretaker that something has happened to their dependant
     private Vibrator vibrationService;
-    private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
-
-    // Force the Location manager to update our GPS location when the following thresholds are met
-    private final int LOCATION_UPDATE_TIME = 1000;
-    private final int LOCATION_UPDATE_DISTANCE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // -----------------------------------------------------------------------------------------
-        // If a Cloud Message notification was tapped, the data payload associated with it can be
-        // accessible from the Intent's EXTRA field.
-        // -----------------------------------------------------------------------------------------
-        // TODO: This doesn't seem to be catching FCM notification's data
-        Bundle notificationDataPayload = getIntent().getExtras();
-        if (notificationDataPayload != null) {
-            for (String key : notificationDataPayload.keySet()) {
-                Object value = notificationDataPayload.get(key);
-                Log.d(TAG, "Bundle Key: " + key + " \t Value: " + value);
-            }
-            displayMessage("Got something!");
-        }
 
         // -----------------------------------------------------------------------------------------
         // Listen for broadcasts coming from our local FCM Messaging Service.
@@ -154,15 +138,16 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message = MessageUtils.generateHelpMessageJSON("Simon", currentLocation);
-                MessagingService.sendUpstreamMessage(message, new Callback() {
+
+                MessagingService.broadcastForHelp(currentLocation, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         displayMessage("Neverlost failed to send help over the network; good luck...");
+
                     }
 
                     @Override
-                    public void onResponse(Call call, final Response response) throws IOException {
+                    public void onResponse(Call call, Response response) throws IOException {
                         if (response.isSuccessful()) {
                             displayMessage("Help is on the way!");
                         } else {
@@ -170,6 +155,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                 });
+
             }
         });
 
@@ -330,7 +316,7 @@ public class MainActivity extends AppCompatActivity
      * Callback for when permissions are granted in this application/
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_FINE_LOC_CODE) {
             if (permissions.length == 2 &&
                     permissions[0] == android.Manifest.permission.ACCESS_FINE_LOCATION &&
@@ -358,6 +344,11 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * Update the current client location whenever a location change occurs.
+     *
+     * @param location - The new location value.
+     */
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {

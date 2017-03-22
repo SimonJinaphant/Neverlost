@@ -30,10 +30,10 @@ public class MainFragment extends Fragment {
         @Override
         public void onSuccess(LoginResult loginResult) {
 
-            Intent i = new Intent(getActivity(),PrecheckActivity.class);
+            Intent i = new Intent(getActivity(), PrecheckActivity.class);
 
 
-            if(Profile.getCurrentProfile() == null) {
+            if (Profile.getCurrentProfile() == null) {
                 mprofiletracker = new ProfileTracker() {
                     @Override
                     protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
@@ -44,8 +44,7 @@ public class MainFragment extends Fragment {
                 };
                 // no need to call startTracking() on mprofiletracker
                 // because it is called by its constructor, internally.
-            }
-            else {
+            } else {
                 mprofile = Profile.getCurrentProfile();
             }
 
@@ -69,12 +68,11 @@ public class MainFragment extends Fragment {
     };
 
 
-
-
-    public MainFragment(){}
+    public MainFragment() {
+    }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         mCallbackManager = CallbackManager.Factory.create();
@@ -82,12 +80,12 @@ public class MainFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.mainfragment, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
         loginButton.setReadPermissions("user_friends");
@@ -96,7 +94,7 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
