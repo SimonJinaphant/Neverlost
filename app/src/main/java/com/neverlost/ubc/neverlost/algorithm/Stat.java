@@ -14,7 +14,19 @@ public class Stat {
     public Stat() {
     }
 
-    static public double computeMean(List<Double> list) {
+    static public int computeMeanI(List<Integer> list) {
+
+        int sum = 0;
+
+        for (Integer i : list) {
+            sum = sum + i;
+        }
+
+        return sum / list.size();
+
+    }
+
+    static public double computeMeanD(List<Double> list) {
 
         Double sum = 0.0;
 
@@ -26,7 +38,7 @@ public class Stat {
 
     }
 
-    static public double computeSqureMean(List<Double> list) {
+    static public double computeSqureMeanD(List<Double> list) {
 
         Double sum = 0.0;
 
@@ -38,18 +50,45 @@ public class Stat {
 
     }
 
-    static public double computeVar(List<Double> list) {
+    static public double computeSqureMeanI(List<Integer> list) {
 
-        Double mean = computeMean(list);
-        Double squreMean = computeSqureMean(list);
+        Double sum = 0.0;
+
+        for (Integer i : list) {
+            sum = sum + pow(i, 2);
+        }
+
+        return sum / list.size();
+
+    }
+
+    static public double computeVarD(List<Double> list) {
+
+        Double mean = computeMeanD(list);
+        Double squreMean = computeSqureMeanD(list);
 
         return squreMean - pow(mean, 2);
 
     }
 
-    static public double computeStd(List<Double> list) {
+    static public double computeVarI(List<Integer> list) {
 
-        return pow(computeVar(list), 1 / 2);
+        int mean = computeMeanI(list);
+        Double squreMean = computeSqureMeanI(list);
+
+        return squreMean - pow(mean, 2);
+
+    }
+
+    static public double computeStdD(List<Double> list) {
+
+        return pow(computeVarD(list), 1 / 2);
+
+    }
+
+    static public double computeStdI(List<Integer> list) {
+
+        return pow(computeVarI(list), 1 / 2);
 
     }
 
@@ -64,17 +103,17 @@ public class Stat {
             xy.add(tempProd);
         }
 
-        double xyMean = computeMean(xy);
-        double xMean = computeMean(list1);
-        double yMean = computeMean(list2);
+        double xyMean = computeMeanD(xy);
+        double xMean = computeMeanD(list1);
+        double yMean = computeMeanD(list2);
 
         return xyMean - xMean * yMean;
     }
 
     static public double computeCor(List<Double> list1, List<Double> list2) {
 
-        double xStd = computeStd(list1);
-        double yStd = computeStd(list2);
+        double xStd = computeStdD(list1);
+        double yStd = computeStdD(list2);
 
         return computeCov(list1, list2) / (xStd * yStd);
 
