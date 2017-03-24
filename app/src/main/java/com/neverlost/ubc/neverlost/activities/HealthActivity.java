@@ -3,12 +3,15 @@ package com.neverlost.ubc.neverlost.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.datastruct.DistanceData;
 import com.neverlost.ubc.neverlost.datastruct.HeartRateData;
@@ -89,6 +92,7 @@ public class HealthActivity extends AppCompatActivity {
         hearRateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("tag", "I am here");
                 Intent heartRateGraph = new Intent(view.getContext(), HeartRateActivity.class);
                 startActivity(heartRateGraph);
             }
