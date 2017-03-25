@@ -27,7 +27,8 @@ public class LoginActivity extends AppCompatActivity {
             t.setText("Please turn on location services before proceeding");
             t.setBackgroundColor(getResources().getColor(R.color.black));
         } else {
-            Intent i = new Intent(this, FeatureSelectActivity.class);
+           // Intent i = new Intent(this, FeatureSelectActivity.class);
+            Intent i = new Intent(this, BluetoothActivity.class);
             startActivity(i);
         }
 

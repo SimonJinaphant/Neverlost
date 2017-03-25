@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/list_selector">
+
+    <ImageView
+        android:id="@+id/BTicon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="6dp"
+        android:scaleType="centerInside"
+        tools:src="@mipmap/ic_launcher"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="4dp" />
+
+    <TextView
+        android:id="@+id/Selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:maxLines="1"
+        android:textColor="#000000"
+        android:textSize="15sp"
+        tools:text="Detail"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="4dp" />
+
+    <RelativeLayout
+        android:id="@+id/recipe_list_text_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/BTicon"
+        android:layout_toLeftOf="@id/Selected">
+
+        <TextView
+            android:id="@+id/BTdeviceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textSize="18sp"
+            tools:text="Title"
+            />
+    </RelativeLayout>
+</RelativeLayout>
