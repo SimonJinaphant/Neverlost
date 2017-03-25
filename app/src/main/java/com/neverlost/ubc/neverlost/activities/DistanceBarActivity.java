@@ -1,5 +1,6 @@
 package com.neverlost.ubc.neverlost.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -8,9 +9,17 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.datastruct.DistanceData;
 import com.neverlost.ubc.neverlost.datastruct.HeartRateData;
+import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
+import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
 import com.neverlost.ubc.neverlost.objects.Dependent;
 
 import java.text.SimpleDateFormat;
@@ -31,44 +40,42 @@ public class DistanceBarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_distance_bar);
+        Intent intent = getIntent();
+        final String uname = intent.getStringExtra("key");
 
-        //demo code
-        String demoName = "Logan";
-        int demoAge = 22;
-        double demoWeight = 68.5;
-        double demoHeight = 175.0;
-        List<HeartRateData> demoHeartRates = new ArrayList<>();
-        List<DistanceData> demoDistanceData = new ArrayList<>();
-        Date curDate = new Date();
-        demoHeartRates.add(new HeartRateData(65, curDate));
-        demoHeartRates.add(new HeartRateData(70, curDate));
-        demoHeartRates.add(new HeartRateData(80, curDate));
-
-        demoDistanceData.add(new DistanceData(10000, curDate));
-        demoDistanceData.add(new DistanceData(10500, curDate));
-        demoDistanceData.add(new DistanceData(98100, curDate));
-
-        demoUser = new Dependent(demoName, demoAge, demoWeight, demoHeight, demoHeartRates, demoDistanceData);
-        //end of demo code
-
+        //get the layout elements
         distBarChart = (BarChart) findViewById(R.id.distBarChart);
         distDate = (TextView) findViewById(R.id.distDate);
         calValue = (TextView) findViewById(R.id.calValue);
 
-        Date currDate = new Date();
-        SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy.MM.dd");
-        distDate.setText(dateFormater.format(currDate));
+        FirebaseRef.dependentRer.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Dependent dependent = FirebaseQuery.getDependent(uname, dataSnapshot);
 
-        ArrayList<BarEntry> barEntries = new ArrayList<>();
-        barEntries.add(new BarEntry(01f, 4000));
-        barEntries.add(new BarEntry(02f, 2856));
-        barEntries.add(new BarEntry(03f, 4102));
+                ArrayList<BarEntry> barEntries = new ArrayList<>();
 
-        BarDataSet barDataSet = new BarDataSet(barEntries, "Distance");
-        BarData theData = new BarData(barDataSet);
-        distBarChart.setData(theData);
+                barEntries.add(new BarEntry(01f, dependent.distances.get(0).distance));
+                barEntries.add(new BarEntry(02f, dependent.distances.get(1).distance));
+                barEntries.add(new BarEntry(03f, dependent.distances.get(2).distance));
+                barEntries.add(new BarEntry(04f, dependent.distances.get(3).distance));
+                barEntries.add(new BarEntry(05f, dependent.distances.get(4).distance));
 
-        calValue.setText("1000");
+                BarDataSet barDataSet = new BarDataSet(barEntries, "Distance");
+                BarData theData = new BarData(barDataSet);
+                distBarChart.setData(theData);
+
+                //todo:need a fuction to calculate calories
+                calValue.setText("1000");
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
     }

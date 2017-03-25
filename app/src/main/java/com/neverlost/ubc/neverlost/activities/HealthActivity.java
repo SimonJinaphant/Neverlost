@@ -10,11 +10,16 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.datastruct.DistanceData;
 import com.neverlost.ubc.neverlost.datastruct.HeartRateData;
+import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
+import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
 import com.neverlost.ubc.neverlost.objects.Dependent;
 
 import java.util.ArrayList;
@@ -23,8 +28,6 @@ import java.util.List;
 
 public class HealthActivity extends AppCompatActivity {
 
-    //demo hardcode
-    Dependent demoUser;
 
     //declare the elements in the xmls
     ImageView prolioPic;
@@ -40,6 +43,8 @@ public class HealthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_health);
+        Intent intent = getIntent();
+        final String uname = intent.getStringExtra("key");
 
         prolioPic = (ImageView) findViewById(R.id.prolioPic);
         hearRateButton = (ImageButton) findViewById(R.id.heartRateButton);
@@ -50,41 +55,35 @@ public class HealthActivity extends AppCompatActivity {
         healthRatingBar = (RatingBar) findViewById(R.id.healthRatingBar);
         healthEvaluation = (TextView) findViewById(R.id.healthEval);
 
-        //demo hardcode part
-        String demoName = "Logan";
-        int demoAge = 22;
-        double demoWeight = 68.5;
-        double demoHeight = 175.0;
-        List<HeartRateData> demoHeartRates = new ArrayList<>();
-        List<DistanceData> demoDistanceData = new ArrayList<>();
-        Date curDate = new Date();
-        demoHeartRates.add(new HeartRateData(65, curDate));
-        demoHeartRates.add(new HeartRateData(70, curDate));
-        demoHeartRates.add(new HeartRateData(80, curDate));
+        FirebaseRef.dependentRer.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Dependent dependent = FirebaseQuery.getDependent(uname, dataSnapshot);
 
-        demoDistanceData.add(new DistanceData(10000, curDate));
-        demoDistanceData.add(new DistanceData(10500, curDate));
-        demoDistanceData.add(new DistanceData(98100, curDate));
+                name.setText(dependent.name);
+                hearRateValue.setText(Integer.toString(dependent.heartRates.get(0).heartRate));
+                distanceValue.setText(Integer.toString(dependent.distances.get(0).distance));
 
-        demoUser = new Dependent(demoName, demoAge, demoWeight, demoHeight, demoHeartRates, demoDistanceData);
-        //end of demo hardcode part
+                //need an evaluation function
+                healthRatingBar.setNumStars(5);
+                healthRatingBar.setRating(3);
+                healthRatingBar.setIsIndicator(true);
+                healthEvaluation.setText("Good");
 
-        name.setText(demoUser.name);
-        hearRateValue.setText(Integer.toString(demoUser.heartRates.get(0).heartRate));
-        distanceValue.setText(Integer.toString(demoUser.distances.get(0).distance));
+            }
 
-        //need an evaluation function
-        healthRatingBar.setNumStars(5);
-        healthRatingBar.setRating(3);
-        healthRatingBar.setIsIndicator(true);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        healthEvaluation.setText("Good");
+            }
+        });
 
         //attached button activities
         stepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent stepBar = new Intent(view.getContext(), DistanceBarActivity.class);
+                stepBar.putExtra("key", uname);
                 startActivity(stepBar);
             }
         });
@@ -94,6 +93,7 @@ public class HealthActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("tag", "I am here");
                 Intent heartRateGraph = new Intent(view.getContext(), HeartRateActivity.class);
+                heartRateGraph.putExtra("key", uname);
                 startActivity(heartRateGraph);
             }
         });
