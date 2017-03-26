@@ -54,6 +54,8 @@ public class HeartRateActivity extends AppCompatActivity {
                 //todo: need a function to detect the trend
                 trendValue.setText("Increasing");
 
+
+                //todo: add a trend line to the graph
             }
 
             @Override

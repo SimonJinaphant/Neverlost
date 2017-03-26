@@ -9,10 +9,10 @@ import static java.lang.Math.pow;
  * Created by clarence on 2017-03-14.
  */
 
-public class Stat {
+public class StatisticMethod {
 
-    public Stat() {
-    }
+    public StatisticMethod() {
+    };
 
     static public int computeMeanI(List<Integer> list) {
 
@@ -118,4 +118,6 @@ public class Stat {
         return computeCov(list1, list2) / (xStd * yStd);
 
     }
+
+
 }
