@@ -61,6 +61,7 @@ public class HealthActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Dependent dependent = FirebaseQuery.getDependent(uname, dataSnapshot);
 
+
                 name.setText(dependent.name);
 
                 //todo: start the heartrate measurement here and get the GPS data
@@ -87,6 +88,7 @@ public class HealthActivity extends AppCompatActivity {
 
 
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
