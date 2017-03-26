@@ -33,9 +33,6 @@ public class DistanceBarActivity extends AppCompatActivity {
     TextView distDate;
     TextView calValue;
 
-    //demo
-    Dependent demoUser;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

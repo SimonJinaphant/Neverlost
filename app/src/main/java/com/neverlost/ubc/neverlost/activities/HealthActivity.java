@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.neverlost.ubc.neverlost.R;
+import com.neverlost.ubc.neverlost.algorithm.HealthAlgorithm;
 import com.neverlost.ubc.neverlost.datastruct.DistanceData;
 import com.neverlost.ubc.neverlost.datastruct.HeartRateData;
 import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
@@ -61,14 +62,29 @@ public class HealthActivity extends AppCompatActivity {
                 Dependent dependent = FirebaseQuery.getDependent(uname, dataSnapshot);
 
                 name.setText(dependent.name);
-                hearRateValue.setText(Integer.toString(dependent.heartRates.get(0).heartRate));
-                distanceValue.setText(Integer.toString(dependent.distances.get(0).distance));
 
-                //need an evaluation function
+                //todo: start the heartrate measurement here and get the GPS data
+                int newHeartrateReading = 0;
+                int distanceTraveled = 0;
+
+                boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
+
+                hearRateValue.setText(Integer.toString(newHeartrateReading));
+                distanceValue.setText(Integer.toString(distanceTraveled));
+
+                //todo:need an evaluation function
+                int num_star  = 3;
                 healthRatingBar.setNumStars(5);
-                healthRatingBar.setRating(3);
+                healthRatingBar.setRating(num_star);
                 healthRatingBar.setIsIndicator(true);
-                healthEvaluation.setText("Good");
+
+                //scale
+                if(num_star< 3){
+                    healthEvaluation.setText("NEED IMPROVEMENT");
+                }else {
+                    healthEvaluation.setText("GOOD");
+                }
+
 
             }
 
