@@ -39,6 +39,7 @@ public class HealthActivity extends AppCompatActivity {
     ImageButton stepButton;
     RatingBar healthRatingBar;
     TextView healthEvaluation;
+    TextView bmrValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class HealthActivity extends AppCompatActivity {
         distanceValue = (TextView) findViewById(R.id.distanceValue);
         healthRatingBar = (RatingBar) findViewById(R.id.healthRatingBar);
         healthEvaluation = (TextView) findViewById(R.id.healthEval);
+        bmrValue = (TextView) findViewById(R.id.bmrValue);
 
         FirebaseRef.dependentRer.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -64,12 +66,15 @@ public class HealthActivity extends AppCompatActivity {
 
                 name.setText(dependent.name);
 
+                int bmr = (int) HealthAlgorithm.computeBMR_male(dependent);
+
                 //todo: start the heartrate measurement here and get the GPS data
                 int newHeartrateReading = 0;
                 int distanceTraveled = 0;
 
                 boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
 
+                bmrValue.setText(Integer.toString(bmr));
                 hearRateValue.setText(Integer.toString(newHeartrateReading));
                 distanceValue.setText(Integer.toString(distanceTraveled));
 
