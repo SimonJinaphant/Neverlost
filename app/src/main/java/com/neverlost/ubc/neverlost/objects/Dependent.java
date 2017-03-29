@@ -11,11 +11,11 @@ import java.util.List;
 
 public class Dependent extends User {
 
-    public List<HeartRateData> heartRates;
+    public List<Long> heartRates;
     public List<DistanceData> distances;
 
-    public Dependent(String name, int age, double weight, double height,
-                     List<HeartRateData> heartRates, List<DistanceData> distances) {
+    public Dependent(String name, long age, long weight, long height,
+                     List<Long> heartRates, List<DistanceData> distances) {
         super(name, age, weight, height);
         this.heartRates = heartRates;
         this.distances = distances;

@@ -7,11 +7,11 @@ package com.neverlost.ubc.neverlost.objects;
 public class User {
 
     public String name;
-    public int age;
+    public long age;
     public double weight;
     public double height;
 
-    public User(String name, int age, double weight, double height) {
+    public User(String name, long age, long weight, long height) {
         this.name = name;
         this.age = age;
         this.weight = weight;

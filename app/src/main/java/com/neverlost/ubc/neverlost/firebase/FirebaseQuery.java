@@ -22,10 +22,10 @@ public class FirebaseQuery {
 
         DataSnapshot user =  dataSnapshot.child(name);
 
-        int                 age         = (int)     user.child("age").getValue();
-        double              weight      = (double)  user.child("weight").getValue();
-        double              height      = (double)  user.child("height").getValue();
-        List<HeartRateData> heartRates  = (List<HeartRateData>) user.child("heartRates").getValue();
+        long                 age        = (long)     user.child("age").getValue();
+        long              weight        = (long)  user.child("weight").getValue();
+        long              height        = (long)  user.child("height").getValue();
+        List<Long> heartRates        = (List<Long>) user.child("heartRates").getValue();
         List<DistanceData>  distances   = (List<DistanceData>)  user.child("distances").getValue();
 
         return new Dependent(name, age, weight, height, heartRates, distances);
@@ -36,9 +36,9 @@ public class FirebaseQuery {
 
         DataSnapshot user =  dataSnapshot.child(name);
 
-        int                 age         = (int)     user.child("age").getValue();
-        double              weight      = (double)  user.child("weight").getValue();
-        double              height      = (double)  user.child("height").getValue();
+        long                 age         = (long)     user.child("age").getValue();
+        long              weight         = (long)  user.child("weight").getValue();
+        long              height         = (long)  user.child("height").getValue();
 
         return new Caretaker(name, age, weight, height);
 
