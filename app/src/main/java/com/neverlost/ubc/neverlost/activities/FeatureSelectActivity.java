@@ -3,10 +3,12 @@ package com.neverlost.ubc.neverlost.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.neverlost.ubc.neverlost.R;
+import com.neverlost.ubc.neverlost.models.readData;
 
 public class FeatureSelectActivity extends AppCompatActivity {
 
@@ -26,6 +28,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent gpsInt = new Intent(view.getContext(), MainActivity.class);
+                gpsInt.putExtra("key","Logan");
                 startActivity(gpsInt);
             }
         });
@@ -35,6 +38,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent healthInt = new Intent(view.getContext(), HealthActivity.class);
+                healthInt.putExtra("key","Logan");
                 startActivity(healthInt);
             }
         });

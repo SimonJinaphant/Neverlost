@@ -6,7 +6,7 @@ package com.neverlost.ubc.neverlost.objects;
 
 public class Caretaker extends User {
 
-    public Caretaker(String name, int age, double weight, double height) {
+    public Caretaker(String name, long age, long weight, long height) {
         super(name, age, weight, height);
     }
 

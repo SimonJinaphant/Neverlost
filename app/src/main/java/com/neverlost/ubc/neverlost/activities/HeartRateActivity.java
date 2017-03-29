@@ -44,7 +44,7 @@ public class HeartRateActivity extends AppCompatActivity {
                 ArrayList<Entry> graphEntries = new ArrayList<>();
 
                 for(int i=0; i<5; i++){
-                    graphEntries.add(new BarEntry(i,dependent.heartRates.get(i).heartRate));
+                    graphEntries.add(new BarEntry(i,dependent.heartRates.get(i)));
                 }
 
                 LineDataSet lineDataSet = new LineDataSet(graphEntries, "Heart Rate");
