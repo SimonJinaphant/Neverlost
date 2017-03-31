@@ -10,32 +10,32 @@ import com.neverlost.ubc.neverlost.R;
 
 public class FeatureSelectActivity extends AppCompatActivity {
 
-    Button GPS;
-    Button Health;
+    Button dependent;
+    Button caretaker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feature_select);
 
-        GPS = (Button) findViewById(R.id.gps);
-        Health = (Button) findViewById(R.id.health);
+        dependent = (Button) findViewById(R.id.dependent);
+        caretaker = (Button) findViewById(R.id.caretaker);
 
-        GPS.setOnClickListener(new View.OnClickListener() {
+        dependent.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Intent gpsInt = new Intent(view.getContext(), MainActivity.class);
-                startActivity(gpsInt);
+                Intent depInt = new Intent(view.getContext(), HealthActivity.class);
+                startActivity(depInt);
             }
         });
 
-        Health.setOnClickListener(new View.OnClickListener() {
+        caretaker.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Intent healthInt = new Intent(view.getContext(), HealthActivity.class);
-                startActivity(healthInt);
+                Intent careInt = new Intent(view.getContext(), MonitorActivity.class);
+                startActivity(careInt);
             }
         });
     }

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.neverlost.ubc.neverlost.R;
 
@@ -23,9 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     public void goToApp(View view) {
         int location = locationOn();
         if (location == 0) {
-            TextView t = (TextView) findViewById(R.id.locationOn);
-            t.setText("Please turn on location services before proceeding");
-            t.setBackgroundColor(getResources().getColor(R.color.black));
+            Toast.makeText(this, "Please turn on location services before proceeding", Toast.LENGTH_SHORT).show();
         } else {
            // Intent i = new Intent(this, FeatureSelectActivity.class);
             Intent i = new Intent(this, BluetoothActivity.class);
