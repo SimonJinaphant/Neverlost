@@ -203,7 +203,7 @@ int getHRData(){
 		j = getHR();
 	}
 	while(i != j);
-	printf("heart rate data: %d", i);
+	printf("\n heart rate data: %d\n", i);
 	return i;
 }
 
@@ -219,16 +219,14 @@ void sendString(char* string){
 
 char* readString(){
 	char *s = malloc(30);
-	char c = getCharRS232_BT();
-	int i = 0;
-	while (c != '*')
-		c = getCharRS232_BT();
 
-	c = getCharRS232_BT();
+	int i = 0;
+	char c = getCharRS232_BT();
 	while(c != '\r'){
 		s[i] = c;
-		c = getCharRS232_BT();
 		i++;
+		printf("%c", c);
+		c = getCharRS232_BT();
 	}
 	getCharRS232_BT();
 	s[i] = '\0';
@@ -241,16 +239,16 @@ int main() {
 	initRS232_GPS();
 	while(1){
 		char *key = readString();
-		if (!strcmp(key, "HR")){
+		if (!strcmp(key, "HeartRate")){
 			char* buffer = malloc(30);
 			snprintf(buffer, 30, "%d", getHRData());
 			sendString(buffer);
 		}
-		else if (!strcmp(key, "LAT")){
+		else if (!strcmp(key, "Latitude")){
 			Coord c = getGPSdata();
 			sendString(c.lat);
 		}
-		else if (!strcmp(key, "LNG")){
+		else if (!strcmp(key, "Longitude")){
 			Coord c = getGPSdata();
 			sendString(c.lng);
 		}
