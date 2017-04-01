@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_monitor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/bgwhite"
+    android:orientation="vertical"
+    tools:context="com.neverlost.ubc.neverlost.activities.MonitorActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_height="120dp"
+            android:src="@mipmap/demopro"
+            android:id="@+id/prolioPic"
+            android:layout_width="120dp"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="nameeeeeeeeeeeeee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/name"
+            android:textSize="25dp"
+            android:layout_marginTop="33dp"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@id/prolioPic"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="999"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="50dp"
+            android:id="@+id/heartRateValue"
+            android:layout_marginTop="25dp"
+            android:layout_centerHorizontal="true"/>
+
+        <Button
+            android:layout_height="130dp"
+            android:id="@+id/heartRateButton"
+            android:layout_width="150dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/bpmcircle"/>
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/heartRateButton"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/hrlogo"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="Health Status"
+        android:textSize="30dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingBar"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Safety Check"
+        android:textAllCaps="false"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:id="@+id/safety"
+        android:textColor="@color/white"
+        android:background="@color/button"
+        android:onClick="prompt"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"/>
+
+</LinearLayout>
