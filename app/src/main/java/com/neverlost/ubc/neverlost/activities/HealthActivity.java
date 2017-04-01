@@ -3,41 +3,31 @@ package com.neverlost.ubc.neverlost.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.algorithm.HealthAlgorithm;
-import com.neverlost.ubc.neverlost.datastruct.DistanceData;
-import com.neverlost.ubc.neverlost.datastruct.HeartRateData;
 import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
 import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
-import com.neverlost.ubc.neverlost.models.readData;
 import com.neverlost.ubc.neverlost.objects.Dependent;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class HealthActivity extends AppCompatActivity {
 
 
     //declare the elements in the xmls
     ImageView prolioPic;
-    ImageButton hearRateButton;
+    Button hearRateButton;
     TextView hearRateValue;
     TextView name;
     TextView distanceValue;
-    ImageButton stepButton;
+    Button stepButton;
     RatingBar healthRatingBar;
     TextView healthEvaluation;
     TextView bmrValue;
@@ -50,10 +40,10 @@ public class HealthActivity extends AppCompatActivity {
         final String uname = intent.getStringExtra("key");
 
         prolioPic = (ImageView) findViewById(R.id.prolioPic);
-        hearRateButton = (ImageButton) findViewById(R.id.heartRateButton);
+        hearRateButton = (Button) findViewById(R.id.heartRateButton);
         hearRateValue = (TextView) findViewById(R.id.heartRateValue);
         name = (TextView) findViewById(R.id.name);
-        stepButton = (ImageButton) findViewById(R.id.stepButton);
+        stepButton = (Button) findViewById(R.id.stepButton);
         distanceValue = (TextView) findViewById(R.id.distanceValue);
         healthRatingBar = (RatingBar) findViewById(R.id.healthRatingBar);
         healthEvaluation = (TextView) findViewById(R.id.healthEval);
