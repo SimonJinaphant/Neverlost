@@ -14,11 +14,11 @@ public class StatisticMethod {
     public StatisticMethod() {
     };
 
-    static public int computeMeanI(List<Integer> list) {
+    static public long computeMeanI(List<Long> list) {
 
-        int sum = 0;
+        long sum = 0;
 
-        for (Integer i : list) {
+        for (Long i : list) {
             sum = sum + i;
         }
 
@@ -50,11 +50,11 @@ public class StatisticMethod {
 
     }
 
-    static public double computeSqureMeanI(List<Integer> list) {
+    static public double computeSqureMeanI(List<Long> list) {
 
         Double sum = 0.0;
 
-        for (Integer i : list) {
+        for (Long i : list) {
             sum = sum + pow(i, 2);
         }
 
@@ -71,9 +71,9 @@ public class StatisticMethod {
 
     }
 
-    static public double computeVarI(List<Integer> list) {
+    static public double computeVarI(List<Long> list) {
 
-        int mean = computeMeanI(list);
+        long mean = computeMeanI(list);
         Double squreMean = computeSqureMeanI(list);
 
         return squreMean - pow(mean, 2);
@@ -86,7 +86,7 @@ public class StatisticMethod {
 
     }
 
-    static public double computeStdI(List<Integer> list) {
+    static public double computeStdI(List<Long> list) {
 
         return pow(computeVarI(list), 1 / 2);
 

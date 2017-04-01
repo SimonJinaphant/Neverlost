@@ -1,5 +1,7 @@
 package com.neverlost.ubc.neverlost.algorithm;
 
+import android.util.Log;
+
 import com.neverlost.ubc.neverlost.objects.Dependent;
 
 import java.util.ArrayList;
@@ -18,12 +20,12 @@ public class HealthAlgorithm {
 
         if(size>10) size = 10;
 
-        List<Integer> histHeartRate = new ArrayList<>();
+        List<Long> histHeartRate = new ArrayList<>();
         for(int i = 0; i < size; i++){
-            histHeartRate.add(dependent.heartRates.get(i).heartRate);
+            histHeartRate.add(dependent.heartRates.get(i));
         }
 
-        int mean = StatisticMethod.computeMeanI(histHeartRate);
+        long mean = StatisticMethod.computeMeanI(histHeartRate);
         double sd = StatisticMethod.computeStdI(histHeartRate);
 
         if(newReading >= mean + 2*sd || newReading <= mean - 2*sd) return false;
@@ -39,7 +41,7 @@ public class HealthAlgorithm {
 
         List<Integer> histHeartRate = new ArrayList<>();
         for(int i = 0; i < size; i++){
-            histHeartRate.add(dependent.heartRates.get(i).heartRate);
+            histHeartRate.add(Integer.valueOf(dependent.heartRates.get(i).intValue()));
         }
 
         //algorithm to detect inreasing or decreasing

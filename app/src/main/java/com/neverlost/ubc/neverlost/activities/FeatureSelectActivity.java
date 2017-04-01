@@ -27,6 +27,14 @@ public class FeatureSelectActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent depInt = new Intent(view.getContext(), HealthActivity.class);
                 startActivity(depInt);
+
+                //this button now goes to dependent health page
+                //create gps button on that page if needed
+
+                /*Intent gpsInt = new Intent(view.getContext(), MainActivity.class);
+                gpsInt.putExtra("key","Logan");
+                startActivity(gpsInt);
+                */
             }
         });
 
@@ -34,8 +42,18 @@ public class FeatureSelectActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+
                 Intent careInt = new Intent(view.getContext(), MonitorActivity.class);
                 startActivity(careInt);
+
+                //this button now goes to caretaker health monitor page
+                //create gps button on that page if needed
+
+                /*
+                Intent healthInt = new Intent(view.getContext(), HealthActivity.class);
+                healthInt.putExtra("key","Logan");
+                startActivity(healthInt);
+                */
             }
         });
     }

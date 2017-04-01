@@ -21,6 +21,7 @@ import com.neverlost.ubc.neverlost.datastruct.DistanceData;
 import com.neverlost.ubc.neverlost.datastruct.HeartRateData;
 import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
 import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
+import com.neverlost.ubc.neverlost.models.readData;
 import com.neverlost.ubc.neverlost.objects.Dependent;
 
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ public class HealthActivity extends AppCompatActivity {
                 int bmr = (int) HealthAlgorithm.computeBMR_male(dependent);
 
                 //todo: start the heartrate measurement here and get the GPS data
+
                 int newHeartrateReading = 0;
                 int distanceTraveled = 0;
 
@@ -89,6 +91,11 @@ public class HealthActivity extends AppCompatActivity {
                     healthEvaluation.setText("NEED IMPROVEMENT");
                 }else {
                     healthEvaluation.setText("GOOD");
+                }
+
+                if(!isHeartrateNormal){
+                    //todo: send message to caretaker
+
                 }
 
 
@@ -114,7 +121,6 @@ public class HealthActivity extends AppCompatActivity {
         hearRateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("tag", "I am here");
                 Intent heartRateGraph = new Intent(view.getContext(), HeartRateActivity.class);
                 heartRateGraph.putExtra("key", uname);
                 startActivity(heartRateGraph);
