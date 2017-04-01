@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="50dp"
                 android:id="@+id/heartRateValue"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="20dp"
                 android:layout_centerHorizontal="true"/>
 
             <Button
@@ -84,7 +84,7 @@
                 android:textSize="50dp"
                 android:id="@+id/bmrValue"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="25dp" />
+                android:layout_marginTop="20dp" />
 
             <Button
                 android:layout_width="150dp"
@@ -123,7 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:id="@+id/textView4"
             android:layout_gravity="center_horizontal"/>
 
@@ -143,9 +143,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/healthRatingBar"
-                android:layout_below="@+id/healthEval"
+                android:layout_toEndOf="@+id/imageView2"/>
+
+            <TextView
+                android:text="health Eval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/healthEval"
+                android:layout_below="@+id/healthRatingBar"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="15dp" />
+                android:textSize="25sp"/>
 
         </RelativeLayout>
 
