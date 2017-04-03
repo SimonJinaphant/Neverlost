@@ -52,18 +52,18 @@ public class DistanceBarActivity extends AppCompatActivity {
 
                 ArrayList<BarEntry> barEntries = new ArrayList<>();
 
-                barEntries.add(new BarEntry(01f, dependent.distances.get(0)));
-                barEntries.add(new BarEntry(02f, dependent.distances.get(1)));
+                barEntries.add(new BarEntry(01f, dependent.distances.get(4)));
+                barEntries.add(new BarEntry(02f, dependent.distances.get(3)));
                 barEntries.add(new BarEntry(03f, dependent.distances.get(2)));
-                barEntries.add(new BarEntry(04f, dependent.distances.get(3)));
-                barEntries.add(new BarEntry(05f, dependent.distances.get(4)));
+                barEntries.add(new BarEntry(04f, dependent.distances.get(1)));
+                barEntries.add(new BarEntry(05f, dependent.distances.get(0)));
 
                 BarDataSet barDataSet = new BarDataSet(barEntries, "Distance");
                 BarData theData = new BarData(barDataSet);
                 distBarChart.setData(theData);
 
-                //todo:need a fuction to calculate calories
-                calValue.setText("1000");
+                long caloriesBurnt = Math.round(dependent.weight*0.57*(dependent.distances.get(0)/1609.34));
+                calValue.setText(String.valueOf(caloriesBurnt));
 
 
             }

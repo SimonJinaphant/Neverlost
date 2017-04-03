@@ -75,7 +75,7 @@ public class HealthAlgorithm {
 
     public static int healthEvaluate(Dependent dependent){
 
-        return 3;
+        return dependent.heartRates.get(0)>0? 3:1;
 
     }
 
