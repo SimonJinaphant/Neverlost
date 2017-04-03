@@ -26,6 +26,7 @@ import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
 import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
 import com.neverlost.ubc.neverlost.models.readData;
+import com.neverlost.ubc.neverlost.objects.Coordinate;
 import com.neverlost.ubc.neverlost.objects.Dependent;
 
 import java.io.IOException;
@@ -86,7 +87,7 @@ public class HealthActivity extends AppCompatActivity {
 
                 //todo: get the GPS data and compute distance traveled
 
-                Location curLoc = new Location();
+                Coordinate curLoc = new Coordinate((float)1.0,(float)1.0);
 
                 int newHeartrateReading = sum/10;
                 int distanceTraveled = 0;
@@ -111,7 +112,7 @@ public class HealthActivity extends AppCompatActivity {
                 }
 
                 if(!isHeartrateNormal){
-                    MessagingService.broadcastForHelp(currentLocation, new Callback() {
+                    MessagingService.broadcastForHelpHP(curLoc, dependent.name, new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
                             displayMessage("Neverlost failed to send help over the network; good luck...");
