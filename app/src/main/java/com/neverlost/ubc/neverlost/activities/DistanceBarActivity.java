@@ -52,11 +52,11 @@ public class DistanceBarActivity extends AppCompatActivity {
 
                 ArrayList<BarEntry> barEntries = new ArrayList<>();
 
-                barEntries.add(new BarEntry(01f, dependent.distances.get(0).distance));
-                barEntries.add(new BarEntry(02f, dependent.distances.get(1).distance));
-                barEntries.add(new BarEntry(03f, dependent.distances.get(2).distance));
-                barEntries.add(new BarEntry(04f, dependent.distances.get(3).distance));
-                barEntries.add(new BarEntry(05f, dependent.distances.get(4).distance));
+                barEntries.add(new BarEntry(01f, dependent.distances.get(0)));
+                barEntries.add(new BarEntry(02f, dependent.distances.get(1)));
+                barEntries.add(new BarEntry(03f, dependent.distances.get(2)));
+                barEntries.add(new BarEntry(04f, dependent.distances.get(3)));
+                barEntries.add(new BarEntry(05f, dependent.distances.get(4)));
 
                 BarDataSet barDataSet = new BarDataSet(barEntries, "Distance");
                 BarData theData = new BarData(barDataSet);

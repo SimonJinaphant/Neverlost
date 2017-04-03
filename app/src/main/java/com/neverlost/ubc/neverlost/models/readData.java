@@ -10,6 +10,8 @@ import java.io.IOException;
 
 public class readData  {
 
+    public readData(){};
+
     public Coordinate getGPSData() {
         for (int i = 0; i < 3; i++)
             WriteToBTDevice("*LAT");

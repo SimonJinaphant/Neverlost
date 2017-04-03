@@ -24,16 +24,6 @@
         android:layout_marginTop="15dp" />
 
     <TextView
-        android:text="Name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/name"
-        android:textSize="25dp"
-        android:layout_alignBottom="@+id/prolioPic"
-        android:layout_alignEnd="@+id/distanceValue"
-        android:layout_marginBottom="42dp" />
-
-    <TextView
         android:text="Overall Evaluation: "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -120,16 +110,6 @@
         android:layout_alignBottom="@+id/textView2"
         android:layout_toEndOf="@+id/textView5" />
 
-    <TextView
-        android:text="Distance : "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:id="@+id/textView2"
-        android:layout_marginBottom="12dp"
-        android:layout_alignBottom="@+id/stepButton"
-        android:layout_toStartOf="@+id/name" />
-
     <ImageView
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -176,4 +156,24 @@
         android:layout_alignBaseline="@+id/bmrValue"
         android:layout_alignBottom="@+id/bmrValue"
         android:layout_alignStart="@+id/textView3" />
+
+    <TextView
+        android:text="Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/name"
+        android:textSize="25dp"
+        android:layout_marginBottom="42dp"
+        android:layout_alignBottom="@+id/prolioPic"
+        android:layout_toStartOf="@+id/textView6" />
+
+    <TextView
+        android:text="Distance : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:id="@+id/textView2"
+        android:layout_marginBottom="14dp"
+        android:layout_alignBottom="@+id/stepButton"
+        android:layout_toStartOf="@+id/distanceValue" />
 </RelativeLayout>

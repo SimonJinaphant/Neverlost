@@ -1,7 +1,9 @@
 package com.neverlost.ubc.neverlost.activities;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,12 +24,18 @@ import com.neverlost.ubc.neverlost.datastruct.DistanceData;
 import com.neverlost.ubc.neverlost.datastruct.HeartRateData;
 import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
 import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
+import com.neverlost.ubc.neverlost.firebase.MessagingService;
 import com.neverlost.ubc.neverlost.models.readData;
 import com.neverlost.ubc.neverlost.objects.Dependent;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class HealthActivity extends AppCompatActivity {
 
@@ -69,9 +78,17 @@ public class HealthActivity extends AppCompatActivity {
 
                 int bmr = (int) HealthAlgorithm.computeBMR_male(dependent);
 
-                //todo: start the heartrate measurement here and get the GPS data
+                readData dataReader = new readData();
+                int sum=0;
+                for(int i=0; i<10; i++){
+                    sum += dataReader.getHRData();
+                }
 
-                int newHeartrateReading = 0;
+                //todo: get the GPS data and compute distance traveled
+
+                Location curLoc = new Location();
+
+                int newHeartrateReading = sum/10;
                 int distanceTraveled = 0;
 
                 boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
@@ -81,7 +98,7 @@ public class HealthActivity extends AppCompatActivity {
                 distanceValue.setText(Integer.toString(distanceTraveled));
 
                 //todo:need an evaluation function
-                int num_star  = 3;
+                int num_star  = HealthAlgorithm.healthEvaluate(dependent);
                 healthRatingBar.setNumStars(5);
                 healthRatingBar.setRating(num_star);
                 healthRatingBar.setIsIndicator(true);
@@ -94,7 +111,22 @@ public class HealthActivity extends AppCompatActivity {
                 }
 
                 if(!isHeartrateNormal){
-                    //todo: send message to caretaker
+                    MessagingService.broadcastForHelp(currentLocation, new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            displayMessage("Neverlost failed to send help over the network; good luck...");
+
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (response.isSuccessful()) {
+                                displayMessage("Help is on the way!");
+                            } else {
+                                displayMessage("panic: I don't know how to handle this!");
+                            }
+                        }
+                    });
 
                 }
 
@@ -127,6 +159,21 @@ public class HealthActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    /**
+     * Helper function to display a Toast message without cluttering the codebase.
+     *
+     * @param message - The message to print on the Toast message.
+     */
+    private void displayMessage(@NonNull final String message) {
+        // Launch the Toast on a UI thread to prevent it from crashing.
+        HealthActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(HealthActivity.this, message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 }
