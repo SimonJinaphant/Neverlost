@@ -12,34 +12,51 @@ import com.neverlost.ubc.neverlost.models.readData;
 
 public class FeatureSelectActivity extends AppCompatActivity {
 
-    Button GPS;
-    Button Health;
+    Button dependent;
+    Button caretaker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feature_select);
 
-        GPS = (Button) findViewById(R.id.gps);
-        Health = (Button) findViewById(R.id.health);
+        dependent = (Button) findViewById(R.id.dependent);
+        caretaker = (Button) findViewById(R.id.caretaker);
 
-        GPS.setOnClickListener(new View.OnClickListener() {
+        dependent.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Intent gpsInt = new Intent(view.getContext(), MainActivity.class);
+
+                Intent depInt = new Intent(view.getContext(), HealthActivity.class);
+                startActivity(depInt);
+
+                //this button now goes to dependent health page
+                //create gps button on that page if needed
+
+                /*Intent gpsInt = new Intent(view.getContext(), MainActivity.class);
                 gpsInt.putExtra("key","Logan");
                 startActivity(gpsInt);
+                */
             }
         });
 
-        Health.setOnClickListener(new View.OnClickListener() {
+        caretaker.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
+
+                Intent careInt = new Intent(view.getContext(), MonitorActivity.class);
+                startActivity(careInt);
+
+                //this button now goes to caretaker health monitor page
+                //create gps button on that page if needed
+
+                /*
                 Intent healthInt = new Intent(view.getContext(), HealthActivity.class);
                 healthInt.putExtra("key","Logan");
                 startActivity(healthInt);
+                */
             }
         });
     }

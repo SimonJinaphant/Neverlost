@@ -16,6 +16,7 @@ public class Dependent extends User {
 
     public Dependent(String name, long age, long weight, long height,
                      List<Long> heartRates, List<Long> distances) {
+
         super(name, age, weight, height);
         this.heartRates = heartRates;
         this.distances = distances;
