@@ -96,7 +96,6 @@ public class HealthActivity extends AppCompatActivity {
                 hearRateValue.setText(Integer.toString(newHeartrateReading));
                 distanceValue.setText(Integer.toString(distanceTraveled));
 
-                //todo:need an evaluation function
                 int num_star  = HealthAlgorithm.healthEvaluate(dependent);
                 healthRatingBar.setNumStars(5);
                 healthRatingBar.setRating(num_star);

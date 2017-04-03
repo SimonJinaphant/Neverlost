@@ -14,6 +14,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.neverlost.ubc.neverlost.R;
+import com.neverlost.ubc.neverlost.algorithm.StatisticMethod;
 import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
 import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
 import com.neverlost.ubc.neverlost.objects.Dependent;
@@ -51,11 +52,14 @@ public class HeartRateActivity extends AppCompatActivity {
                 LineData theData = new LineData(lineDataSet);
                 heartRateGraph.setData(theData);
 
-                //todo: need a function to detect the trend
-                trendValue.setText("Increasing");
+                //compute the rend of data
+                int trend = StatisticMethod.computeTrend(dependent.heartRates);
+                if(trend==1){
+                    trendValue.setText("Increasing");
+                }else{
+                    trendValue.setText("Decreasing");
+                }
 
-
-                //todo: add a trend line to the graph
             }
 
             @Override
