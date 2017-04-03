@@ -10,6 +10,8 @@ import java.io.IOException;
 
 public class readData  {
 
+    public readData(){};
+
     //returns null if can't get a stable connection to bluetooth
     public static Coordinate getGPSData() {
         int counter = 0;
@@ -31,6 +33,7 @@ public class readData  {
         }
         Log.d("GPS data Lat", latitude);
         Log.d("GPS data Lng", longitude);
+
         Coordinate c = new Coordinate(Float.parseFloat(latitude), Float.parseFloat(longitude));
         return c;
     }
