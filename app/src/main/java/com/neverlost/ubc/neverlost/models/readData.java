@@ -12,31 +12,51 @@ public class readData  {
 
     public readData(){};
 
-    public Coordinate getGPSData() {
-        for (int i = 0; i < 3; i++)
-            WriteToBTDevice("*LAT");
-        String lat = ReadFromBTDevice();
-        String latitude = lat.replaceAll("[^-?0-9]","");
-        for (int i = 0; i < 3; i++)
-            WriteToBTDevice("*LNG");
-        String lng = ReadFromBTDevice();
-        String longitude = lng.replaceAll("[^-?0-9]","");
-        Log.d("GPS data Lat", lat);
-        Log.d("GPS data Lng", lng);
+    //returns null if can't get a stable connection to bluetooth
+    public static Coordinate getGPSData() {
+        int counter = 0;
+        String latitude;
+        String longitude;
+        do {
+            for (int i = 0; i < 3; i++)
+                WriteToBTDevice("Latitude");
+            String lat = ReadFromBTDevice();
+            latitude = lat.replaceAll("[^-?0-9]", "");
+            for (int i = 0; i < 3; i++)
+                WriteToBTDevice("Longitude");
+            String lng = ReadFromBTDevice();
+            longitude = lng.replaceAll("[^-?0-9]", "");
+            counter++;
+        } while ((latitude.equals("") || longitude.equals("")) && counter <= 5);
+        if (latitude.equals("") || longitude.equals("")) {
+            return null;
+        }
+        Log.d("GPS data Lat", latitude);
+        Log.d("GPS data Lng", longitude);
+
         Coordinate c = new Coordinate(Float.parseFloat(latitude), Float.parseFloat(longitude));
         return c;
     }
 
-    public int getHRData() {
-        for (int i = 0; i < 3; i++)
-            WriteToBTDevice("*HR");
-        String s = ReadFromBTDevice();
-        String reading = s.replaceAll("[^0-9]","");
+    //returns -1 if can't get a stable connection to bluetooth
+    public static int getHRData() {
+        String reading;
+        int counter = 0;
+        do {
+            for (int i = 0; i < 3; i++) {
+                WriteToBTDevice("HeartRate");
+            }
+            String s = ReadFromBTDevice();
+            reading = s.replaceAll("[^0-9]", "");
+            counter++;
+        } while (reading.equals("") && counter <= 5);
         Log.d("HR data", reading);
+        if (reading.equals(""))
+            reading = "-1";
         return Integer.parseInt(reading);
     }
 
-    private void WriteToBTDevice(String message) {
+    private static void WriteToBTDevice(String message) {
         String s = new String("\r\n");
         byte[] msgBuffer = message.getBytes();
         byte[] newline = s.getBytes();
@@ -49,7 +69,7 @@ public class readData  {
     }
 
     // This function reads a line of text from the Bluetooth device
-    private String ReadFromBTDevice() {
+    private static String ReadFromBTDevice() {
         byte c;
         String s = new String("");
 

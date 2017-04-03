@@ -8,16 +8,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.neverlost.ubc.neverlost.activities.login">
-
-    <fragment
-        android:id="@+id/mainfragment"
-        android:name="com.neverlost.ubc.neverlost.activities.MainFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="179dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+    android:background="@drawable/nlbg"
+    tools:context="com.neverlost.ubc.neverlost.activities.LoginActivity">
 
     <TextView
         android:id="@+id/locationOn"
@@ -27,13 +19,27 @@
         android:textColor="@color/white"
         android:textSize="25dp"/>
 
+    <fragment
+        android:id="@+id/mainfragment"
+        android:name="com.neverlost.ubc.neverlost.activities.MainFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"/>
+
     <Button
+        android:id="@+id/appButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="goToApp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="neverLost!"/>
-
+        android:layout_above="@+id/mainfragment"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:text="Start"
+        android:textSize="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:background="@drawable/transbutton"/>
 
 </RelativeLayout>

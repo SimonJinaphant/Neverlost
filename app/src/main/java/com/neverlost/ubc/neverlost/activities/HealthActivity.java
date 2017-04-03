@@ -5,9 +5,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -15,19 +14,16 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.algorithm.HealthAlgorithm;
-import com.neverlost.ubc.neverlost.datastruct.DistanceData;
-import com.neverlost.ubc.neverlost.datastruct.HeartRateData;
 import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
 import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
 import com.neverlost.ubc.neverlost.models.readData;
 import com.neverlost.ubc.neverlost.objects.Coordinate;
 import com.neverlost.ubc.neverlost.objects.Dependent;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,16 +34,17 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+
 public class HealthActivity extends AppCompatActivity {
 
 
     //declare the elements in the xmls
     ImageView prolioPic;
-    ImageButton hearRateButton;
+    Button hearRateButton;
     TextView hearRateValue;
     TextView name;
     TextView distanceValue;
-    ImageButton stepButton;
+    Button stepButton;
     RatingBar healthRatingBar;
     TextView healthEvaluation;
     TextView bmrValue;
@@ -60,10 +57,10 @@ public class HealthActivity extends AppCompatActivity {
         final String uname = intent.getStringExtra("key");
 
         prolioPic = (ImageView) findViewById(R.id.prolioPic);
-        hearRateButton = (ImageButton) findViewById(R.id.heartRateButton);
+        hearRateButton = (Button) findViewById(R.id.heartRateButton);
         hearRateValue = (TextView) findViewById(R.id.heartRateValue);
         name = (TextView) findViewById(R.id.name);
-        stepButton = (ImageButton) findViewById(R.id.stepButton);
+        stepButton = (Button) findViewById(R.id.stepButton);
         distanceValue = (TextView) findViewById(R.id.distanceValue);
         healthRatingBar = (RatingBar) findViewById(R.id.healthRatingBar);
         healthEvaluation = (TextView) findViewById(R.id.healthEval);
@@ -90,6 +87,7 @@ public class HealthActivity extends AppCompatActivity {
                 Coordinate curLoc = new Coordinate((float)1.0,(float)1.0);
 
                 int newHeartrateReading = sum/10;
+
                 int distanceTraveled = 0;
 
                 boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
@@ -128,6 +126,7 @@ public class HealthActivity extends AppCompatActivity {
                             }
                         }
                     });
+
 
                 }
 
