@@ -42,8 +42,8 @@ public class IdentityActivity extends AppCompatActivity {
 
         qrCodeProgressBar = (ProgressBar) findViewById(R.id.identity_qr_progress);
         qrCodeImageView = (ImageView) findViewById(R.id.identity_qr_code);
-        identityIcon = (CircleImageView) findViewById(R.id.identity_icon);
-        identityName = (TextView) findViewById(R.id.identity_title);
+        identityIcon = (CircleImageView) findViewById(R.id.identity_profile_icon);
+        identityName = (TextView) findViewById(R.id.identity_profile_title);
 
         // Load our profile info onto the UI
         Picasso.with(this)
