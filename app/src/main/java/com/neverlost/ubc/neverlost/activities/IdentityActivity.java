@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.facebook.Profile;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -16,6 +17,11 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.neverlost.ubc.neverlost.R;
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class IdentityActivity extends AppCompatActivity {
 
@@ -24,6 +30,8 @@ public class IdentityActivity extends AppCompatActivity {
 
     private ImageView qrCodeImageView;
     private ProgressBar qrCodeProgressBar;
+    private CircleImageView identityIcon;
+    private TextView identityName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +41,23 @@ public class IdentityActivity extends AppCompatActivity {
         qrCodeProgressBar = (ProgressBar) findViewById(R.id.identity_qr_progress);
         qrCodeImageView = (ImageView) findViewById(R.id.identity_qr_code);
 
+        identityIcon = (CircleImageView) findViewById(R.id.identity_icon);
+        identityName = (TextView) findViewById(R.id.identity_title);
+
+        Picasso.with(this)
+                .load(Profile.getCurrentProfile().getProfilePictureUri(240,240))
+                .placeholder(R.drawable.ic_person_outline_black_24dp)
+                .into(identityIcon);
+
+        identityName.setText(Profile.getCurrentProfile().getName());
+
         // Launch the async background task which generates the QR code.
         new IdentityAsyncTask().execute();
     }
 
     /**
-     * An asynchronous background task which encodes a string into a QR code
+     * An asynchronous background task which encodes the current user's information and
+     * Firebase Cloud ID into a QR code for other users to scan.
      */
     private class IdentityAsyncTask extends AsyncTask<Void, Integer, Bitmap> {
 
@@ -76,6 +95,7 @@ public class IdentityActivity extends AppCompatActivity {
             JsonObject jsonIdentity = new JsonObject();
             jsonIdentity.addProperty("name", Profile.getCurrentProfile().getName());
             jsonIdentity.addProperty("firebase_id", FirebaseInstanceId.getInstance().getToken());
+            jsonIdentity.addProperty("facebook_id", Profile.getCurrentProfile().getId());
 
             BitMatrix bitMatrix;
             try {

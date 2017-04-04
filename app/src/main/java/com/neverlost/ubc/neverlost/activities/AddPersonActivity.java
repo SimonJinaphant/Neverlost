@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Profile;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.neverlost.ubc.neverlost.R;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +42,9 @@ public class AddPersonActivity extends AppCompatActivity {
         // Launch the QR Scanner task to obtain the QR values.
         qrScanIntent = new IntentIntegrator(this);
         qrScanIntent.initiateScan();
+
+
+
 
         addCaretakerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +81,13 @@ public class AddPersonActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             profileName.setText(username);
+
+                            Picasso.with(AddPersonActivity.this)
+                                    .load(Profile.getCurrentProfile().getProfilePictureUri(400,400))
+                                    .placeholder(R.drawable.ic_person_add_black_96dp)
+                                    .into(profilePicture);
+
+
                         }
                     });
 
@@ -88,7 +100,8 @@ public class AddPersonActivity extends AppCompatActivity {
                 }
 
             } else {
-                Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Unable to decode QR", Toast.LENGTH_LONG).show();
+                finish();
             }
 
         } else {
