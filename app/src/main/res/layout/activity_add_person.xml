@@ -21,13 +21,15 @@
         android:text="JOHN DOE"
         android:textSize="30sp" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_picture_imageview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="146dp"
+        app:border_width="1dp"
+        app:border_color="#555555"
         app:srcCompat="@drawable/ic_person_add_black_96dp" />
 
     <Button
@@ -47,4 +49,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
         android:text="Add as Dependent" />
+
+    <TextView
+        android:text="You are adding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="29dp"
+        android:id="@+id/title"
+        android:textSize="24dp" />
 </RelativeLayout>

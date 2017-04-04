@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Profile;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.neverlost.ubc.neverlost.R;
@@ -21,9 +20,15 @@ import org.json.JSONObject;
 
 public class AddPersonActivity extends AppCompatActivity {
 
-    private IntentIntegrator qrScanIntent;
+    // Activity Constants
     private static final String TAG = "ADD_PERSON";
 
+    // Facebook URI
+    private static final String FACEBOOK_URI_BASE = "https://graph.facebook.com/";
+    private static final String FACEBOOK_URI_ENDPOINT_PICTURE = "/picture?height=400&width=400&migration_overrides=%7Boctober_2012%3Atrue%7D";
+
+    // Activity UI elements
+    private IntentIntegrator qrScanIntent;
     private Button addCaretakerButton;
     private Button addDependentButton;
     private ImageView profilePicture;
@@ -43,16 +48,12 @@ public class AddPersonActivity extends AppCompatActivity {
         qrScanIntent = new IntentIntegrator(this);
         qrScanIntent.initiateScan();
 
-
-
-
         addCaretakerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
         addDependentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,6 +76,7 @@ public class AddPersonActivity extends AppCompatActivity {
                     JSONObject obj = new JSONObject(result.getContents());
                     final String username = obj.getString("name");
                     final String firebaseId = obj.getString("firebase_id");
+                    final String facebookId = obj.getString("facebook_id");
 
                     // Update the UI with the deserialize data.
                     runOnUiThread(new Runnable() {
@@ -83,18 +85,16 @@ public class AddPersonActivity extends AppCompatActivity {
                             profileName.setText(username);
 
                             Picasso.with(AddPersonActivity.this)
-                                    .load(Profile.getCurrentProfile().getProfilePictureUri(400,400))
+                                    .load(FACEBOOK_URI_BASE + facebookId + FACEBOOK_URI_ENDPOINT_PICTURE)
                                     .placeholder(R.drawable.ic_person_add_black_96dp)
                                     .into(profilePicture);
-
-
                         }
                     });
 
                     Log.d(TAG, username);
                     Log.d(TAG, firebaseId);
-                    Toast.makeText(this, username + "\n\n" + firebaseId, Toast.LENGTH_LONG).show();
-
+                    Log.d(TAG, facebookId);
+                    Log.d(TAG, FACEBOOK_URI_BASE + facebookId + FACEBOOK_URI_ENDPOINT_PICTURE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

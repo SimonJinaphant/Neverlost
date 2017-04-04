@@ -19,15 +19,17 @@ import com.google.zxing.common.BitMatrix;
 import com.neverlost.ubc.neverlost.R;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class IdentityActivity extends AppCompatActivity {
 
+    // Activity Constants
     private final static String TAG = "IDENTITY";
+
+    // QR Code Constant
     private final static int QR_CODE_DIMENSION = 1000;
 
+    // Activity UI elements
     private ImageView qrCodeImageView;
     private ProgressBar qrCodeProgressBar;
     private CircleImageView identityIcon;
@@ -40,10 +42,10 @@ public class IdentityActivity extends AppCompatActivity {
 
         qrCodeProgressBar = (ProgressBar) findViewById(R.id.identity_qr_progress);
         qrCodeImageView = (ImageView) findViewById(R.id.identity_qr_code);
-
         identityIcon = (CircleImageView) findViewById(R.id.identity_icon);
         identityName = (TextView) findViewById(R.id.identity_title);
 
+        // Load our profile info onto the UI
         Picasso.with(this)
                 .load(Profile.getCurrentProfile().getProfilePictureUri(240,240))
                 .placeholder(R.drawable.ic_person_outline_black_24dp)
