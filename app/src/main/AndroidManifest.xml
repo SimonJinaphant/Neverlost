@@ -113,7 +113,9 @@
             android:name=".activities.BluetoothActivity"
             android:label="@string/title_activity_bluetooth"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.MonitorActivity"></activity>
+        <activity android:name=".activities.MonitorActivity" />
+        <activity android:name=".activities.IdentityActivity" />
+        <activity android:name=".activities.AddPersonActivity"></activity>
     </application>
 
 </manifest>
