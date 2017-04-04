@@ -5,9 +5,7 @@
     android:id="@+id/activity_identity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context="com.neverlost.ubc.neverlost.activities.IdentityActivity">
-
 
     <ProgressBar
         android:id="@+id/identity_qr_progress"
@@ -22,12 +20,12 @@
         android:id="@+id/identity_instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
         android:layout_marginBottom="30dp"
         android:text="Have someone scan your QR code to let them to add you"
         android:textAlignment="center"
-        android:textSize="18sp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:textSize="18sp" />
 
     <ImageView
         android:id="@+id/identity_qr_code"
@@ -40,31 +38,31 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:background="@color/black"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:background="@color/black">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/identity_icon"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="24dp"
             app:border_color="@color/white"
             app:border_width="1dp"
-            app:srcCompat="@drawable/ic_person_outline_black_24dp"
-            android:layout_marginStart="24dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true" />
+            app:srcCompat="@drawable/ic_person_outline_black_24dp" />
 
         <TextView
             android:id="@+id/identity_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginStart="30dp"
+            android:layout_toEndOf="@+id/identity_icon"
             android:text="My Identity Code"
             android:textColor="@color/white"
-            android:textSize="24sp"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/identity_icon" />
+            android:textSize="24sp" />
     </RelativeLayout>
 
 </RelativeLayout>
