@@ -12,39 +12,39 @@
     tools:context="com.neverlost.ubc.neverlost.activities.AddPersonActivity">
 
     <TextView
-        android:text="JOHN DOE"
+        android:id="@+id/profile_name_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:id="@+id/profile_name_textview"
-        android:textSize="30sp"
         android:layout_below="@+id/profile_picture_imageview"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:text="JOHN DOE"
+        android:textSize="30sp" />
 
     <ImageView
+        android:id="@+id/profile_picture_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_person_add_black_96dp"
-        android:layout_marginTop="146dp"
-        android:id="@+id/profile_picture_imageview"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="146dp"
+        app:srcCompat="@drawable/ic_person_add_black_96dp" />
 
     <Button
-        android:text="Add as Caretaker"
+        android:id="@+id/add_caretaker_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/add_caretaker_button"
         android:layout_above="@+id/add_dependent_button"
         android:layout_alignStart="@+id/add_dependent_button"
-        android:layout_marginBottom="18dp" />
+        android:layout_marginBottom="18dp"
+        android:text="Add as Caretaker" />
 
     <Button
-        android:text="Add as Dependent"
+        android:id="@+id/add_dependent_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/add_dependent_button"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="Add as Dependent" />
 </RelativeLayout>

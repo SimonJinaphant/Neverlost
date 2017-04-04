@@ -33,11 +33,21 @@ public class IdentityActivity extends AppCompatActivity {
         qrCodeProgressBar = (ProgressBar) findViewById(R.id.identity_qr_progress);
         qrCodeImageView = (ImageView) findViewById(R.id.identity_qr_code);
 
+        // Launch the async background task which generates the QR code.
         new IdentityAsyncTask().execute();
     }
 
+    /**
+     * An asynchronous background task which encodes a string into a QR code
+     */
     private class IdentityAsyncTask extends AsyncTask<Void, Integer, Bitmap> {
 
+        /**
+         * Executes on UIThread.
+         * Handles the update to any UI elements after the task finishes.
+         *
+         * @param result - The result we've obtained from the async task.
+         */
         @Override
         protected void onPostExecute(Bitmap result) {
             super.onPostExecute(result);
@@ -45,12 +55,21 @@ public class IdentityActivity extends AppCompatActivity {
             qrCodeImageView.setImageBitmap(result);
         }
 
+        /**
+         * Executes on UIThread.
+         * Handles any update for UI when the task publishes updates via publishProgress()
+         *
+         * @param values - List of update values.
+         */
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             qrCodeProgressBar.setProgress(values[0]);
         }
 
+        /**
+         * The main computation being done in the background.
+         */
         @Override
         protected Bitmap doInBackground(Void... params) {
 
@@ -79,6 +98,7 @@ public class IdentityActivity extends AppCompatActivity {
             int colorCodeBlack = ContextCompat.getColor(IdentityActivity.this, R.color.black);
             int colorCodeWhite = ContextCompat.getColor(IdentityActivity.this, R.color.white);
 
+            // Generate the QR code, publishing updates for every completed row.
             for (int y = 0; y < bitMatrixHeight; y++) {
                 for (int x = 0; x < bitMatrixWidth; x++) {
                     pixels[y * bitMatrixWidth + x] = bitMatrix.get(x, y) ?

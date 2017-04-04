@@ -19,13 +19,13 @@ import org.json.JSONObject;
 
 public class AddPersonActivity extends AppCompatActivity {
 
+    private IntentIntegrator qrScanIntent;
+    private static final String TAG = "ADD_PERSON";
+
     private Button addCaretakerButton;
     private Button addDependentButton;
     private ImageView profilePicture;
     private TextView profileName;
-
-    private IntentIntegrator qrScanIntent;
-    private static final String TAG = "ADD_PERSON";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,7 @@ public class AddPersonActivity extends AppCompatActivity {
         profileName = (TextView) findViewById(R.id.profile_name_textview);
         profilePicture = (ImageView) findViewById(R.id.profile_picture_imageview);
 
+        // Launch the QR Scanner task to obtain the QR values.
         qrScanIntent = new IntentIntegrator(this);
         qrScanIntent.initiateScan();
 
@@ -55,18 +56,22 @@ public class AddPersonActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * The callback when the QR scanner finishes
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
         if (result != null) {
-
             if (result.getContents() != null) {
-
                 try {
+
+                    // Deserialize the JSON information obtained.
                     JSONObject obj = new JSONObject(result.getContents());
                     final String username = obj.getString("name");
                     final String firebaseId = obj.getString("firebase_id");
 
+                    // Update the UI with the deserialize data.
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -80,7 +85,6 @@ public class AddPersonActivity extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
                 }
 
             } else {
