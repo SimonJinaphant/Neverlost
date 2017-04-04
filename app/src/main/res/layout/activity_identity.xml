@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_identity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.neverlost.ubc.neverlost.activities.IdentityActivity">
+
+    <ImageView
+        android:id="@+id/identity_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:srcCompat="@drawable/ic_person_outline_black_24dp" />
+
+    <TextView
+        android:id="@+id/identity_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/identity_icon"
+        android:text="My Identity Code"
+        android:textSize="24sp" />
+
+    <ImageView
+        android:id="@+id/identity_qr_code"
+        android:layout_width="1000px"
+        android:layout_height="1000px"
+        android:layout_below="@+id/identity_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:id="@+id/identity_instruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="50dp"
+        android:text="Have someone scan your QR code to let them to add you"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+
+    <ProgressBar
+        android:id="@+id/identity_qr_progress"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/identity_qr_code"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="135dp" />
+
+</RelativeLayout>
