@@ -73,6 +73,13 @@ public class HealthAlgorithm {
                 ageCeo*dependent.age;
     }
 
+    public static int healthEvaluate(Dependent dependent){
+
+        return dependent.heartRates.get(0)>0? 3:1;
+
+    }
+
+
 
 
 }

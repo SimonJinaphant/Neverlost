@@ -1,6 +1,7 @@
 package com.neverlost.ubc.neverlost.algorithm;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.Math.pow;
@@ -119,5 +120,44 @@ public class StatisticMethod {
 
     }
 
+    static public int computeTrend(List<Long> histData){
+        int size = histData.size();
+
+        if(size>=10) size=10;
+
+        int weight=size;
+        int weightedSum=0;
+        int sum=0;
+        for(int i=0; i<size; i++){
+            weightedSum += histData.get(i)*weight;
+            sum+=weight;
+            weight--;
+        }
+
+        double weightedAve = weightedSum/sum;
+        return weightedAve>=0.5? 1:0;
+    }
+
+    static public List<Long> valuePrediction(List<Long> histData){
+        List<Long> result = new LinkedList<>();
+        List<Long> temp = new LinkedList<>();
+
+        int size = histData.size();
+
+        if(size>=10) size=10;
+
+        int sum=0;
+        for(int i=0; i<size; i++){
+            temp.add(histData.get(i));
+        }
+
+        long mean = computeMeanI(temp);
+        long sd = Math.round(computeStdI(temp));
+
+        result.add(mean);
+        result.add(sd);
+
+        return result;
+    }
 
 }

@@ -123,9 +123,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:textSize="25dp"
-            android:id="@+id/textView4"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:textSize="25dp"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -143,12 +142,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/healthRatingBar"
-                android:layout_below="@+id/healthEval"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="15dp" />
+                android:layout_centerHorizontal="true"/>
 
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="25dp"
+            android:id="@+id/healthEval"
+            android:text="Health Evaluation"/>
 
         </LinearLayout>
 
 </LinearLayout>
+

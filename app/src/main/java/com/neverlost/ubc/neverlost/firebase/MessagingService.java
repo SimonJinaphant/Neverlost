@@ -15,6 +15,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.activities.MainActivity;
+import com.neverlost.ubc.neverlost.objects.Coordinate;
 
 import java.util.Map;
 
@@ -70,6 +71,26 @@ public class MessagingService extends FirebaseMessagingService {
 
         sendUpstreamCloudMessage(helpMessage, callback);
     }
+
+    /**
+     * Broadcast to care-takers by sending a Firebase Cloud Message for help.
+     *
+     * @param location - Your current location.
+     * @param callback - Callback to handle success/failed transmission cases.
+     */
+    public static void broadcastForHelpHP(Coordinate location, String name, Callback callback) {
+
+        CloudMessage helpMessage = CloudMessage.builder()
+                .to(FCM_TOPIC + FCM_TOPIC_NEVERLOST)
+                .withNotification(name + " is in need of help!", name + " has pressed the panic button!")
+                .withData(FCM_DATA_DEPENDANT, name)
+                .withData(FCM_DATA_LAT, String.valueOf(location.lat))
+                .withData(FCM_DATA_LNG, String.valueOf(location.lng))
+                .build();
+
+        sendUpstreamCloudMessage(helpMessage, callback);
+    }
+
 
     /**
      * Submit an HTTP POST request to the Firebase Connection Server with a JSON formatted payload.
@@ -180,4 +201,5 @@ public class MessagingService extends FirebaseMessagingService {
 
         notificationManager.notify(0, notificationBuilder.build());
     }
+
 }

@@ -25,6 +25,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+
                 Intent depInt = new Intent(view.getContext(), HealthActivity.class);
                 startActivity(depInt);
 

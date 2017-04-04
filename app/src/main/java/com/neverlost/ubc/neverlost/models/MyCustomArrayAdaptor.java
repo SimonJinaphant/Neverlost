@@ -57,11 +57,11 @@ public class MyCustomArrayAdaptor extends ArrayAdapter<String> {
         }
         else if (RowValidity [position] == disconnected) {
             t.setText("disconnected");
-            t.setTextColor(Color.parseColor("#DC143C"));
+            t.setTextColor(Color.parseColor("#FFFFFF"));
         }
         else {
             t.setText("connected");
-            t.setTextColor(Color.parseColor("#32CD32"));
+            t.setTextColor(Color.parseColor("#FFFFFF"));
         }
         return row;
     }
