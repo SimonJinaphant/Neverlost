@@ -142,7 +142,8 @@ ACDS_VERSION := 15.0
 ELF := bluetooth.elf
 
 # Paths to C, C++, and assembly source files.
-C_SRCS := hello_world.c
+C_SRCS += NeverLostMain.c
+C_SRCS += graphic.c
 CXX_SRCS :=
 ASM_SRCS :=
 
