@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.media.RingtoneManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -17,6 +18,7 @@ import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.activities.MapActivity;
 import com.neverlost.ubc.neverlost.objects.Coordinate;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import okhttp3.Callback;
@@ -52,6 +54,10 @@ public class MessagingService extends FirebaseMessagingService {
     // For broadcasting locally between activities.
     private LocalBroadcastManager broadcastManager;
 
+    // Caretakers and Dependents to send to
+    private static ArrayList<CloudMessageUser> dependents = new ArrayList<>();
+    private static ArrayList<CloudMessageUser> caretakers = new ArrayList<>();
+
     /**
      * Broadcast to care-takers by sending a Firebase Cloud Message for help.
      *
@@ -61,15 +67,18 @@ public class MessagingService extends FirebaseMessagingService {
     public static void broadcastForHelp(Location location, Callback callback) {
         String name = Profile.getCurrentProfile().getFirstName();
 
-        CloudMessage helpMessage = CloudMessage.builder()
-                .to(FCM_TOPIC + FCM_TOPIC_NEVERLOST)
-                .withNotification(name + " is in need of help!", name + " has pressed the panic button!")
-                .withData(FCM_DATA_DEPENDANT, name)
-                .withData(FCM_DATA_LAT, String.valueOf(location.getLatitude()))
-                .withData(FCM_DATA_LNG, String.valueOf(location.getLongitude()))
-                .build();
+        for(CloudMessageUser carataker : caretakers){
+            CloudMessage helpMessage = CloudMessage.builder()
+                    .to(carataker.getFirebaseClientToken())
+                    .withNotification(name + " is in need of help!", name + " has pressed the panic button!")
+                    .withData(FCM_DATA_DEPENDANT, name)
+                    .withData(FCM_DATA_LAT, String.valueOf(location.getLatitude()))
+                    .withData(FCM_DATA_LNG, String.valueOf(location.getLongitude()))
+                    .build();
 
-        sendUpstreamCloudMessage(helpMessage, callback);
+            sendUpstreamCloudMessage(helpMessage, callback);
+        }
+
     }
 
     /**
@@ -201,5 +210,22 @@ public class MessagingService extends FirebaseMessagingService {
 
         notificationManager.notify(0, notificationBuilder.build());
     }
+
+    public static void addCaretaker(@NonNull CloudMessageUser caretaker){
+        caretakers.add(caretaker);
+    }
+
+    public static void addDependent(@NonNull CloudMessageUser dependent){
+        dependents.add(dependent);
+    }
+
+    public static ArrayList<CloudMessageUser> getCaretaker(){
+        return caretakers;
+    }
+
+    public static ArrayList<CloudMessageUser> getDependents(){
+        return dependents;
+    }
+
 
 }

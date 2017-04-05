@@ -13,6 +13,8 @@ public class FeatureSelectActivity extends AppCompatActivity {
 
     Button dependent;
     Button caretaker;
+    private Button userlistButton;
+    private Button mapButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,9 @@ public class FeatureSelectActivity extends AppCompatActivity {
 
         dependent = (Button) findViewById(R.id.dependent);
         caretaker = (Button) findViewById(R.id.caretaker);
+
+        userlistButton = (Button) findViewById(R.id.userlist_button);
+        mapButton = (Button) findViewById(R.id.map_button);
 
         dependent.setOnClickListener(new View.OnClickListener() {
 
@@ -65,6 +70,22 @@ public class FeatureSelectActivity extends AppCompatActivity {
                 healthInt.putExtra("key","Logan");
                 startActivity(healthInt);
                 */
+            }
+        });
+
+        userlistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FeatureSelectActivity.this, CloudUserActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FeatureSelectActivity.this, MapActivity.class);
+                startActivity(intent);
             }
         });
     }
