@@ -84,7 +84,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FeatureSelectActivity.this, MainActivity.class);
+                Intent intent = new Intent(FeatureSelectActivity.this, MapActivity.class);
                 startActivity(intent);
             }
         });
