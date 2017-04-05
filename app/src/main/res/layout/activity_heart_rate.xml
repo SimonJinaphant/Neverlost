@@ -8,6 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/bgwhite"
     tools:context="com.neverlost.ubc.neverlost.activities.HeartRateActivity">
 
     <com.github.mikephil.charting.charts.LineChart

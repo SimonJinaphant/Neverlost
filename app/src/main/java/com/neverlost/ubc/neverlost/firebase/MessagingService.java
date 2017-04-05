@@ -14,7 +14,7 @@ import com.facebook.Profile;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.neverlost.ubc.neverlost.R;
-import com.neverlost.ubc.neverlost.activities.MainActivity;
+import com.neverlost.ubc.neverlost.activities.MapActivity;
 import com.neverlost.ubc.neverlost.objects.Coordinate;
 
 import java.util.Map;
@@ -33,8 +33,8 @@ public class MessagingService extends FirebaseMessagingService {
     public static final String FCM_DATA_LNG = "lng";
     public static final String FCM_DATA_DEPENDANT = "dependant";
 
-    // For communicating between this Service and MainActivity (or any other activity).
-    public static final String NEVERLOST_FCM_RESULT = "com.neverlost.ubc.neverlost.MainActivity.FCM_RESULT";
+    // For communicating between this Service and MapActivity (or any other activity).
+    public static final String NEVERLOST_FCM_RESULT = "com.neverlost.ubc.neverlost.MapActivity.FCM_RESULT";
 
     // FCM Essential JSON keys.
     private static final String FCM_TOPIC = "/topics/";
@@ -184,7 +184,7 @@ public class MessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MapActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)

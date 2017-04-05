@@ -67,7 +67,7 @@ public class MapActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_map);
 
         // -----------------------------------------------------------------------------------------
         // Listen for broadcasts coming from our local FCM Messaging Service.
