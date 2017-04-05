@@ -20,10 +20,13 @@ import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
 import com.neverlost.ubc.neverlost.objects.Dependent;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class HeartRateActivity extends AppCompatActivity {
 
     LineChart heartRateGraph;
+    TextView  fluctValue;
     TextView trendValue;
 
     @Override
@@ -44,9 +47,18 @@ public class HeartRateActivity extends AppCompatActivity {
 
                 ArrayList<Entry> graphEntries = new ArrayList<>();
 
+                int size = dependent.heartRates.size();
+                if(size>=5) size=5;
+
+                List<Long> temp = new LinkedList<Long>();
+
                 for(int i=0; i<5; i++){
                     graphEntries.add(new BarEntry(i,dependent.heartRates.get(i)));
+                    temp.add(dependent.heartRates.get(i));
                 }
+
+                double fluct = StatisticMethod.computeVarI(temp);
+                fluctValue.setText(String.valueOf(fluct));
 
                 LineDataSet lineDataSet = new LineDataSet(graphEntries, "Heart Rate");
                 LineData theData = new LineData(lineDataSet);
