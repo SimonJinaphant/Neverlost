@@ -7,6 +7,7 @@ import com.neverlost.ubc.neverlost.activities.BluetoothActivity;
 import com.neverlost.ubc.neverlost.objects.Coordinate;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class readData  {
 
@@ -14,27 +15,35 @@ public class readData  {
 
     //returns null if can't get a stable connection to bluetooth
     public static Coordinate getGPSData() {
-        int counter = 0;
         String latitude;
-        String longitude;
+        int counter = 0;
         do {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++) {
                 WriteToBTDevice("Latitude");
-            String lat = ReadFromBTDevice();
-            latitude = lat.replaceAll("[^-?0-9]", "");
-            for (int i = 0; i < 3; i++)
-                WriteToBTDevice("Longitude");
-            String lng = ReadFromBTDevice();
-            longitude = lng.replaceAll("[^-?0-9]", "");
+            }
+            String s = ReadFromBTDevice();
+            latitude = s.replaceAll("[^0-9.\\-]+" , "");
             counter++;
-        } while ((latitude.equals("") || longitude.equals("")) && counter <= 5);
-        if (latitude.equals("") || longitude.equals("")) {
+        } while (latitude.equals("") && counter <= 5);
+        if (latitude.equals(""))
             return null;
-        }
-        Log.d("GPS data Lat", latitude);
-        Log.d("GPS data Lng", longitude);
+
+        String longitude;
+        counter = 0;
+        do {
+            for (int i = 0; i < 3; i++) {
+                WriteToBTDevice("Longitude");
+            }
+            String s = ReadFromBTDevice();
+            longitude = s.replaceAll("[^0-9.\\-]+", "");
+            counter++;
+        } while (longitude.equals("") && counter <= 5);
+        if (longitude.equals(""))
+            return null;
+
 
         Coordinate c = new Coordinate(Float.parseFloat(latitude), Float.parseFloat(longitude));
+
         return c;
     }
 

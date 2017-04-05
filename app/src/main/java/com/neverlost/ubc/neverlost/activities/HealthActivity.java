@@ -78,6 +78,9 @@ public class HealthActivity extends AppCompatActivity {
                 }
 
                 Coordinate curLoc = dataReader.getGPSData();
+                if(curLoc==null){
+                    Log.d("DE1","de1 gps not working");
+                }
 
                 int newHeartrateReading = sum/10;
 

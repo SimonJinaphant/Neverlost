@@ -28,9 +28,8 @@ public class FeatureSelectActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-
+                Intent depInt = new Intent(view.getContext(),BluetoothActivity.class);
                 depInt.putExtra("key", Profile.getCurrentProfile().getId());
-
                 startActivity(depInt);
 
                 //this button now goes to dependent health page
