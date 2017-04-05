@@ -13,7 +13,6 @@
     android:orientation="vertical"
     tools:context="com.neverlost.ubc.neverlost.activities.HealthActivity">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -55,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="50dp"
                 android:id="@+id/heartRateValue"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="22dp"
                 android:layout_centerHorizontal="true"/>
 
             <Button
@@ -85,7 +84,7 @@
                 android:textSize="50dp"
                 android:id="@+id/bmrValue"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="22dp" />
 
             <Button
                 android:layout_width="150dp"
@@ -111,22 +110,35 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:text="BMR: 9999"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="25dp"
-            android:id="@+id/distanceValue"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BMR:"
+                android:textSize="25dp"
+                android:id="@+id/bmr"/>
+            <TextView
+                android:text="9999"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25dp"
+                android:id="@+id/distanceValue"
+                android:layout_toEndOf="@+id/bmr"/>
+
+        </RelativeLayout>
+
 
         <TextView
             android:text="Overall Evaluation: "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:textSize="25sp"
-            android:id="@+id/textView4"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:textSize="25dp"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -144,18 +156,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/healthRatingBar"
-                android:layout_toEndOf="@+id/imageView2"/>
-
-            <TextView
-                android:text="health Eval"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/healthEval"
-                android:layout_below="@+id/healthRatingBar"
-                android:layout_centerHorizontal="true"
-                android:textSize="25sp"/>
+                android:layout_toEndOf="@id/imageView2"/>
 
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="25dp"
+            android:id="@+id/healthEval"
+            android:text="Health Evaluation"/>
 
         </LinearLayout>
 

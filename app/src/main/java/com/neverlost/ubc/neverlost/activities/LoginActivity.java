@@ -26,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Please turn on location services before proceeding", Toast.LENGTH_SHORT).show();
         } else {
            // Intent i = new Intent(this, FeatureSelectActivity.class);
-            Intent i = new Intent(this, BluetoothActivity.class);
+            Intent i = new Intent(this, FeatureSelectActivity.class);
             startActivity(i);
         }
 

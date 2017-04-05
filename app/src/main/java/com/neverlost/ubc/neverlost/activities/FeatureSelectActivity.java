@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.facebook.Profile;
 import com.neverlost.ubc.neverlost.R;
 
 public class FeatureSelectActivity extends AppCompatActivity {
@@ -31,13 +32,16 @@ public class FeatureSelectActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent depInt = new Intent(view.getContext(), HealthActivity.class);
+
+                Intent depInt = new Intent(view.getContext(),BluetoothActivity.class);
+                depInt.putExtra("key", Profile.getCurrentProfile().getId());
                 startActivity(depInt);
 
                 //this button now goes to dependent health page
                 //create gps button on that page if needed
 
                 /*Intent gpsInt = new Intent(view.getContext(), MainActivity.class);
+                /*Intent gpsInt = new Intent(view.getContext(), MapActivity.class);
                 gpsInt.putExtra("key","Logan");
                 startActivity(gpsInt);
                 */
@@ -50,6 +54,12 @@ public class FeatureSelectActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent careInt = new Intent(view.getContext(), MonitorActivity.class);
+
+
+                //TODO: add dependent id to caretaker userclass
+                //link to fbID of dependent
+                careInt.putExtra("key", /*change this to dependent id*/ Profile.getCurrentProfile().getId());
+
                 startActivity(careInt);
 
                 //this button now goes to caretaker health monitor page

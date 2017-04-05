@@ -1,7 +1,6 @@
 package com.neverlost.ubc.neverlost.activities;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -24,11 +23,7 @@ import com.neverlost.ubc.neverlost.models.readData;
 import com.neverlost.ubc.neverlost.objects.Coordinate;
 import com.neverlost.ubc.neverlost.objects.Dependent;
 
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -54,7 +49,7 @@ public class HealthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_health);
         Intent intent = getIntent();
-        final String uname = intent.getStringExtra("key");
+        final String uid = intent.getStringExtra("key");
 
         prolioPic = (ImageView) findViewById(R.id.prolioPic);
         hearRateButton = (Button) findViewById(R.id.heartRateButton);
@@ -69,8 +64,7 @@ public class HealthActivity extends AppCompatActivity {
         FirebaseRef.dependentRer.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Dependent dependent = FirebaseQuery.getDependent(uname, dataSnapshot);
-
+                Dependent dependent = FirebaseQuery.getDependent(uid, dataSnapshot);
 
                 name.setText(dependent.name);
 
@@ -78,13 +72,14 @@ public class HealthActivity extends AppCompatActivity {
 
                 readData dataReader = new readData();
                 int sum=0;
-                for(int i=0; i<10; i++){
+                for(int i=0; i<3; i++){
                     sum += dataReader.getHRData();
                 }
 
-                //todo: get the GPS data and compute distance traveled
-
-                Coordinate curLoc = new Coordinate((float)1.0,(float)1.0);
+                Coordinate curLoc = dataReader.getGPSData();
+                if(curLoc==null){
+                    Log.d("DE1","de1 gps not working");
+                }
 
                 int newHeartrateReading = sum/10;
 
@@ -144,7 +139,7 @@ public class HealthActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent stepBar = new Intent(view.getContext(), DistanceBarActivity.class);
-                stepBar.putExtra("key", uname);
+                stepBar.putExtra("key", uid);
                 startActivity(stepBar);
             }
         });
@@ -153,7 +148,7 @@ public class HealthActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent heartRateGraph = new Intent(view.getContext(), HeartRateActivity.class);
-                heartRateGraph.putExtra("key", uname);
+                heartRateGraph.putExtra("key", uid);
                 startActivity(heartRateGraph);
             }
         });

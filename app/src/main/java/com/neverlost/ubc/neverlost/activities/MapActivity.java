@@ -47,11 +47,11 @@ import okhttp3.Response;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class MainActivity extends AppCompatActivity
+public class MapActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         OnMapReadyCallback, LocationListener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MapActivity";
     private final int REQUEST_FINE_LOC_CODE = 391;
     private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
     // Force the Location manager to update our GPS location when the following thresholds are met
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_map);
 
         // -----------------------------------------------------------------------------------------
         // Listen for broadcasts coming from our local FCM Messaging Service.
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity
                     LocationManager.GPS_PROVIDER,
                     LOCATION_UPDATE_TIME,
                     LOCATION_UPDATE_DISTANCE,
-                    MainActivity.this
+                    MapActivity.this
             );
         } catch (SecurityException se) {
             Log.e(TAG, se.toString());
@@ -336,10 +336,10 @@ public class MainActivity extends AppCompatActivity
      */
     private void displayMessage(@NonNull final String message) {
         // Launch the Toast on a UI thread to prevent it from crashing.
-        MainActivity.this.runOnUiThread(new Runnable() {
+        MapActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                Toast.makeText(MapActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
     }
