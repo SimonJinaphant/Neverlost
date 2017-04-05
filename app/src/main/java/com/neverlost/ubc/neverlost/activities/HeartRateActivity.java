@@ -3,6 +3,7 @@ package com.neverlost.ubc.neverlost.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -39,6 +40,7 @@ public class HeartRateActivity extends AppCompatActivity {
         //get layout elements
         heartRateGraph = (LineChart) findViewById(R.id.heartRateGraph);
         trendValue = (TextView) findViewById(R.id.trendValue);
+        fluctValue = (TextView) findViewById(R.id.fluctValue);
 
         FirebaseRef.dependentRer.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -57,8 +59,9 @@ public class HeartRateActivity extends AppCompatActivity {
                     temp.add(dependent.heartRates.get(i));
                 }
 
-                double fluct = StatisticMethod.computeVarI(temp);
-                fluctValue.setText(String.valueOf(fluct));
+                double fluct = Math.round(StatisticMethod.computeStdI(temp));
+                String fluctStr = String.valueOf(fluct);
+                fluctValue.setText(fluctStr);
 
                 LineDataSet lineDataSet = new LineDataSet(graphEntries, "Heart Rate");
                 LineData theData = new LineData(lineDataSet);
