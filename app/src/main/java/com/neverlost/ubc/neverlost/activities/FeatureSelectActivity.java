@@ -3,6 +3,7 @@ package com.neverlost.ubc.neverlost.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -49,7 +50,11 @@ public class FeatureSelectActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent careInt = new Intent(view.getContext(), MonitorActivity.class);
-                careInt.putExtra("key", Profile.getCurrentProfile().getId());
+
+
+                //TODO: add dependent id to caretaker userclass
+                //link to fbID of dependent
+                careInt.putExtra("key", /*change this to dependent id*/ Profile.getCurrentProfile().getId());
 
                 startActivity(careInt);
 
