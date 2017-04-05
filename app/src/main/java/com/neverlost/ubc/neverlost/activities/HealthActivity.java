@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -73,13 +74,14 @@ public class HealthActivity extends AppCompatActivity {
                 readData dataReader = new readData();
                 int sum=0;
                 for(int i=0; i<3; i++){
-                    sum += dataReader.getHRData();
+                    sum += 0/*dataReader.getHRData()*/;
                 }
 
-                Coordinate curLoc = dataReader.getGPSData();
+                Coordinate curLoc = new Coordinate(0,0); //= dataReader.getGPSData();
                 if(curLoc==null){
                     Log.d("DE1","de1 gps not working");
                 }
+
 
                 int newHeartrateReading = sum/10;
 

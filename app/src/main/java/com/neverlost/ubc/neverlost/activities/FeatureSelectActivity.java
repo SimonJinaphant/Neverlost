@@ -3,7 +3,6 @@ package com.neverlost.ubc.neverlost.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -29,7 +28,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                Intent depInt = new Intent(view.getContext(),BluetoothActivity.class);
+                Intent depInt = new Intent(view.getContext(),HealthActivity.class);
                 depInt.putExtra("key", Profile.getCurrentProfile().getId());
                 startActivity(depInt);
 
