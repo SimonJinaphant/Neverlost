@@ -98,6 +98,7 @@ public class AddPersonActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     MessagingService.addCaretaker(user);
+                                    setResult(RESULT_OK);
                                     finish();
                                 }
                             });
@@ -106,6 +107,7 @@ public class AddPersonActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     MessagingService.addDependent(user);
+                                    setResult(RESULT_OK);
                                     finish();
                                 }
                             });
@@ -118,12 +120,12 @@ public class AddPersonActivity extends AppCompatActivity {
 
             } else {
                 Toast.makeText(this, "Unable to decode QR", Toast.LENGTH_LONG).show();
+                setResult(RESULT_CANCELED);
                 finish();
             }
 
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-
     }
 }

@@ -1,8 +1,11 @@
 package com.neverlost.ubc.neverlost.activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ListView;
 
 import com.neverlost.ubc.neverlost.ConnectionListAdapter;
@@ -11,42 +14,94 @@ import com.neverlost.ubc.neverlost.firebase.CloudMessageUser;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ConnectionsActivity extends AppCompatActivity {
 
-    ArrayList<CloudMessageUser> users;
-    ListView userListView;
+    private static final int ADD_CLOUDUSER_INTENT = 1234;
+
+    private ArrayList<CloudMessageUser> users = new ArrayList<>();
+    private ListView userListView;
+
+    private FloatingActionButton addCloudUserFab;
+    private FloatingActionButton showIdentityFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_connections);
+        setContentView(R.layout.activity_cloudusers_parent);
 
-        users = new ArrayList<>();
         userListView = (ListView) findViewById(R.id.user_listview);
+        addCloudUserFab = (FloatingActionButton) findViewById(R.id.add_clouduser_fab);
+        showIdentityFab = (FloatingActionButton) findViewById(R.id.show_identity_fab);
 
+        addCloudUserFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ConnectionsActivity.this, AddPersonActivity.class);
+                startActivityForResult(intent, ADD_CLOUDUSER_INTENT);
+            }
+        });
+
+        showIdentityFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ConnectionsActivity.this, IdentityActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Load users in asynchronously to prevent lag.
         new LoadUsers().execute();
     }
 
-    private class LoadUsers extends AsyncTask<Void, Void, Void>{
+    /**
+     * An asynchronous background task which loads the caretakers and dependents into the list view.
+     */
+    private class LoadUsers extends AsyncTask<Void, Void, Void> {
 
+        /**
+         * Executes on UIThread.
+         * Handles the update to any UI elements before the task starts
+         */
         @Override
-        protected void onPostExecute(Void aVoid) {
-            ConnectionListAdapter adapter = new ConnectionListAdapter(getApplicationContext(), R.layout.connection_list_layout, users);
+        protected void onPreExecute() {
+            // Clear out the list to prevent duplicates.
+            users.clear();
+
+            // Set the adapter for the List view
+            ConnectionListAdapter adapter = new ConnectionListAdapter(getApplicationContext(),
+                    R.layout.connection_list_layout, users);
 
             userListView.setAdapter(adapter);
         }
-
+        
+        /**
+         * The main computation being done in the background.
+         */
         @Override
         protected Void doInBackground(Void... params) {
-            for(CloudMessageUser user : MessagingService.getCaretaker()){
+            for (CloudMessageUser user : MessagingService.getCaretaker()) {
                 users.add(user);
             }
-            for(CloudMessageUser user : MessagingService.getDependents()){
+            for (CloudMessageUser user : MessagingService.getDependents()) {
                 users.add(user);
             }
+
             return null;
+        }
+    }
+
+    /**
+     * Handle the results we've obtained after launching an activity with an expected result
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == ADD_CLOUDUSER_INTENT) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                new LoadUsers().execute();
+            }
         }
     }
 }

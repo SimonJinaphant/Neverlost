@@ -59,10 +59,10 @@
         android:id="@+id/identity_instruction_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/black">
+        android:background="@color/black"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/identity_instruction_text"
