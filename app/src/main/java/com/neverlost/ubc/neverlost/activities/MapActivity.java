@@ -2,6 +2,7 @@ package com.neverlost.ubc.neverlost.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -20,6 +21,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -60,7 +62,8 @@ public class MapActivity extends AppCompatActivity
     private GoogleMap mMap;
     private Location currentLocation;
     private LocationManager locationManager;
-    private BroadcastReceiver dependantHelpBroadcastReceiver;
+    private BroadcastReceiver dependantHelpReceiver;
+    private BroadcastReceiver caretakerPromptReciever;
     // Vibration to alert the caretaker that something has happened to their dependant
     private Vibrator vibrationService;
 
@@ -72,7 +75,7 @@ public class MapActivity extends AppCompatActivity
         // -----------------------------------------------------------------------------------------
         // Listen for broadcasts coming from our local FCM Messaging Service.
         // -----------------------------------------------------------------------------------------
-        dependantHelpBroadcastReceiver = new BroadcastReceiver() {
+        dependantHelpReceiver = new BroadcastReceiver() {
 
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -83,10 +86,31 @@ public class MapActivity extends AppCompatActivity
 
                 mMap.addMarker(new MarkerOptions()
                         .position(dependant)
-                        .title(intent.getStringExtra(MessagingService.FCM_DATA_DEPENDANT))
+                        .title(intent.getStringExtra(MessagingService.FCM_DATA_DEPENDANT_NAME))
                 );
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(dependant));
+                vibrationService.vibrate(vibrationPattern, -1);
+            }
+        };
+
+        caretakerPromptReciever = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String caretakerName = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_NAME);
+                String caretakerId = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_ID);
+
+                AlertDialog alertDialog = new AlertDialog.Builder(MapActivity.this).create();
+                alertDialog.setTitle("Safety prompt");
+                alertDialog.setMessage(caretakerName + " wants to see if you're safe");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "I am Safe",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
                 vibrationService.vibrate(vibrationPattern, -1);
             }
         };
@@ -204,8 +228,14 @@ public class MapActivity extends AppCompatActivity
         super.onStart();
         LocalBroadcastManager
                 .getInstance(this)
-                .registerReceiver(dependantHelpBroadcastReceiver,
-                        new IntentFilter(MessagingService.NEVERLOST_FCM_RESULT)
+                .registerReceiver(dependantHelpReceiver,
+                        new IntentFilter(MessagingService.NEVERLOST_FCM_PANIC_RESULT)
+                );
+
+        LocalBroadcastManager
+                .getInstance(this)
+                .registerReceiver(caretakerPromptReciever,
+                        new IntentFilter(MessagingService.NEVERLOST_FCM_PROMPT_RESULT)
                 );
     }
 
@@ -213,7 +243,11 @@ public class MapActivity extends AppCompatActivity
     protected void onStop() {
         LocalBroadcastManager
                 .getInstance(this)
-                .unregisterReceiver(dependantHelpBroadcastReceiver);
+                .unregisterReceiver(dependantHelpReceiver);
+
+        LocalBroadcastManager
+                .getInstance(this)
+                .unregisterReceiver(caretakerPromptReciever);
 
         super.onStop();
     }
