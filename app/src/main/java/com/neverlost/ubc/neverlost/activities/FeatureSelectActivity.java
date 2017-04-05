@@ -39,6 +39,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
                 //this button now goes to dependent health page
                 //create gps button on that page if needed
 
+                /*Intent gpsInt = new Intent(view.getContext(), MainActivity.class);
                 /*Intent gpsInt = new Intent(view.getContext(), MapActivity.class);
                 gpsInt.putExtra("key","Logan");
                 startActivity(gpsInt);
@@ -57,7 +58,6 @@ public class FeatureSelectActivity extends AppCompatActivity {
                 //TODO: add dependent id to caretaker userclass
                 //link to fbID of dependent
                 careInt.putExtra("key", /*change this to dependent id*/ Profile.getCurrentProfile().getId());
-
 
                 startActivity(careInt);
 
