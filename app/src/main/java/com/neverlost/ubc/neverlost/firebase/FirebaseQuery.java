@@ -22,7 +22,7 @@ public class FirebaseQuery {
 
         DataSnapshot user =  dataSnapshot.child(name);
 
-
+        String               uname      = (String)      user.child("name").getValue();
         long                 age        = (long)        user.child("age").getValue();
         long              weight        = (long)        user.child("weight").getValue();
         long              height        = (long)        user.child("height").getValue();
@@ -30,7 +30,7 @@ public class FirebaseQuery {
         List<Long>        distances     = (List<Long>)  user.child("distances").getValue();
 
 
-        return new Dependent(name, age, weight, height, heartRates, distances);
+        return new Dependent(uname, age, weight, height, heartRates, distances);
 
     };
 

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.facebook.Profile;
 import com.neverlost.ubc.neverlost.R;
 
 public class FeatureSelectActivity extends AppCompatActivity {
@@ -27,7 +28,9 @@ public class FeatureSelectActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent depInt = new Intent(view.getContext(), HealthActivity.class);
-                depInt.putExtra("key","Logan");
+
+                depInt.putExtra("key", Profile.getCurrentProfile().getId());
+
                 startActivity(depInt);
 
                 //this button now goes to dependent health page
