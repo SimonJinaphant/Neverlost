@@ -1,7 +1,6 @@
 package com.neverlost.ubc.neverlost.activities;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -24,11 +23,7 @@ import com.neverlost.ubc.neverlost.models.readData;
 import com.neverlost.ubc.neverlost.objects.Coordinate;
 import com.neverlost.ubc.neverlost.objects.Dependent;
 
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
