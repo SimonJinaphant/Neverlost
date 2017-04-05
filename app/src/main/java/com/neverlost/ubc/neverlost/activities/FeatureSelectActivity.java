@@ -12,9 +12,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
 
     Button dependent;
     Button caretaker;
-
-    private Button addUserButton;
-    private Button identityButton;
+    private Button userlistButton;
     private Button mapButton;
 
     @Override
@@ -24,9 +22,9 @@ public class FeatureSelectActivity extends AppCompatActivity {
 
         dependent = (Button) findViewById(R.id.dependent);
         caretaker = (Button) findViewById(R.id.caretaker);
-        addUserButton = (Button) findViewById(R.id.add_person);
-        identityButton = (Button) findViewById(R.id.identity);
-        mapButton = (Button) findViewById(R.id.map);
+
+        userlistButton = (Button) findViewById(R.id.userlist_button);
+        mapButton = (Button) findViewById(R.id.map_button);
 
         dependent.setOnClickListener(new View.OnClickListener() {
 
@@ -65,18 +63,10 @@ public class FeatureSelectActivity extends AppCompatActivity {
             }
         });
 
-        addUserButton.setOnClickListener(new View.OnClickListener() {
+        userlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FeatureSelectActivity.this, CloudUserScanActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        identityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FeatureSelectActivity.this, CloudUserIdentityActivity.class);
+                Intent intent = new Intent(FeatureSelectActivity.this, CloudUserActivity.class);
                 startActivity(intent);
             }
         });
@@ -84,7 +74,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FeatureSelectActivity.this, CloudUserActivity.class);
+                Intent intent = new Intent(FeatureSelectActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
