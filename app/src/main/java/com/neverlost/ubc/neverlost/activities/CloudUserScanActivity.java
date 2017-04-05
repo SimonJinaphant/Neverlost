@@ -13,12 +13,14 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.neverlost.ubc.neverlost.R;
+import com.neverlost.ubc.neverlost.firebase.CloudMessageUser;
+import com.neverlost.ubc.neverlost.firebase.MessagingService;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AddPersonActivity extends AppCompatActivity {
+public class CloudUserScanActivity extends AppCompatActivity {
 
     // Activity Constants
     private static final String TAG = "ADD_PERSON";
@@ -34,10 +36,12 @@ public class AddPersonActivity extends AppCompatActivity {
     private ImageView profilePicture;
     private TextView profileName;
 
+    private CloudMessageUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_person);
+        setContentView(R.layout.activity_clouduser_scan);
 
         addCaretakerButton = (Button) findViewById(R.id.add_caretaker_button);
         addDependentButton = (Button) findViewById(R.id.add_dependent_button);
@@ -48,18 +52,7 @@ public class AddPersonActivity extends AppCompatActivity {
         qrScanIntent = new IntentIntegrator(this);
         qrScanIntent.initiateScan();
 
-        addCaretakerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        addDependentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+
     }
 
     /**
@@ -84,7 +77,7 @@ public class AddPersonActivity extends AppCompatActivity {
                         public void run() {
                             profileName.setText(username);
 
-                            Picasso.with(AddPersonActivity.this)
+                            Picasso.with(CloudUserScanActivity.this)
                                     .load(FACEBOOK_URI_BASE + facebookId + FACEBOOK_URI_ENDPOINT_PICTURE)
                                     .placeholder(R.drawable.ic_person_add_black_96dp)
                                     .into(profilePicture);
@@ -95,18 +88,44 @@ public class AddPersonActivity extends AppCompatActivity {
                     Log.d(TAG, firebaseId);
                     Log.d(TAG, facebookId);
                     Log.d(TAG, FACEBOOK_URI_BASE + facebookId + FACEBOOK_URI_ENDPOINT_PICTURE);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            user = new CloudMessageUser(username, firebaseId, facebookId);
+
+                            addCaretakerButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    MessagingService.addCaretaker(user);
+                                    setResult(RESULT_OK);
+                                    finish();
+                                }
+                            });
+
+                            addDependentButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    MessagingService.addDependent(user);
+                                    setResult(RESULT_OK);
+                                    finish();
+                                }
+                            });
+                        }
+                    });
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
             } else {
                 Toast.makeText(this, "Unable to decode QR", Toast.LENGTH_LONG).show();
+                setResult(RESULT_CANCELED);
                 finish();
             }
 
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-
     }
 }
