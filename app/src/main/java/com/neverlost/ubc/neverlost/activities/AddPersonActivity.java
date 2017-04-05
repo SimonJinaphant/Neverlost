@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.neverlost.ubc.neverlost.R;
+import com.neverlost.ubc.neverlost.firebase.CloudMessageUser;
+import com.neverlost.ubc.neverlost.firebase.MessagingService;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -34,6 +36,8 @@ public class AddPersonActivity extends AppCompatActivity {
     private ImageView profilePicture;
     private TextView profileName;
 
+    private CloudMessageUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,18 +52,7 @@ public class AddPersonActivity extends AppCompatActivity {
         qrScanIntent = new IntentIntegrator(this);
         qrScanIntent.initiateScan();
 
-        addCaretakerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        addDependentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+
     }
 
     /**
@@ -95,6 +88,30 @@ public class AddPersonActivity extends AppCompatActivity {
                     Log.d(TAG, firebaseId);
                     Log.d(TAG, facebookId);
                     Log.d(TAG, FACEBOOK_URI_BASE + facebookId + FACEBOOK_URI_ENDPOINT_PICTURE);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            user = new CloudMessageUser(username, firebaseId, facebookId);
+
+                            addCaretakerButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    MessagingService.addCaretaker(user);
+                                    finish();
+                                }
+                            });
+
+                            addDependentButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    MessagingService.addDependent(user);
+                                    finish();
+                                }
+                            });
+                        }
+                    });
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

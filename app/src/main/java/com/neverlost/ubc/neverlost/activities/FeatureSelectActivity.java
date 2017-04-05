@@ -15,6 +15,10 @@ public class FeatureSelectActivity extends AppCompatActivity {
     Button dependent;
     Button caretaker;
 
+    private Button addUserButton;
+    private Button identityButton;
+    private Button mapButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +26,9 @@ public class FeatureSelectActivity extends AppCompatActivity {
 
         dependent = (Button) findViewById(R.id.dependent);
         caretaker = (Button) findViewById(R.id.caretaker);
+        addUserButton = (Button) findViewById(R.id.add_person);
+        identityButton = (Button) findViewById(R.id.identity);
+        mapButton = (Button) findViewById(R.id.map);
 
         dependent.setOnClickListener(new View.OnClickListener() {
 
@@ -57,6 +64,30 @@ public class FeatureSelectActivity extends AppCompatActivity {
                 healthInt.putExtra("key","Logan");
                 startActivity(healthInt);
                 */
+            }
+        });
+
+        addUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FeatureSelectActivity.this, AddPersonActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        identityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FeatureSelectActivity.this, IdentityActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FeatureSelectActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }

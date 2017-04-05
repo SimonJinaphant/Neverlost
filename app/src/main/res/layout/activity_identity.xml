@@ -49,8 +49,8 @@
 
     <ImageView
         android:id="@+id/identity_qr_code"
-        android:layout_width="1000px"
-        android:layout_height="1000px"
+        android:layout_width="600px"
+        android:layout_height="600px"
         android:layout_below="@+id/identity_profile_layout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp" />

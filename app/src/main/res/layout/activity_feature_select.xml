@@ -21,6 +21,23 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:text="Map"
+                    android:textAllCaps="false"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/map"
+                    android:textColor="@color/white"
+                    android:background="@drawable/transbutton"
+                    android:textSize="30sp"/>
+            </LinearLayout>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -66,6 +83,38 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:text="Add Users"
+                    android:textAllCaps="false"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/add_person"
+                    android:textColor="@color/white"
+                    android:background="@drawable/transbutton"
+                    android:textSize="30sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:text="Identity"
+                    android:textAllCaps="false"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/identity"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:background="@drawable/transbutton"/>
+            </LinearLayout>
 
         </LinearLayout>
 
