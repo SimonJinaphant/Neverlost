@@ -115,7 +115,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.MonitorActivity" />
         <activity android:name=".activities.IdentityActivity" />
-        <activity android:name=".activities.AddPersonActivity"></activity>
+        <activity android:name=".activities.AddPersonActivity" />
+        <activity android:name=".activities.ConnectionsActivity"></activity>
     </application>
 
 </manifest>

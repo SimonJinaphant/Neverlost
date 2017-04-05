@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.neverlost.ubc.neverlost.ConnectionListAdapter;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.models.readData;
 
@@ -86,7 +87,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FeatureSelectActivity.this, MainActivity.class);
+                Intent intent = new Intent(FeatureSelectActivity.this, ConnectionsActivity.class);
                 startActivity(intent);
             }
         });
