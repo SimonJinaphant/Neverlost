@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.facebook.Profile;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.models.MyCustomArrayAdaptor;
 
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
+
+import static java.security.AccessController.getContext;
 
 public class BluetoothActivity extends AppCompatActivity {
     private String my_macs[] = new String[]{"00:06:66:72:7A:18"};
@@ -169,8 +172,11 @@ public class BluetoothActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Connected)
-                    startActivity(new Intent(v.getContext(), FeatureSelectActivity.class));
+                if (Connected) {
+                    Intent healthAct = new Intent(v.getContext(), HealthActivity.class);
+                    healthAct.putExtra("key", Profile.getCurrentProfile().getId());
+                    startActivity(healthAct);
+                }
             }
         });
         Button button2=(Button)findViewById(R.id.skip);

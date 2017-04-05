@@ -27,9 +27,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent depInt = new Intent(view.getContext(), HealthActivity.class);
-                depInt.putExtra("key", Profile.getCurrentProfile().getId());
-
+                Intent depInt = new Intent(view.getContext(), BluetoothActivity.class);
                 startActivity(depInt);
 
                 //this button now goes to dependent health page
@@ -48,6 +46,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent careInt = new Intent(view.getContext(), MonitorActivity.class);
+                careInt.putExtra("key", Profile.getCurrentProfile().getId());
                 startActivity(careInt);
 
                 //this button now goes to caretaker health monitor page
