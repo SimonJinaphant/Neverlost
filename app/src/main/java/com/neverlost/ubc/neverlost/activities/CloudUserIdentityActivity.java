@@ -21,7 +21,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class IdentityActivity extends AppCompatActivity {
+public class CloudUserIdentityActivity extends AppCompatActivity {
 
     // Activity Constants
     private final static String TAG = "IDENTITY";
@@ -38,7 +38,7 @@ public class IdentityActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_identity);
+        setContentView(R.layout.activity_clouduser_identity);
 
         qrCodeProgressBar = (ProgressBar) findViewById(R.id.identity_qr_progress);
         qrCodeImageView = (ImageView) findViewById(R.id.identity_qr_code);
@@ -117,8 +117,8 @@ public class IdentityActivity extends AppCompatActivity {
             int[] pixels = new int[bitMatrixWidth * bitMatrixHeight];
 
             // Better cache this otherwise performance WILL drop
-            int colorCodeBlack = ContextCompat.getColor(IdentityActivity.this, R.color.black);
-            int colorCodeWhite = ContextCompat.getColor(IdentityActivity.this, R.color.white);
+            int colorCodeBlack = ContextCompat.getColor(CloudUserIdentityActivity.this, R.color.black);
+            int colorCodeWhite = ContextCompat.getColor(CloudUserIdentityActivity.this, R.color.white);
 
             // Generate the QR code, publishing updates for every completed row.
             for (int y = 0; y < bitMatrixHeight; y++) {

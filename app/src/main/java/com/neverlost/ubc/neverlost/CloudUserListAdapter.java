@@ -20,7 +20,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Simon Jinaphant on 04-Apr-2017.
  */
 
-public class ConnectionListAdapter extends ArrayAdapter<CloudMessageUser> {
+public class CloudUserListAdapter extends ArrayAdapter<CloudMessageUser> {
 
     ArrayList<CloudMessageUser> connectionsLists;
     Context context;
@@ -31,7 +31,7 @@ public class ConnectionListAdapter extends ArrayAdapter<CloudMessageUser> {
     private static final String FACEBOOK_URI_ENDPOINT_PICTURE = "/picture?height=400&width=400&migration_overrides=%7Boctober_2012%3Atrue%7D";
 
 
-    public ConnectionListAdapter(Context context, int resource, ArrayList<CloudMessageUser> objects) {
+    public CloudUserListAdapter(Context context, int resource, ArrayList<CloudMessageUser> objects) {
         super(context, resource, objects);
         this.connectionsLists = objects;
         this.context = context;
@@ -43,7 +43,7 @@ public class ConnectionListAdapter extends ArrayAdapter<CloudMessageUser> {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.connection_list_layout, null, true);
+            convertView = inflater.inflate(R.layout.list_clouduser, null, true);
         }
             CloudMessageUser connection = getItem(position);
 

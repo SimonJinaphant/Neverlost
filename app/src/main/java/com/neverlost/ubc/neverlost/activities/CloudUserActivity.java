@@ -8,14 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ListView;
 
-import com.neverlost.ubc.neverlost.ConnectionListAdapter;
+import com.neverlost.ubc.neverlost.CloudUserListAdapter;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.firebase.CloudMessageUser;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
 
 import java.util.ArrayList;
 
-public class ConnectionsActivity extends AppCompatActivity {
+public class CloudUserActivity extends AppCompatActivity {
 
     private static final int ADD_CLOUDUSER_INTENT = 1234;
 
@@ -28,7 +28,7 @@ public class ConnectionsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cloudusers_parent);
+        setContentView(R.layout.activity_clouduser);
 
         userListView = (ListView) findViewById(R.id.user_listview);
         addCloudUserFab = (FloatingActionButton) findViewById(R.id.add_clouduser_fab);
@@ -37,7 +37,7 @@ public class ConnectionsActivity extends AppCompatActivity {
         addCloudUserFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ConnectionsActivity.this, AddPersonActivity.class);
+                Intent intent = new Intent(CloudUserActivity.this, CloudUserScanActivity.class);
                 startActivityForResult(intent, ADD_CLOUDUSER_INTENT);
             }
         });
@@ -45,7 +45,7 @@ public class ConnectionsActivity extends AppCompatActivity {
         showIdentityFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ConnectionsActivity.this, IdentityActivity.class);
+                Intent intent = new Intent(CloudUserActivity.this, CloudUserIdentityActivity.class);
                 startActivity(intent);
             }
         });
@@ -69,12 +69,12 @@ public class ConnectionsActivity extends AppCompatActivity {
             users.clear();
 
             // Set the adapter for the List view
-            ConnectionListAdapter adapter = new ConnectionListAdapter(getApplicationContext(),
-                    R.layout.connection_list_layout, users);
+            CloudUserListAdapter adapter = new CloudUserListAdapter(getApplicationContext(),
+                    R.layout.list_clouduser, users);
 
             userListView.setAdapter(adapter);
         }
-        
+
         /**
          * The main computation being done in the background.
          */

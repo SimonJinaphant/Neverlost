@@ -5,41 +5,41 @@
     android:id="@+id/activity_identity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.neverlost.ubc.neverlost.activities.IdentityActivity">
+    tools:context="com.neverlost.ubc.neverlost.activities.CloudUserIdentityActivity">
 
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/connection_picture"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:border_color="#cccccc"
-        app:border_width="1dp"
-        app:srcCompat="@drawable/ic_person_outline_black_24dp"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"/>
+        app:border_color="#cccccc"
+        app:border_width="1dp"
+        app:srcCompat="@drawable/ic_person_outline_black_24dp" />
 
     <TextView
-        android:text="Johnathan Doe"
+        android:id="@+id/connection_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:id="@+id/connection_name"
         android:layout_alignTop="@+id/connection_picture"
+        android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/connection_picture"
+        android:text="Johnathan Doe"
         android:textColor="#333333"
         android:textSize="20sp" />
 
     <TextView
-        android:text="Dependent"
+        android:id="@+id/connection_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:id="@+id/connection_description"
-        android:layout_below="@+id/connection_name"
         android:layout_alignStart="@+id/connection_name"
+        android:layout_below="@+id/connection_name"
+        android:layout_marginTop="2dp"
+        android:text="Dependent"
         android:textColor="#555555"
         android:textSize="12sp" />
 

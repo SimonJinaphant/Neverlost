@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.neverlost.ubc.neverlost.activities.AddPersonActivity">
+    tools:context="com.neverlost.ubc.neverlost.activities.CloudUserScanActivity">
 
     <TextView
         android:id="@+id/profile_name_textview"

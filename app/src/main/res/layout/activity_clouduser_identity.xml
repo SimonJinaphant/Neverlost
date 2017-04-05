@@ -5,7 +5,7 @@
     android:id="@+id/activity_identity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.neverlost.ubc.neverlost.activities.IdentityActivity">
+    tools:context="com.neverlost.ubc.neverlost.activities.CloudUserIdentityActivity">
 
     <RelativeLayout
         android:id="@+id/identity_profile_layout"
