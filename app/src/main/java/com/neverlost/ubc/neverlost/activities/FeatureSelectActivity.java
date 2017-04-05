@@ -27,13 +27,17 @@ public class FeatureSelectActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent depInt = new Intent(view.getContext(), BluetoothActivity.class);
+
+
+                depInt.putExtra("key", Profile.getCurrentProfile().getId());
+
                 startActivity(depInt);
 
                 //this button now goes to dependent health page
                 //create gps button on that page if needed
 
                 /*Intent gpsInt = new Intent(view.getContext(), MainActivity.class);
+                /*Intent gpsInt = new Intent(view.getContext(), MapActivity.class);
                 gpsInt.putExtra("key","Logan");
                 startActivity(gpsInt);
                 */
@@ -47,6 +51,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
 
                 Intent careInt = new Intent(view.getContext(), MonitorActivity.class);
                 careInt.putExtra("key", Profile.getCurrentProfile().getId());
+
                 startActivity(careInt);
 
                 //this button now goes to caretaker health monitor page

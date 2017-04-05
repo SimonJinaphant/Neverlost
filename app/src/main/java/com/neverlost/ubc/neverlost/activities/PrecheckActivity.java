@@ -15,7 +15,7 @@ public class PrecheckActivity extends AppCompatActivity {
         setContentView(R.layout.activity_precheck);
 
         if (Authorization.containsRealAuthorizationKeys()) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, MapActivity.class);
             startActivity(intent);
         }
     }
