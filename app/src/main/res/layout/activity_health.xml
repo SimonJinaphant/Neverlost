@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="50dp"
                 android:id="@+id/heartRateValue"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="22dp"
                 android:layout_centerHorizontal="true"/>
 
             <Button
@@ -84,7 +84,7 @@
                 android:textSize="50dp"
                 android:id="@+id/bmrValue"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="25dp" />
+                android:layout_marginTop="22dp" />
 
             <Button
                 android:layout_width="150dp"
@@ -110,13 +110,27 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:text="BMR: 9999"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="25dp"
-            android:id="@+id/distanceValue"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BMR:"
+                android:textSize="25dp"
+                android:id="@+id/bmr"/>
+            <TextView
+                android:text="9999"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25dp"
+                android:id="@+id/distanceValue"
+                android:layout_toEndOf="@+id/bmr"/>
+
+        </RelativeLayout>
+
 
         <TextView
             android:text="Overall Evaluation: "
