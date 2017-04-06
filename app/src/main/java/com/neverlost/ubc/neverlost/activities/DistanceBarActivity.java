@@ -65,6 +65,7 @@ public class DistanceBarActivity extends AppCompatActivity {
                 long caloriesBurnt = Math.round(dependent.weight*0.57*(dependent.distances.get(0)/1609.34));
                 calValue.setText(String.valueOf(caloriesBurnt));
 
+                distBarChart.invalidate();
 
             }
 
