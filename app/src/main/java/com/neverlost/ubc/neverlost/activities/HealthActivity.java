@@ -85,7 +85,7 @@ public class HealthActivity extends AppCompatActivity {
 
                 int newHeartrateReading = sum/3;
 
-                int distanceTraveled = 0;
+                long distanceTraveled = dependent.distances.get(0);
 
                 Collections.reverse(dependent.heartRates);
                 dependent.heartRates.add((long) newHeartrateReading);
@@ -96,7 +96,7 @@ public class HealthActivity extends AppCompatActivity {
                 Log.d("BMR", String.valueOf(bmr));
                 bmrValue.setText(String.valueOf(bmr));
                 hearRateValue.setText(Integer.toString(newHeartrateReading));
-                distanceValue.setText(Integer.toString(distanceTraveled));
+                distanceValue.setText(String.valueOf(distanceTraveled));
 
                 int num_star  = HealthAlgorithm.healthEvaluate(dependent);
                 healthRatingBar.setNumStars(5);
