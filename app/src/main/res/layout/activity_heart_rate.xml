@@ -23,8 +23,7 @@
     <com.github.mikephil.charting.charts.LineChart
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:id="@+id/heartRateGraph"
-        android:layout_marginTop="38dp" />
+        android:id="@+id/heartRateGraph"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -56,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/trendValue"
-            android:layout_toEndOf="@+id/line" />
+            android:layout_below="@+id/textView10" />
 
         <TextView
             android:text="Trend : "
@@ -68,14 +67,7 @@
             android:layout_alignStart="@+id/trendValue"
             android:textColor="@color/light"/>
 
-        <View
-            android:id="@+id/line"
-            android:layout_width="1dp"
-            android:layout_height="fill_parent"
-            android:background="@color/light"
-            android:layout_toEndOf="@id/fluctValue"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"/>
+
 
     </RelativeLayout>
 
