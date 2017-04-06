@@ -36,10 +36,13 @@ public class MessagingService extends FirebaseMessagingService {
     public static final String FCM_DATA_DEPENDANT_NAME = "dependant_name";
     public static final String FCM_DATA_CARETAKER_ID = "caretaker_id";
     public static final String FCM_DATA_CARETAKER_NAME = "caretaker_name";
+    public static final String FCM_DATA_IN_DANGER = "in_danger";
 
-    // For communicating between this Service and MapActivity (or any other activity).
-    public static final String NEVERLOST_FCM_PANIC_RESULT = "com.neverlost.ubc.neverlost.MapActivity.FCM_PANIC_RESULT";
-    public static final String NEVERLOST_FCM_PROMPT_RESULT = "com.neverlost.ubc.neverlost.MapActivity.FCM_PROMPT_RESULT";
+
+    // For communicating between this Service and other local Activities
+    public static final String NCM_PANIC_MESSAGE = "com.neverlost.ubc.neverlost.MapActivity.NCM_PANIC_MESSAGE";
+    public static final String NCM_PROMPT_REQUEST = "com.neverlost.ubc.neverlost.MapActivity.NCM_PROMPT_REQUEST";
+    public static final String NCM_PROMPT_RESPONSE = "com.neverlost.ubc.neverlost.MapActivity.NCM_PROMPT_RESPONSE";
 
     // FCM Essential JSON keys.
     private static final String FCM_TOPIC = "/topics/";
@@ -98,6 +101,26 @@ public class MessagingService extends FirebaseMessagingService {
                 .withNotification("Safety Prompt from " + name, name + " wants to know if you're safe")
                 .withData(FCM_DATA_CARETAKER_ID, fromFirebaseId)
                 .withData(FCM_DATA_CARETAKER_NAME, name)
+                .build();
+
+        sendUpstreamCloudMessage(helpMessage, callback);
+    }
+
+    /**
+     * Respond/ACK to a sent safety verification prompt
+     *
+     * @param toFirebaseId - The firebase client ID for the dependent we're sending to
+     * @param safe         - Status determining if they are safe or not
+     * @param callback     - Callback to handle success/failed transmission cases.
+     */
+    public static void respondSafetyPrompt(String toFirebaseId, boolean safe, Callback callback) {
+        String name = Profile.getCurrentProfile().getFirstName();
+
+        CloudMessage helpMessage = CloudMessage.builder()
+                .to(toFirebaseId)
+                .withNotification("Safety Confirmed", name + " confirms they're safe")
+                .withData(FCM_DATA_IN_DANGER, safe ? "Y" : "N")
+                .withData(FCM_DATA_DEPENDANT_NAME, name)
                 .build();
 
         sendUpstreamCloudMessage(helpMessage, callback);
@@ -173,6 +196,7 @@ public class MessagingService extends FirebaseMessagingService {
             String dependantName = null;
             String caretakerId = null;
             String caretakerName = null;
+            Boolean dependentIsSafe = null;
 
             for (Map.Entry<String, String> entry : remoteMessage.getData().entrySet()) {
                 String key = entry.getKey();
@@ -182,9 +206,11 @@ public class MessagingService extends FirebaseMessagingService {
                     case MessagingService.FCM_DATA_LAT:
                         lat = Double.parseDouble(value);
                         break;
+
                     case MessagingService.FCM_DATA_LNG:
                         lng = Double.parseDouble(value);
                         break;
+
                     case MessagingService.FCM_DATA_DEPENDANT_NAME:
                         dependantName = value;
                         break;
@@ -192,16 +218,21 @@ public class MessagingService extends FirebaseMessagingService {
                     case MessagingService.FCM_DATA_CARETAKER_ID:
                         caretakerId = value;
                         break;
+
                     case MessagingService.FCM_DATA_CARETAKER_NAME:
                         caretakerName = value;
+                        break;
+
+                    case MessagingService.FCM_DATA_IN_DANGER:
+                        dependentIsSafe = value.equals("Y");
                         break;
                 }
 
                 Log.d(TAG, "Key: " + key + " \t Value: " + value);
             }
 
-            if (dependantName != null) {
-                Intent intent = new Intent(NEVERLOST_FCM_PANIC_RESULT);
+            if (lng != Double.MAX_VALUE && lat != Double.MAX_VALUE) {
+                Intent intent = new Intent(NCM_PANIC_MESSAGE);
                 intent.putExtra(MessagingService.FCM_DATA_LAT, lat);
                 intent.putExtra(MessagingService.FCM_DATA_LNG, lng);
                 intent.putExtra(MessagingService.FCM_DATA_DEPENDANT_NAME, dependantName);
@@ -210,12 +241,25 @@ public class MessagingService extends FirebaseMessagingService {
             }
 
             if (caretakerId != null) {
-                Intent intent = new Intent(NEVERLOST_FCM_PROMPT_RESULT);
+                Intent intent = new Intent(NCM_PROMPT_REQUEST);
                 intent.putExtra(MessagingService.FCM_DATA_CARETAKER_NAME, caretakerName);
                 intent.putExtra(MessagingService.FCM_DATA_CARETAKER_ID, caretakerId);
 
                 broadcastManager.sendBroadcast(intent);
-                sendNotification("Safety prompt!", caretakerName+" wants to confirm you're safe");
+                sendNotification("Safety prompt!", caretakerName + " wants to confirm you're safe");
+            }
+
+            if (dependentIsSafe != null) {
+                Intent intent = new Intent(NCM_PROMPT_RESPONSE);
+                intent.putExtra(FCM_DATA_IN_DANGER, dependentIsSafe);
+                intent.putExtra(FCM_DATA_DEPENDANT_NAME, dependantName);
+
+                broadcastManager.sendBroadcast(intent);
+                if(dependentIsSafe){
+                    sendNotification(dependantName+" is safe", dependantName+" has responded successfully");
+                }else{
+                    sendNotification(dependantName+" is in danger!", "Send for help!");
+                }
             }
 
         }

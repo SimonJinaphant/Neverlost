@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -99,18 +100,56 @@ public class MapActivity extends AppCompatActivity
             @Override
             public void onReceive(Context context, Intent intent) {
                 String caretakerName = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_NAME);
-                String caretakerId = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_ID);
+                final String caretakerId = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_ID);
 
-                AlertDialog alertDialog = new AlertDialog.Builder(MapActivity.this).create();
+                final AlertDialog alertDialog = new AlertDialog.Builder(MapActivity.this).create();
                 alertDialog.setTitle("Safety prompt");
-                alertDialog.setMessage(caretakerName + " wants to see if you're safe");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "I am Safe",
+                alertDialog.setMessage(caretakerName + " wants to see if you're safe. \n You have 10 seconds to reply...");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "I am Safe",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                MessagingService.respondSafetyPrompt(caretakerId, true, new Callback() {
+                                    @Override
+                                    public void onFailure(Call call, IOException e) {
+                                        displayMessage("Neverlost failed to reply to the caretaker");
+
+                                    }
+
+                                    @Override
+                                    public void onResponse(Call call, Response response) throws IOException {
+                                        if (response.isSuccessful()) {
+                                            displayMessage("Safety reply sent!");
+                                        } else {
+                                            displayMessage("panic: I don't know how to handle this!");
+                                        }
+                                    }
+                                });
                                 dialog.dismiss();
                             }
                         });
                 alertDialog.show();
+
+                // Hide after some seconds
+                final Handler handler = new Handler();
+                final Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (alertDialog.isShowing()) {
+                            alertDialog.dismiss();
+                            displayMessage("Failed to respond in time");
+                        }
+                    }
+                };
+
+                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        handler.removeCallbacks(runnable);
+                    }
+                });
+
+                handler.postDelayed(runnable, 10000);
+
                 vibrationService.vibrate(vibrationPattern, -1);
             }
         };
@@ -229,13 +268,13 @@ public class MapActivity extends AppCompatActivity
         LocalBroadcastManager
                 .getInstance(this)
                 .registerReceiver(dependantHelpReceiver,
-                        new IntentFilter(MessagingService.NEVERLOST_FCM_PANIC_RESULT)
+                        new IntentFilter(MessagingService.NCM_PANIC_MESSAGE)
                 );
 
         LocalBroadcastManager
                 .getInstance(this)
                 .registerReceiver(caretakerPromptReciever,
-                        new IntentFilter(MessagingService.NEVERLOST_FCM_PROMPT_RESULT)
+                        new IntentFilter(MessagingService.NCM_PROMPT_REQUEST)
                 );
     }
 
