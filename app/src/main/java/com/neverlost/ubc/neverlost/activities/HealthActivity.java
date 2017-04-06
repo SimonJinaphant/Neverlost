@@ -74,13 +74,14 @@ public class HealthActivity extends AppCompatActivity {
                 readData dataReader = new readData();
                 int sum=0;
                 for(int i=0; i<3; i++){
-                    sum += dataReader.getHRData();
+                    sum += 0/*dataReader.getHRData()*/;
                 }
 
-                Coordinate curLoc = dataReader.getGPSData();
+                Coordinate curLoc = new Coordinate(0,0); //= dataReader.getGPSData();
                 if(curLoc==null){
                     Log.d("DE1","de1 gps not working");
                 }
+
 
                 int newHeartrateReading = sum/10;
 

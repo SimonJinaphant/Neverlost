@@ -33,7 +33,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                Intent depInt = new Intent(view.getContext(),BluetoothActivity.class);
+                Intent depInt = new Intent(view.getContext(),HealthActivity.class);
                 depInt.putExtra("key", Profile.getCurrentProfile().getId());
                 startActivity(depInt);
 

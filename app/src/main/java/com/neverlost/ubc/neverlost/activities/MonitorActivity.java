@@ -21,18 +21,17 @@ public class MonitorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        name = (TextView) findViewById(R.id.name);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monitor);
         Intent intent = getIntent();
-        final String uname = intent.getStringExtra("key");
+        final String uid = intent.getStringExtra("key");
 
         FirebaseRef.dependentRer.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Dependent dependent = FirebaseQuery.getDependent(uname, dataSnapshot);
 
+                name = (TextView) findViewById(R.id.depname);
+                Dependent dependent = FirebaseQuery.getDependent(uid, dataSnapshot);
 
                 name.setText(dependent.name);
 
