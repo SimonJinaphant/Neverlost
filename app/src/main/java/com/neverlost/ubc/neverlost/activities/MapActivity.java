@@ -65,7 +65,7 @@ public class MapActivity extends AppCompatActivity
     private LocationManager locationManager;
     private BroadcastReceiver dependantHelpReceiver;
     private BroadcastReceiver caretakerPromptReciever;
-    // Vibration to alert the caretaker that something has happened to their dependant
+    // Vibration to alert1 the caretaker that something has happened to their dependant
     private Vibrator vibrationService;
 
     @Override
@@ -155,7 +155,7 @@ public class MapActivity extends AppCompatActivity
         };
 
         // -----------------------------------------------------------------------------------------
-        // Obtain access to the phone's vibration services to alert the user of incoming messages
+        // Obtain access to the phone's vibration services to alert1 the user of incoming messages
         // -----------------------------------------------------------------------------------------
         if (vibrationService == null) {
             vibrationService = (Vibrator) getSystemService(VIBRATOR_SERVICE);

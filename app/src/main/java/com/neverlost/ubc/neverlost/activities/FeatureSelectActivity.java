@@ -6,15 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.facebook.Profile;
 import com.neverlost.ubc.neverlost.R;
 
 public class FeatureSelectActivity extends AppCompatActivity {
 
     Button dependent;
-    Button caretaker;
+    //Button caretaker;
     private Button userlistButton;
-    private Button mapButton;
+    //private Button mapButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +21,10 @@ public class FeatureSelectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_feature_select);
 
         dependent = (Button) findViewById(R.id.dependent);
-        caretaker = (Button) findViewById(R.id.caretaker);
+        //caretaker = (Button) findViewById(R.id.caretaker);
 
         userlistButton = (Button) findViewById(R.id.userlist_button);
-        mapButton = (Button) findViewById(R.id.map_button);
+        //mapButton = (Button) findViewById(R.id.map_button);
 
         dependent.setOnClickListener(new View.OnClickListener() {
 
@@ -47,31 +46,6 @@ public class FeatureSelectActivity extends AppCompatActivity {
             }
         });
 
-        caretaker.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                Intent careInt = new Intent(view.getContext(), MonitorActivity.class);
-
-
-                //TODO: add dependent id to caretaker userclass
-                //link to fbID of dependent
-                careInt.putExtra("key", /*change this to dependent id*/ Profile.getCurrentProfile().getId());
-
-                startActivity(careInt);
-
-                //this button now goes to caretaker health monitor page
-                //create gps button on that page if needed
-
-                /*
-                Intent healthInt = new Intent(view.getContext(), HealthActivity.class);
-                healthInt.putExtra("key","Logan");
-                startActivity(healthInt);
-                */
-            }
-        });
-
         userlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +54,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
             }
         });
 
+        /*
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,5 +62,6 @@ public class FeatureSelectActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        */
     }
 }
