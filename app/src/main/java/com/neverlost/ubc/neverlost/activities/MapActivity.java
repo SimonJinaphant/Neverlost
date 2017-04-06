@@ -2,6 +2,7 @@ package com.neverlost.ubc.neverlost.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -20,6 +22,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -60,7 +63,8 @@ public class MapActivity extends AppCompatActivity
     private GoogleMap mMap;
     private Location currentLocation;
     private LocationManager locationManager;
-    private BroadcastReceiver dependantHelpBroadcastReceiver;
+    private BroadcastReceiver dependantHelpReceiver;
+    private BroadcastReceiver caretakerPromptReciever;
     // Vibration to alert the caretaker that something has happened to their dependant
     private Vibrator vibrationService;
 
@@ -72,7 +76,7 @@ public class MapActivity extends AppCompatActivity
         // -----------------------------------------------------------------------------------------
         // Listen for broadcasts coming from our local FCM Messaging Service.
         // -----------------------------------------------------------------------------------------
-        dependantHelpBroadcastReceiver = new BroadcastReceiver() {
+        dependantHelpReceiver = new BroadcastReceiver() {
 
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -83,10 +87,69 @@ public class MapActivity extends AppCompatActivity
 
                 mMap.addMarker(new MarkerOptions()
                         .position(dependant)
-                        .title(intent.getStringExtra(MessagingService.FCM_DATA_DEPENDANT))
+                        .title(intent.getStringExtra(MessagingService.FCM_DATA_DEPENDANT_NAME))
                 );
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(dependant));
+                vibrationService.vibrate(vibrationPattern, -1);
+            }
+        };
+
+        caretakerPromptReciever = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String caretakerName = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_NAME);
+                final String caretakerId = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_ID);
+
+                final AlertDialog alertDialog = new AlertDialog.Builder(MapActivity.this).create();
+                alertDialog.setTitle("Safety prompt");
+                alertDialog.setMessage(caretakerName + " wants to see if you're safe. \n You have 10 seconds to reply...");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "I am Safe",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                MessagingService.respondSafetyPrompt(caretakerId, true, new Callback() {
+                                    @Override
+                                    public void onFailure(Call call, IOException e) {
+                                        displayMessage("Neverlost failed to reply to the caretaker");
+
+                                    }
+
+                                    @Override
+                                    public void onResponse(Call call, Response response) throws IOException {
+                                        if (response.isSuccessful()) {
+                                            displayMessage("Safety reply sent!");
+                                        } else {
+                                            displayMessage("panic: I don't know how to handle this!");
+                                        }
+                                    }
+                                });
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+
+                // Hide after some seconds
+                final Handler handler = new Handler();
+                final Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (alertDialog.isShowing()) {
+                            alertDialog.dismiss();
+                            displayMessage("Failed to respond in time");
+                        }
+                    }
+                };
+
+                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        handler.removeCallbacks(runnable);
+                    }
+                });
+
+                handler.postDelayed(runnable, 10000);
+
                 vibrationService.vibrate(vibrationPattern, -1);
             }
         };
@@ -204,8 +267,14 @@ public class MapActivity extends AppCompatActivity
         super.onStart();
         LocalBroadcastManager
                 .getInstance(this)
-                .registerReceiver(dependantHelpBroadcastReceiver,
-                        new IntentFilter(MessagingService.NEVERLOST_FCM_RESULT)
+                .registerReceiver(dependantHelpReceiver,
+                        new IntentFilter(MessagingService.NCM_PANIC_MESSAGE)
+                );
+
+        LocalBroadcastManager
+                .getInstance(this)
+                .registerReceiver(caretakerPromptReciever,
+                        new IntentFilter(MessagingService.NCM_PROMPT_REQUEST)
                 );
     }
 
@@ -213,7 +282,11 @@ public class MapActivity extends AppCompatActivity
     protected void onStop() {
         LocalBroadcastManager
                 .getInstance(this)
-                .unregisterReceiver(dependantHelpBroadcastReceiver);
+                .unregisterReceiver(dependantHelpReceiver);
+
+        LocalBroadcastManager
+                .getInstance(this)
+                .unregisterReceiver(caretakerPromptReciever);
 
         super.onStop();
     }

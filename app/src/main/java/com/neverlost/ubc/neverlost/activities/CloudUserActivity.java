@@ -3,17 +3,27 @@ package com.neverlost.ubc.neverlost.activities;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.facebook.Profile;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.neverlost.ubc.neverlost.CloudUserListAdapter;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.firebase.CloudMessageUser;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class CloudUserActivity extends AppCompatActivity {
 
@@ -73,6 +83,34 @@ public class CloudUserActivity extends AppCompatActivity {
                     R.layout.list_clouduser, users);
 
             userListView.setAdapter(adapter);
+            userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    final CloudMessageUser selectedUser = users.get(position);
+
+                    displayMessage("Selected: "+selectedUser.getName());
+
+                    MessagingService.sendSafetyPrompt(
+                            selectedUser.getFirebaseClientToken(),
+                            FirebaseInstanceId.getInstance().getToken(),
+                            new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            displayMessage("Failed to send safety prompt to "+selectedUser.getName());
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (response.isSuccessful()) {
+                                displayMessage("Prompt has been sent!");
+                            } else {
+                                displayMessage("panic: I don't know how to handle this!");
+                            }
+                        }
+                    });
+                }
+            });
+
         }
 
         /**
@@ -103,5 +141,20 @@ public class CloudUserActivity extends AppCompatActivity {
                 new LoadUsers().execute();
             }
         }
+    }
+
+    /**
+     * Helper function to display a Toast message without cluttering the codebase.
+     *
+     * @param message - The message to print on the Toast message.
+     */
+    private void displayMessage(@NonNull final String message) {
+        // Launch the Toast on a UI thread to prevent it from crashing.
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(CloudUserActivity.this, message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
