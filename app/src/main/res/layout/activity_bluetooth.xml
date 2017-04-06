@@ -18,11 +18,11 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="5dp"
             android:textColor = "@android:color/white"
-            android:text="Please connect to a Neverlost device"
+            android:text="Please connect to a Neverlost device so that we can check your health!"
             android:textSize="18dp" />
 
         <TextView

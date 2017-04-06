@@ -10,11 +10,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Profile;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.firebase.CloudMessageUser;
+import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
+import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
+import com.neverlost.ubc.neverlost.objects.Caretaker;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -53,6 +60,7 @@ public class CloudUserScanActivity extends AppCompatActivity {
         qrScanIntent.initiateScan();
 
 
+
     }
 
     /**
@@ -89,6 +97,28 @@ public class CloudUserScanActivity extends AppCompatActivity {
                     Log.d(TAG, facebookId);
                     Log.d(TAG, FACEBOOK_URI_BASE + facebookId + FACEBOOK_URI_ENDPOINT_PICTURE);
 
+                    FirebaseRef.caretakerRer.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            String fbid = Profile.getCurrentProfile().getId();
+
+                            Caretaker caretaker = FirebaseQuery.getCaretaker(fbid, dataSnapshot);
+
+                            Log.d("aaron's tag", facebookId);
+
+                            caretaker.dependents.add(facebookId);
+
+                            FirebaseQuery.updateCaretaker(caretaker);
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -107,6 +137,10 @@ public class CloudUserScanActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     MessagingService.addDependent(user);
+
+
+
+
                                     setResult(RESULT_OK);
                                     finish();
                                 }

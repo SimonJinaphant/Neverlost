@@ -31,7 +31,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:background="@drawable/transbutton"
-                    android:text="Users"
+                    android:text="Connect to Others"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="30sp" />
@@ -70,7 +70,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:background="@drawable/transbutton"
-                    android:text="Dependent"
+                    android:text="My Health Information"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="30sp" />

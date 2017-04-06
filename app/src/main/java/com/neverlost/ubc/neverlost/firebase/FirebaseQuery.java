@@ -3,11 +3,10 @@ package com.neverlost.ubc.neverlost.firebase;
 import com.facebook.Profile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.neverlost.ubc.neverlost.datastruct.DistanceData;
-import com.neverlost.ubc.neverlost.datastruct.HeartRateData;
 import com.neverlost.ubc.neverlost.objects.Caretaker;
 import com.neverlost.ubc.neverlost.objects.Dependent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +44,9 @@ public class FirebaseQuery {
         long              height         = (long)  user.child("height").getValue();
         List<String>      dependents     = (List<String>)  user.child("dependents").getValue();
 
+        if (dependents == null)
+            return new Caretaker(uname, age, weight, height, new ArrayList<String>());
+
         return new Caretaker(uname, age, weight, height, dependents);
 
     };
@@ -62,7 +64,7 @@ public class FirebaseQuery {
 
     public static void updateCaretaker(Caretaker caretaker){
 
-        DatabaseReference userRef = FirebaseRef.caretakerRer.child(caretaker.name);
+        DatabaseReference userRef = FirebaseRef.caretakerRer.child(Profile.getCurrentProfile().getId());
 
         userRef.child("age").setValue(caretaker.age);
         userRef.child("weight").setValue(caretaker.weight);
