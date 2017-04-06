@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.facebook.Profile;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.models.MyCustomArrayAdaptor;
+import com.neverlost.ubc.neverlost.models.readData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,8 +27,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
-
-import static java.security.AccessController.getContext;
 
 public class BluetoothActivity extends AppCompatActivity {
     private String my_macs[] = new String[]{"00:06:66:72:7A:18"};
@@ -51,7 +50,6 @@ public class BluetoothActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
             String text = "Paired Device: " +
                     myPairedDevicesStringArray.get(position);
-            Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
             if (myPairedValid.get(position)) {
                 if (Connected == true) {
                     closeConnection();
@@ -71,7 +69,6 @@ public class BluetoothActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
             String text = "Discovered Device: " +
                     myDiscoveredDevicesStringArray.get(position);
-            Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
             if (myDiscoveredValid.get(position)) {
                 if (Connected == true) {
                     closeConnection();
@@ -133,10 +130,6 @@ public class BluetoothActivity extends AppCompatActivity {
                     else
                         myDiscoveredValid.add(false);
                     myDiscoveredArrayAdapter.notifyDataSetChanged();
-                } else if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)) {
-                    Toast.makeText(context, "Discovery Started", Toast.LENGTH_SHORT).show();
-                } else if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)) {
-                    Toast.makeText(context, "Discovery Finished", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -173,6 +166,7 @@ public class BluetoothActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Connected) {
+                    readData.sendName();
                     Intent healthAct = new Intent(v.getContext(), HealthActivity.class);
                     healthAct.putExtra("key", Profile.getCurrentProfile().getId());
                     startActivity(healthAct);

@@ -3,11 +3,11 @@ package com.neverlost.ubc.neverlost.models;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.facebook.Profile;
 import com.neverlost.ubc.neverlost.activities.BluetoothActivity;
 import com.neverlost.ubc.neverlost.objects.Coordinate;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 public class readData  {
 
@@ -63,6 +63,23 @@ public class readData  {
         if (reading.equals(""))
             reading = "-1";
         return Integer.parseInt(reading);
+    }
+
+    public static boolean sendName() {
+        String reading;
+        int counter = 0;
+        do {
+            for (int i = 0; i < 3; i++) {
+                WriteToBTDevice("UserName");
+                WriteToBTDevice(Profile.getCurrentProfile().getName());
+            }
+            reading = ReadFromBTDevice();
+            counter++;
+        } while (reading.equals("") && counter <= 5);
+        Log.d("Name", reading);
+        if (reading.equals(""))
+            return false;
+        return true;
     }
 
     private static void WriteToBTDevice(String message) {
