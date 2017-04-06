@@ -107,10 +107,10 @@ public class CloudUserScanActivity extends AppCompatActivity {
 
                             Log.d("aaron's tag", facebookId);
 
-                            caretaker.dependents.add(facebookId);
-
-                            FirebaseQuery.updateCaretaker(caretaker);
-
+                            if (!caretaker.dependents.contains(facebookId)) {
+                                caretaker.dependents.add(facebookId);
+                                FirebaseQuery.updateCaretaker(caretaker);
+                            }
                         }
 
                         @Override
@@ -137,10 +137,6 @@ public class CloudUserScanActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     MessagingService.addDependent(user);
-
-
-
-
                                     setResult(RESULT_OK);
                                     finish();
                                 }
