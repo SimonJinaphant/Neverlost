@@ -25,6 +25,7 @@ import com.neverlost.ubc.neverlost.objects.Coordinate;
 import com.neverlost.ubc.neverlost.objects.Dependent;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -74,22 +75,26 @@ public class HealthActivity extends AppCompatActivity {
                 readData dataReader = new readData();
                 int sum=0;
                 for(int i=0; i<3; i++){
-                    sum += 0/*dataReader.getHRData()*/;
+                    sum += dataReader.getHRData();
                 }
 
-                Coordinate curLoc = new Coordinate(0,0); //= dataReader.getGPSData();
+                Coordinate curLoc = dataReader.getGPSData();
                 if(curLoc==null){
-                    Log.d("DE1","de1 gps not working");
+                    curLoc = new Coordinate((float) 1000.0, (float)1000.0);
                 }
 
-
-                int newHeartrateReading = sum/10;
+                int newHeartrateReading = sum/3;
 
                 int distanceTraveled = 0;
 
+                Collections.reverse(dependent.heartRates);
+                dependent.heartRates.add((long) newHeartrateReading);
+                Collections.reverse(dependent.heartRates);
+
                 boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
 
-                bmrValue.setText(Integer.toString(bmr));
+                Log.d("BMR", String.valueOf(bmr));
+                bmrValue.setText(String.valueOf(bmr));
                 hearRateValue.setText(Integer.toString(newHeartrateReading));
                 distanceValue.setText(Integer.toString(distanceTraveled));
 
@@ -104,6 +109,8 @@ public class HealthActivity extends AppCompatActivity {
                 }else {
                     healthEvaluation.setText("GOOD");
                 }
+
+                //FirebaseQuery.updateDependent(dependent);
 
                 if(!isHeartrateNormal){
                     MessagingService.broadcastForHelpHP(curLoc, dependent.name, new Callback() {

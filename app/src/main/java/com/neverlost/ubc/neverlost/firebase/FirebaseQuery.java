@@ -62,7 +62,7 @@ public class FirebaseQuery {
 
     public static void updateCaretaker(Caretaker caretaker){
 
-        DatabaseReference userRef = FirebaseRef.dependentRer.child(caretaker.name);
+        DatabaseReference userRef = FirebaseRef.caretakerRer.child(caretaker.name);
 
         userRef.child("age").setValue(caretaker.age);
         userRef.child("weight").setValue(caretaker.weight);
