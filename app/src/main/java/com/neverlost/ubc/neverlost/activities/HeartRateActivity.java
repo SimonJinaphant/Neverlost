@@ -75,6 +75,8 @@ public class HeartRateActivity extends AppCompatActivity {
                     trendValue.setText("Decreasing");
                 }
 
+                heartRateGraph.invalidate();
+
             }
 
             @Override
