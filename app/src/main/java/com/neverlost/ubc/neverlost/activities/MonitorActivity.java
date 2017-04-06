@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -17,6 +18,8 @@ import com.neverlost.ubc.neverlost.objects.Dependent;
 public class MonitorActivity extends AppCompatActivity {
 
     TextView name;
+    TextView heartRateValue;
+    Button   heartRateButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,20 +29,34 @@ public class MonitorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final String uid = intent.getStringExtra("key");
 
+        name = (TextView) findViewById(R.id.depname);
+        heartRateValue = (TextView) findViewById(R.id.heartRateValue);
+        heartRateButton = (Button) findViewById(R.id.heartRateButton);
+
         FirebaseRef.dependentRer.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                name = (TextView) findViewById(R.id.depname);
+
                 Dependent dependent = FirebaseQuery.getDependent(uid, dataSnapshot);
 
                 name.setText(dependent.name);
+                heartRateValue.setText(String.valueOf(dependent.heartRates.get(0)));
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        heartRateValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent heartRateGraph = new Intent(view.getContext(), HeartRateActivity.class);
+                heartRateGraph.putExtra("key", uid);
+                startActivity(heartRateGraph);
             }
         });
     }
