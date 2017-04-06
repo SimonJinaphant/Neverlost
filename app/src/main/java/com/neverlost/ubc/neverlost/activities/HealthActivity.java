@@ -1,8 +1,16 @@
 package com.neverlost.ubc.neverlost.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +53,11 @@ public class HealthActivity extends AppCompatActivity {
     RatingBar healthRatingBar;
     TextView healthEvaluation;
     TextView bmrValue;
+    private BroadcastReceiver caretakerPromptReciever;
+    private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
+
+    // Vibration to alert the caretaker that something has happened to their dependant
+    private Vibrator vibrationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +75,71 @@ public class HealthActivity extends AppCompatActivity {
         healthRatingBar = (RatingBar) findViewById(R.id.healthRatingBar);
         healthEvaluation = (TextView) findViewById(R.id.healthEval);
         bmrValue = (TextView) findViewById(R.id.bmrValue);
+        // -----------------------------------------------------------------------------------------
+        // Obtain access to the phone's vibration services to alert the user of incoming messages
+        // -----------------------------------------------------------------------------------------
+        if (vibrationService == null) {
+            vibrationService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        }
+
+        caretakerPromptReciever = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String caretakerName = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_NAME);
+                final String caretakerId = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_ID);
+
+                final AlertDialog alertDialog = new AlertDialog.Builder(HealthActivity.this).create();
+                alertDialog.setTitle("Safety prompt");
+                alertDialog.setMessage(caretakerName + " wants to see if you're safe. \n You have 10 seconds to reply...");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "I am Safe",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                MessagingService.respondSafetyPrompt(caretakerId, true, new Callback() {
+                                    @Override
+                                    public void onFailure(Call call, IOException e) {
+                                        displayMessage("Neverlost failed to reply to the caretaker");
+
+                                    }
+
+                                    @Override
+                                    public void onResponse(Call call, Response response) throws IOException {
+                                        if (response.isSuccessful()) {
+                                            displayMessage("Safety reply sent!");
+                                        } else {
+                                            displayMessage("panic: I don't know how to handle this!");
+                                        }
+                                    }
+                                });
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+
+                // Hide after some seconds
+                final Handler handler = new Handler();
+                final Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (alertDialog.isShowing()) {
+                            alertDialog.dismiss();
+                            displayMessage("Failed to respond in time");
+                        }
+                    }
+                };
+
+                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        handler.removeCallbacks(runnable);
+                    }
+                });
+
+                handler.postDelayed(runnable, 10000);
+
+                vibrationService.vibrate(vibrationPattern, -1);
+            }
+        };
 
         FirebaseRef.dependentRer.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -73,17 +151,17 @@ public class HealthActivity extends AppCompatActivity {
                 int bmr = (int) HealthAlgorithm.computeBMR_male(dependent);
 
                 readData dataReader = new readData();
-                int sum=0;
-                for(int i=0; i<3; i++){
+                int sum = 0;
+                for (int i = 0; i < 3; i++) {
                     sum += dataReader.getHRData();
                 }
 
                 Coordinate curLoc = dataReader.getGPSData();
-                if(curLoc==null){
-                    curLoc = new Coordinate((float) 1000.0, (float)1000.0);
+                if (curLoc == null) {
+                    curLoc = new Coordinate((float) 1000.0, (float) 1000.0);
                 }
 
-                int newHeartrateReading = sum/3;
+                int newHeartrateReading = sum / 3;
 
                 long distanceTraveled = dependent.distances.get(0);
 
@@ -98,21 +176,21 @@ public class HealthActivity extends AppCompatActivity {
                 hearRateValue.setText(Integer.toString(newHeartrateReading));
                 distanceValue.setText(String.valueOf(distanceTraveled));
 
-                int num_star  = HealthAlgorithm.healthEvaluate(dependent);
+                int num_star = HealthAlgorithm.healthEvaluate(dependent);
                 healthRatingBar.setNumStars(5);
                 healthRatingBar.setRating(num_star);
                 healthRatingBar.setIsIndicator(true);
 
                 //scale
-                if(num_star< 3){
+                if (num_star < 3) {
                     healthEvaluation.setText("NEED IMPROVEMENT");
-                }else {
+                } else {
                     healthEvaluation.setText("GOOD");
                 }
 
                 //FirebaseQuery.updateDependent(dependent);
 
-                if(!isHeartrateNormal){
+                if (!isHeartrateNormal) {
                     MessagingService.broadcastForHelpHP(curLoc, dependent.name, new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
@@ -162,6 +240,27 @@ public class HealthActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        LocalBroadcastManager
+                .getInstance(this)
+                .registerReceiver(caretakerPromptReciever,
+                        new IntentFilter(MessagingService.NCM_PROMPT_REQUEST)
+                );
+    }
+
+    @Override
+    protected void onStop() {
+
+        LocalBroadcastManager
+                .getInstance(this)
+                .unregisterReceiver(caretakerPromptReciever);
+
+        super.onStop();
     }
 
     /**

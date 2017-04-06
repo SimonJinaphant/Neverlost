@@ -81,11 +81,12 @@ public class CloudUserActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     final CloudMessageUser selectedUser = users.get(position);
 
-                    displayMessage("Selected: "+selectedUser.getName());
+                    displayMessage("Selected: " + selectedUser.getName());
 
                     Intent careInt = new Intent(view.getContext(), MonitorActivity.class);
 
-                    careInt.putExtra("key", selectedUser.getFacebookId());
+                    careInt.putExtra("facebook_id", selectedUser.getFacebookId());
+                    careInt.putExtra("firebase_id", selectedUser.getFirebaseClientToken());
 
                     startActivity(careInt);
                 }
