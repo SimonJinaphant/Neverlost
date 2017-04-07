@@ -31,23 +31,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:background="@drawable/transbutton"
-                    android:text="Users"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="30sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <Button
-                    android:id="@+id/map_button"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:background="@drawable/transbutton"
-                    android:text="Map"
+                    android:text="Connect to Others"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="30sp" />
@@ -70,27 +54,13 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:background="@drawable/transbutton"
-                    android:text="Dependent"
+                    android:text="My Health Information"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="30sp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
 
-                <Button
-                    android:id="@+id/caretaker"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:background="@drawable/transbutton"
-                    android:text="Caretaker"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="30sp" />
-            </LinearLayout>
 
         </LinearLayout>
 

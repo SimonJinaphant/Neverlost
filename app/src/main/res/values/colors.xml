@@ -7,4 +7,6 @@
     <color name="white">#ffffff</color>
     <color name="button">#636363</color>
     <color name="light">#E0E0E0</color>
+    <color name="panic">#F22940</color>
+    <color name="safe">#3EB750</color>
 </resources>

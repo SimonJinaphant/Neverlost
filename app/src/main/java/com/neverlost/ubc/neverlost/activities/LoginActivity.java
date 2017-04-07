@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.neverlost.ubc.neverlost.R;
 
 
@@ -24,7 +25,11 @@ public class LoginActivity extends AppCompatActivity {
         int location = locationOn();
         if (location == 0) {
             Toast.makeText(this, "Please turn on location services before proceeding", Toast.LENGTH_SHORT).show();
-        } else {
+        }
+        if (!isLoggedIn()) {
+            Toast.makeText(this, "Please log into facebook before proceeding", Toast.LENGTH_SHORT).show();
+        }
+        else {
            // Intent i = new Intent(this, FeatureSelectActivity.class);
             Intent i = new Intent(this, FeatureSelectActivity.class);
             startActivity(i);
@@ -40,6 +45,11 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return off;
+    }
+
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
 
 

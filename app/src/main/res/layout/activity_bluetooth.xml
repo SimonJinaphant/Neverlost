@@ -18,11 +18,11 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="5dp"
             android:textColor = "@android:color/white"
-            android:text="Please connect to a Neverlost device"
+            android:text="Please connect to a Neverlost device so that we can check your health!"
             android:textSize="18dp" />
 
         <TextView
@@ -80,17 +80,5 @@
             android:layout_alignParentRight = "true"
             android:text="Confirm Choice" />
 
-        <Button
-            android:id="@+id/skip"
-            android:textSize="15sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:background="@drawable/transbutton"
-            android:textColor="@color/white"
-            android:paddingLeft = "5dp"
-            android:paddingRight = "5dp"
-            android:layout_alignParentLeft="true"
-            android:text="Skip (for testing only)" />
     </RelativeLayout>
 </LinearLayout>

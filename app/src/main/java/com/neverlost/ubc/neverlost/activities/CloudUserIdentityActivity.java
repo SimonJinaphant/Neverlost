@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -47,7 +48,7 @@ public class CloudUserIdentityActivity extends AppCompatActivity {
 
         // Load our profile info onto the UI
         Picasso.with(this)
-                .load(Profile.getCurrentProfile().getProfilePictureUri(240,240))
+                .load(Profile.getCurrentProfile().getProfilePictureUri(240, 240))
                 .placeholder(R.drawable.ic_person_outline_black_24dp)
                 .into(identityIcon);
 
@@ -98,6 +99,10 @@ public class CloudUserIdentityActivity extends AppCompatActivity {
             jsonIdentity.addProperty("name", Profile.getCurrentProfile().getName());
             jsonIdentity.addProperty("firebase_id", FirebaseInstanceId.getInstance().getToken());
             jsonIdentity.addProperty("facebook_id", Profile.getCurrentProfile().getId());
+
+            Log.d(TAG, "I am:" + Profile.getCurrentProfile().getName());
+            Log.d(TAG, "My Facebook ID is: " + FirebaseInstanceId.getInstance().getToken());
+            Log.d(TAG, "My Firebase ID is: " + Profile.getCurrentProfile().getId());
 
             BitMatrix bitMatrix;
             try {
