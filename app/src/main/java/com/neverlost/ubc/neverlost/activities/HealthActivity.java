@@ -1,15 +1,23 @@
 package com.neverlost.ubc.neverlost.activities;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,11 +29,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Profile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.algorithm.HealthAlgorithm;
 import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
@@ -56,8 +62,8 @@ public class HealthActivity extends AppCompatActivity {
     RatingBar healthRatingBar;
     TextView healthEvaluation;
     TextView bmrValue;
+
     private BroadcastReceiver caretakerPromptReciever;
-    private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
 
     // Vibration to alert the caretaker that something has happened to their dependant
     private Vibrator vibrationService;
@@ -65,6 +71,10 @@ public class HealthActivity extends AppCompatActivity {
     private Button panicButton;
     Dependent dependent;
     readData dataReader;
+    private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
+    // Force the Location manager to update our GPS location when the following thresholds are met
+
+    private static final String TAG = "HEALTH";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +100,7 @@ public class HealthActivity extends AppCompatActivity {
         if (vibrationService == null) {
             vibrationService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         }
+
 
         caretakerPromptReciever = new BroadcastReceiver() {
             @Override
@@ -123,6 +134,7 @@ public class HealthActivity extends AppCompatActivity {
                                         curLoc.lat, curLoc.lng, getCallback());
                             } else {
                                 displayMessage("Failed to obtain location :(");
+
                             }
 
                         }
@@ -220,13 +232,13 @@ public class HealthActivity extends AppCompatActivity {
         return new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                displayMessage("Neverlost failed to reply to the caretaker");
+                displayMessage("Neverlost failed to message");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    displayMessage("Response sent!");
+                    displayMessage("Message sent!");
                 } else {
                     displayMessage("panic: I don't know how to handle this!");
                 }
@@ -256,6 +268,7 @@ public class HealthActivity extends AppCompatActivity {
 
         super.onStop();
     }
+
 
     /**
      * Helper function to display a Toast message without cluttering the codebase.
@@ -291,6 +304,7 @@ public class HealthActivity extends AppCompatActivity {
             Coordinate curLoc = dataReader.getGPSData();
             if (curLoc == null) {
                 curLoc = new Coordinate((float) 1000.0, (float) 1000.0);
+
             }
 
             int newHeartrateReading = sum / 3;
@@ -304,6 +318,12 @@ public class HealthActivity extends AppCompatActivity {
             if (!isHeartrateNormal) {
                 MessagingService.broadcastForHelp(MessagingService.Reason.ABNORMAL_HEARTRATE,
                         curLoc.lat, curLoc.lng, getCallback());
+            }else{
+                if(newHeartrateReading>0){
+                    Collections.reverse(dependent.heartRates);
+                    dependent.heartRates.add((long) newHeartrateReading);
+                    Collections.reverse(dependent.heartRates);
+                }
             }
 
             FirebaseQuery.updateDependent(dependent);
@@ -311,5 +331,6 @@ public class HealthActivity extends AppCompatActivity {
             return newHeartrateReading;
         }
     }
+
 
 }

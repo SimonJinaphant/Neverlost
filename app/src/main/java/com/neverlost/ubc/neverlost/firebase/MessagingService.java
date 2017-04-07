@@ -194,7 +194,6 @@ public class MessagingService extends FirebaseMessagingService {
             String dependantName = null;
             String caretakerId = null;
             String caretakerName = null;
-            Boolean dependentIsSafe = null;
             Reason reason = null;
 
             for (Map.Entry<String, String> entry : remoteMessage.getData().entrySet()) {
@@ -232,12 +231,13 @@ public class MessagingService extends FirebaseMessagingService {
 
             if (reason != null) {
                 Intent intent = new Intent(NCM_PANIC_MESSAGE);
+                intent.putExtra(MessagingService.FCM_DATA_DEPENDANT_NAME, dependantName);
+                intent.putExtra(MessagingService.FCM_DATA_REASON, reason.toString());
                 intent.putExtra(MessagingService.FCM_DATA_LAT, lat);
                 intent.putExtra(MessagingService.FCM_DATA_LNG, lng);
-                intent.putExtra(MessagingService.FCM_DATA_DEPENDANT_NAME, dependantName);
 
                 broadcastManager.sendBroadcast(intent);
-                sendNotification("Neverlost Alert!",dependantName+"is in need of help!");
+                sendNotification(dependantName+"is in need of help", getTranslation(reason));
             }
 
             if (caretakerId != null) {
@@ -253,8 +253,8 @@ public class MessagingService extends FirebaseMessagingService {
                 Intent intent = new Intent(NCM_PROMPT_RESPONSE);
                 intent.putExtra(FCM_DATA_DEPENDANT_NAME, dependantName);
 
+                broadcastManager.sendBroadcast(intent);
                 sendNotification(dependantName+" is safe", dependantName+" has responded successfully");
-
             }
 
         }
@@ -306,5 +306,18 @@ public class MessagingService extends FirebaseMessagingService {
         return dependents;
     }
 
+    public String getTranslation(Reason reason){
+        switch (reason){
+            case FAILED_RESPONSE:
+                return "failed to respond in time";
+            case ABNORMAL_HEARTRATE:
+                return "has abnormal heartrate";
+            case PANIC_BUTTON:
+                return "pressed the panic button";
+            default:
+                return "unknown";
+        }
+
+    }
 
 }

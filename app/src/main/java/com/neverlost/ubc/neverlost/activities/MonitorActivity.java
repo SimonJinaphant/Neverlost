@@ -1,9 +1,13 @@
 package com.neverlost.ubc.neverlost.activities;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +15,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -36,6 +43,12 @@ public class MonitorActivity extends AppCompatActivity {
     Button heartRateButton;
     RatingBar healthRatingBar;
 
+    private BroadcastReceiver dependentHelpReciever;
+    private BroadcastReceiver dependentSafeReciever;
+    private Vibrator vibrationService;
+    private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -44,6 +57,10 @@ public class MonitorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final String uid = intent.getStringExtra("facebook_id");
         final String firebaseId = intent.getStringExtra("firebase_id");
+
+        if (vibrationService == null) {
+            vibrationService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        }
 
         safetyPromptButton = (Button) findViewById(R.id.safety);
         safetyPromptButton.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +86,30 @@ public class MonitorActivity extends AppCompatActivity {
                         });
             }
         });
+
+        dependentHelpReciever = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String name = intent.getStringExtra(MessagingService.FCM_DATA_DEPENDANT_NAME);
+                double lat = intent.getDoubleExtra(MessagingService.FCM_DATA_LAT, 0);
+                double lng = intent.getDoubleExtra(MessagingService.FCM_DATA_LNG, 0);
+
+                if(lat >= 0 && lat <= 360 && lng >= 0 && lng <= 360){
+                    LatLng dependant = new LatLng(lat, lng);
+                    Intent mapIntent = new Intent(MonitorActivity.this, MapActivity.class);
+
+                    mapIntent.putExtra(MessagingService.FCM_DATA_LAT, lat);
+                    mapIntent.putExtra(MessagingService.FCM_DATA_LNG, lng);
+                    mapIntent.putExtra(MessagingService.FCM_DATA_DEPENDANT_NAME, name);
+
+                    startActivity(mapIntent);
+                } else{
+                    displayMessage("Unable to obtain their location :(");
+                }
+                vibrationService.vibrate(vibrationPattern, -1);
+            }
+        };
 
         name = (TextView) findViewById(R.id.depname);
         heartRateValue = (TextView) findViewById(R.id.heartRateValue);
@@ -125,6 +166,26 @@ public class MonitorActivity extends AppCompatActivity {
                 Toast.makeText(MonitorActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager
+                .getInstance(this)
+                .registerReceiver(dependentHelpReciever,
+                        new IntentFilter(MessagingService.NCM_PANIC_MESSAGE)
+                );
+
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager
+                .getInstance(this)
+                .unregisterReceiver(dependentHelpReciever);
+
+        super.onStop();
     }
 
 }

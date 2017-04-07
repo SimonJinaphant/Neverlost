@@ -1,34 +1,23 @@
 package com.neverlost.ubc.neverlost.activities;
 
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Vibrator;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,15 +26,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -68,98 +50,22 @@ public class MapActivity extends AppCompatActivity
     // Vibration to alert1 the caretaker that something has happened to their dependant
     private Vibrator vibrationService;
 
+    LatLng dependentLocation;
+    String dependantName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        // -----------------------------------------------------------------------------------------
-        // Listen for broadcasts coming from our local FCM Messaging Service.
-        // -----------------------------------------------------------------------------------------
-        dependantHelpReceiver = new BroadcastReceiver() {
+        Bundle extras = getIntent().getExtras();
+        dependentLocation = new LatLng(
+                extras.getDouble(MessagingService.FCM_DATA_LAT),
+                extras.getDouble(MessagingService.FCM_DATA_LNG)
+        );
 
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                LatLng dependant = new LatLng(
-                        intent.getDoubleExtra(MessagingService.FCM_DATA_LAT, 0),
-                        intent.getDoubleExtra(MessagingService.FCM_DATA_LNG, 0)
-                );
+        dependantName = extras.getString(MessagingService.FCM_DATA_DEPENDANT_NAME);
 
-                mMap.addMarker(new MarkerOptions()
-                        .position(dependant)
-                        .title(intent.getStringExtra(MessagingService.FCM_DATA_DEPENDANT_NAME))
-                );
-
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(dependant));
-                vibrationService.vibrate(vibrationPattern, -1);
-            }
-        };
-
-        caretakerPromptReciever = new BroadcastReceiver() {
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String caretakerName = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_NAME);
-                final String caretakerId = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_ID);
-
-                final AlertDialog alertDialog = new AlertDialog.Builder(MapActivity.this).create();
-                alertDialog.setTitle("Safety prompt");
-                alertDialog.setMessage(caretakerName + " wants to see if you're safe. \n You have 10 seconds to reply...");
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "I am Safe",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                MessagingService.respondSafetyPrompt(caretakerId, new Callback() {
-                                    @Override
-                                    public void onFailure(Call call, IOException e) {
-                                        displayMessage("Neverlost failed to reply to the caretaker");
-
-                                    }
-
-                                    @Override
-                                    public void onResponse(Call call, Response response) throws IOException {
-                                        if (response.isSuccessful()) {
-                                            displayMessage("Safety reply sent!");
-                                        } else {
-                                            displayMessage("panic: I don't know how to handle this!");
-                                        }
-                                    }
-                                });
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
-
-                // Hide after some seconds
-                final Handler handler = new Handler();
-                final Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (alertDialog.isShowing()) {
-                            alertDialog.dismiss();
-                            displayMessage("Failed to respond in time");
-                        }
-                    }
-                };
-
-                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        handler.removeCallbacks(runnable);
-                    }
-                });
-
-                handler.postDelayed(runnable, 10000);
-
-                vibrationService.vibrate(vibrationPattern, -1);
-            }
-        };
-
-        // -----------------------------------------------------------------------------------------
-        // Obtain access to the phone's vibration services to alert1 the user of incoming messages
-        // -----------------------------------------------------------------------------------------
-        if (vibrationService == null) {
-            vibrationService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        }
 
         // -----------------------------------------------------------------------------------------
         // Check to see if we can access the GPS.
@@ -169,59 +75,10 @@ public class MapActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, REQUEST_FINE_LOC_CODE);
         }
 
-        // -----------------------------------------------------------------------------------------
-        // Setup the Location Manager so we can obtain GPS location
-        // -----------------------------------------------------------------------------------------
-        if (locationManager == null) {
-            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        }
-
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
-        }
-
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location != null) {
-            currentLocation = location;
-        } else {
-            displayMessage("Unable to obtain your location");
-        }
-
-        // -----------------------------------------------------------------------------------------
-        // Subscribe to Firebase for messages.
-        // -----------------------------------------------------------------------------------------
-        FirebaseMessaging.getInstance().subscribeToTopic(MessagingService.FCM_TOPIC_NEVERLOST);
-
         // Setup the remaining UI elements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                MessagingService.broadcastForHelp(MessagingService.Reason.PANIC_BUTTON,
-                        currentLocation.getLatitude(), currentLocation.getLongitude(), new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        displayMessage("Neverlost failed to send help over the network; good luck...");
-
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            displayMessage("Help is on the way!");
-                        } else {
-                            displayMessage("panic: I don't know how to handle this!");
-                        }
-                    }
-                });
-
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -238,59 +95,6 @@ public class MapActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        try {
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    LOCATION_UPDATE_TIME,
-                    LOCATION_UPDATE_DISTANCE,
-                    MapActivity.this
-            );
-        } catch (SecurityException se) {
-            Log.e(TAG, se.toString());
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        try {
-            locationManager.removeUpdates(this);
-        } catch (SecurityException se) {
-            Log.e(TAG, se.toString());
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        LocalBroadcastManager
-                .getInstance(this)
-                .registerReceiver(dependantHelpReceiver,
-                        new IntentFilter(MessagingService.NCM_PANIC_MESSAGE)
-                );
-
-        LocalBroadcastManager
-                .getInstance(this)
-                .registerReceiver(caretakerPromptReciever,
-                        new IntentFilter(MessagingService.NCM_PROMPT_REQUEST)
-                );
-    }
-
-    @Override
-    protected void onStop() {
-        LocalBroadcastManager
-                .getInstance(this)
-                .unregisterReceiver(dependantHelpReceiver);
-
-        LocalBroadcastManager
-                .getInstance(this)
-                .unregisterReceiver(caretakerPromptReciever);
-
-        super.onStop();
-    }
 
     @Override
     public void onBackPressed() {
@@ -370,19 +174,13 @@ public class MapActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        try {
-            mMap.setMyLocationEnabled(true);
-        } catch (SecurityException se) {
-            displayMessage("Unable to show current location on map");
-        }
 
-        // Show the current location on the map.
-        if (currentLocation != null) {
-            LatLng current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
-        } else {
-            displayMessage("Unable to find you on the map");
-        }
+        mMap.addMarker(new MarkerOptions()
+                .position(dependentLocation)
+                .title(dependantName)
+        );
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(dependentLocation));
 
     }
 
