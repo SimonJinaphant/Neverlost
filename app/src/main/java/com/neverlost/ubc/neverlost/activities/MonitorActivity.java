@@ -72,7 +72,7 @@ public class MonitorActivity extends AppCompatActivity {
         name = (TextView) findViewById(R.id.depname);
         heartRateValue = (TextView) findViewById(R.id.heartRateValue);
         heartRateButton = (Button) findViewById(R.id.heartRateButton);
-        healthRatingBar = (RatingBar) findViewById(R.id.healthRatingBar);
+        healthRatingBar = (RatingBar) findViewById(R.id.ratingBar);
 
         FirebaseRef.dependentRer.addValueEventListener(new ValueEventListener() {
             @Override

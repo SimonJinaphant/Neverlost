@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -58,6 +59,8 @@ public class HealthActivity extends AppCompatActivity {
 
     // Vibration to alert the caretaker that something has happened to their dependant
     private Vibrator vibrationService;
+
+    Dependent dependent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,36 +147,16 @@ public class HealthActivity extends AppCompatActivity {
         FirebaseRef.dependentRer.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Dependent dependent = FirebaseQuery.getDependent(uid, dataSnapshot);
+                dependent = FirebaseQuery.getDependent(uid, dataSnapshot);
 
                 name.setText(dependent.name);
 
                 int bmr = (int) HealthAlgorithm.computeBMR_male(dependent);
 
-                readData dataReader = new readData();
-                int sum = 0;
-                for (int i = 0; i < 3; i++) {
-                    sum += dataReader.getHRData();
-                }
-
-                Coordinate curLoc = dataReader.getGPSData();
-                if (curLoc == null) {
-                    curLoc = new Coordinate((float) 1000.0, (float) 1000.0);
-                }
-
-                int newHeartrateReading = sum / 3;
-
                 long distanceTraveled = dependent.distances.get(0);
-
-                Collections.reverse(dependent.heartRates);
-                dependent.heartRates.add((long) newHeartrateReading);
-                Collections.reverse(dependent.heartRates);
-
-                boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
 
                 Log.d("BMR", String.valueOf(bmr));
                 bmrValue.setText(String.valueOf(bmr));
-                hearRateValue.setText(Integer.toString(newHeartrateReading));
                 distanceValue.setText(String.valueOf(distanceTraveled));
 
                 int num_star = HealthAlgorithm.healthEvaluate(dependent);
@@ -189,27 +172,6 @@ public class HealthActivity extends AppCompatActivity {
                 }
 
                 //FirebaseQuery.updateDependent(dependent);
-
-                if (!isHeartrateNormal) {
-                    MessagingService.broadcastForHelpHP(curLoc, dependent.name, new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            displayMessage("Neverlost failed to send help over the network; good luck...");
-
-                        }
-
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            if (response.isSuccessful()) {
-                                displayMessage("Help is on the way!");
-                            } else {
-                                displayMessage("panic: I don't know how to handle this!");
-                            }
-                        }
-                    });
-
-
-                }
 
 
             }
@@ -276,6 +238,61 @@ public class HealthActivity extends AppCompatActivity {
                 Toast.makeText(HealthActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private class BlueToothData extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected void onPostExecute(Integer reading) {
+            super.onPostExecute(reading);
+
+            hearRateValue.setText(Integer.toString(reading));
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+
+            readData dataReader = new readData();
+            int sum = 0;
+            for (int i = 0; i < 3; i++) {
+                sum += dataReader.getHRData();
+            }
+
+            Coordinate curLoc = dataReader.getGPSData();
+            if (curLoc == null) {
+                curLoc = new Coordinate((float) 1000.0, (float) 1000.0);
+            }
+
+            int newHeartrateReading = sum / 3;
+
+            Collections.reverse(dependent.heartRates);
+            dependent.heartRates.add((long) newHeartrateReading);
+            Collections.reverse(dependent.heartRates);
+
+            boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
+
+            if (!isHeartrateNormal) {
+                MessagingService.broadcastForHelpHP(curLoc, dependent.name, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        displayMessage("Neverlost failed to send help over the network; good luck...");
+
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            displayMessage("Help is on the way!");
+                        } else {
+                            displayMessage("panic: I don't know how to handle this!");
+                        }
+                    }
+                });
+
+
+            }
+
+            return newHeartrateReading;
+        }
     }
 
 }
