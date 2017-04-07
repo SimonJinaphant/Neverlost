@@ -30,7 +30,7 @@ public class MainFragment extends Fragment {
         @Override
         public void onSuccess(LoginResult loginResult) {
 
-            Intent i = new Intent(getActivity(), PrecheckActivity.class);
+            Intent i = new Intent(getActivity(), FeatureSelectActivity.class);
 
 
             if (Profile.getCurrentProfile() == null) {
