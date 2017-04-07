@@ -195,7 +195,6 @@ public class BluetoothActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Connected) {
-                    //readData.sendName();
                     Intent healthAct = new Intent(v.getContext(), HealthActivity.class);
                     healthAct.putExtra("key", Profile.getCurrentProfile().getId());
                     startActivity(healthAct);
@@ -205,7 +204,7 @@ public class BluetoothActivity extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_ENABLE_BT)
+        if (requestCode == REQUEST_ENABLE_BT) {
             if (resultCode != RESULT_OK) {
                 Toast toast = Toast.makeText(context, "BlueTooth Failed to Start ",
                         Toast.LENGTH_SHORT);
@@ -213,6 +212,11 @@ public class BluetoothActivity extends AppCompatActivity {
                 finish();
                 return;
             }
+            else {
+                Intent restart = new Intent(this, BluetoothActivity.class);
+                startActivity(restart);
+            }
+        }
     }
 
     @Override
