@@ -33,11 +33,16 @@ public class MessagingService extends FirebaseMessagingService {
     public static final String FCM_TOPIC_NEVERLOST = "neverlost";
     public static final String FCM_DATA_LAT = "lat";
     public static final String FCM_DATA_LNG = "lng";
+    public static final String FCM_DATA_REASON = "reason";
     public static final String FCM_DATA_DEPENDANT_NAME = "dependant_name";
     public static final String FCM_DATA_CARETAKER_ID = "caretaker_id";
     public static final String FCM_DATA_CARETAKER_NAME = "caretaker_name";
-    public static final String FCM_DATA_IN_DANGER = "in_danger";
 
+    public enum Reason {
+        PANIC_BUTTON,
+        ABNORMAL_HEARTRATE,
+        FAILED_RESPONSE
+    }
 
     // For communicating between this Service and other local Activities
     public static final String NCM_PANIC_MESSAGE = "com.neverlost.ubc.neverlost.MapActivity.NCM_PANIC_MESSAGE";
@@ -64,22 +69,17 @@ public class MessagingService extends FirebaseMessagingService {
     private static ArrayList<CloudMessageUser> dependents = new ArrayList<>();
     private static ArrayList<CloudMessageUser> caretakers = new ArrayList<>();
 
-    /**
-     * Broadcast to caretakers by sending a Firebase Cloud Message for help.
-     *
-     * @param location - Your current location.
-     * @param callback - Callback to handle success/failed transmission cases.
-     */
-    public static void broadcastForHelp(Location location, Callback callback) {
-        String name = Profile.getCurrentProfile().getFirstName();
 
-        for (CloudMessageUser carataker : caretakers) {
+    public static void broadcastForHelp(Reason reason, double latitude, double longitude, Callback callback) {
+        String name = Profile.getCurrentProfile().getFirstName();
+        for(CloudMessageUser caretaker : caretakers) {
             CloudMessage helpMessage = CloudMessage.builder()
-                    .to(carataker.getFirebaseClientToken())
-                    .withNotification(name + " is in need of help!", name + " has pressed the panic button!")
+                    .to(caretaker.getFirebaseClientToken())
+                    .withNotification("Neverlost", name + " is in need of help!")
                     .withData(FCM_DATA_DEPENDANT_NAME, name)
-                    .withData(FCM_DATA_LAT, String.valueOf(location.getLatitude()))
-                    .withData(FCM_DATA_LNG, String.valueOf(location.getLongitude()))
+                    .withData(FCM_DATA_REASON, reason.toString())
+                    .withData(FCM_DATA_LAT, String.valueOf(latitude))
+                    .withData(FCM_DATA_LNG, String.valueOf(longitude))
                     .build();
 
             sendUpstreamCloudMessage(helpMessage, callback);
@@ -110,16 +110,14 @@ public class MessagingService extends FirebaseMessagingService {
      * Respond/ACK to a sent safety verification prompt
      *
      * @param toFirebaseId - The firebase client ID for the dependent we're sending to
-     * @param safe         - Status determining if they are safe or not
      * @param callback     - Callback to handle success/failed transmission cases.
      */
-    public static void respondSafetyPrompt(String toFirebaseId, boolean safe, Callback callback) {
+    public static void respondSafetyPrompt(String toFirebaseId, Callback callback) {
         String name = Profile.getCurrentProfile().getFirstName();
 
         CloudMessage helpMessage = CloudMessage.builder()
                 .to(toFirebaseId)
                 .withNotification("Safety Confirmed", name + " confirms they're safe")
-                .withData(FCM_DATA_IN_DANGER, safe ? "Y" : "N")
                 .withData(FCM_DATA_DEPENDANT_NAME, name)
                 .build();
 
@@ -197,6 +195,7 @@ public class MessagingService extends FirebaseMessagingService {
             String caretakerId = null;
             String caretakerName = null;
             Boolean dependentIsSafe = null;
+            Reason reason = null;
 
             for (Map.Entry<String, String> entry : remoteMessage.getData().entrySet()) {
                 String key = entry.getKey();
@@ -223,21 +222,22 @@ public class MessagingService extends FirebaseMessagingService {
                         caretakerName = value;
                         break;
 
-                    case MessagingService.FCM_DATA_IN_DANGER:
-                        dependentIsSafe = value.equals("Y");
+                    case MessagingService.FCM_DATA_REASON:
+                        reason = Reason.valueOf(value);
                         break;
                 }
 
                 Log.d(TAG, "Key: " + key + " \t Value: " + value);
             }
 
-            if (lng != Double.MAX_VALUE && lat != Double.MAX_VALUE) {
+            if (reason != null) {
                 Intent intent = new Intent(NCM_PANIC_MESSAGE);
                 intent.putExtra(MessagingService.FCM_DATA_LAT, lat);
                 intent.putExtra(MessagingService.FCM_DATA_LNG, lng);
                 intent.putExtra(MessagingService.FCM_DATA_DEPENDANT_NAME, dependantName);
 
                 broadcastManager.sendBroadcast(intent);
+                sendNotification("Neverlost Alert!",dependantName+"is in need of help!");
             }
 
             if (caretakerId != null) {
@@ -249,17 +249,12 @@ public class MessagingService extends FirebaseMessagingService {
                 sendNotification("Safety prompt!", caretakerName + " wants to confirm you're safe");
             }
 
-            if (dependentIsSafe != null) {
+            if (reason == null && dependantName != null) {
                 Intent intent = new Intent(NCM_PROMPT_RESPONSE);
-                intent.putExtra(FCM_DATA_IN_DANGER, dependentIsSafe);
                 intent.putExtra(FCM_DATA_DEPENDANT_NAME, dependantName);
 
-                broadcastManager.sendBroadcast(intent);
-                if(dependentIsSafe){
-                    sendNotification(dependantName+" is safe", dependantName+" has responded successfully");
-                }else{
-                    sendNotification(dependantName+" is in danger!", "Send for help!");
-                }
+                sendNotification(dependantName+" is safe", dependantName+" has responded successfully");
+
             }
 
         }

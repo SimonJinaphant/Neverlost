@@ -108,7 +108,7 @@ public class MapActivity extends AppCompatActivity
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "I am Safe",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                MessagingService.respondSafetyPrompt(caretakerId, true, new Callback() {
+                                MessagingService.respondSafetyPrompt(caretakerId, new Callback() {
                                     @Override
                                     public void onFailure(Call call, IOException e) {
                                         displayMessage("Neverlost failed to reply to the caretaker");
@@ -202,7 +202,8 @@ public class MapActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                MessagingService.broadcastForHelp(currentLocation, new Callback() {
+                MessagingService.broadcastForHelp(MessagingService.Reason.PANIC_BUTTON,
+                        currentLocation.getLatitude(), currentLocation.getLongitude(), new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         displayMessage("Neverlost failed to send help over the network; good luck...");

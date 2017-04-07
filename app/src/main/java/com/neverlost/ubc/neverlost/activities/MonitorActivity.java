@@ -1,5 +1,6 @@
 package com.neverlost.ubc.neverlost.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
