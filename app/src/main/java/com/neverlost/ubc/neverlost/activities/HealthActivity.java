@@ -72,6 +72,8 @@ public class HealthActivity extends AppCompatActivity {
     Dependent dependent;
     readData dataReader;
     private final long[] vibrationPattern = {0, 400, 100, 400, 100, 400};
+    private static final double dlat = 49.261581;
+    private static final double dlng = -123.249722;
     // Force the Location manager to update our GPS location when the following thresholds are met
 
     private static final String TAG = "HEALTH";
@@ -94,65 +96,7 @@ public class HealthActivity extends AppCompatActivity {
         healthEvaluation = (TextView) findViewById(R.id.healthEval);
         bmrValue = (TextView) findViewById(R.id.bmrValue);
         panicButton = (Button) findViewById(R.id.panic);
-        // -----------------------------------------------------------------------------------------
-        // Obtain access to the phone's vibration services to alert the user of incoming messages
-        // -----------------------------------------------------------------------------------------
-        if (vibrationService == null) {
-            vibrationService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        }
 
-
-        caretakerPromptReciever = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                final String caretakerName = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_NAME);
-                final String caretakerId = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_ID);
-
-                final AlertDialog alertDialog = new AlertDialog.Builder(HealthActivity.this).create();
-                alertDialog.setTitle("Safety prompt");
-                alertDialog.setMessage(caretakerName + " wants to see if you're safe. \n You have 10 seconds to reply...");
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "I am Safe",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                MessagingService.respondSafetyPrompt(caretakerId, getCallback());
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
-
-                // Hide after some seconds
-                final Handler handler = new Handler();
-                final Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (alertDialog.isShowing()) {
-                            alertDialog.dismiss();
-                            displayMessage("Failed to respond in time");
-                            Coordinate curLoc = dataReader.getGPSData();
-                            if (curLoc != null) {
-                                MessagingService.broadcastForHelp(MessagingService.Reason.FAILED_RESPONSE,
-                                        curLoc.lat, curLoc.lng, getCallback());
-                            } else {
-                                displayMessage("Failed to obtain location :(");
-
-                            }
-
-                        }
-                    }
-                };
-
-                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        handler.removeCallbacks(runnable);
-                    }
-                });
-
-                handler.postDelayed(runnable, 10000);
-
-                vibrationService.vibrate(vibrationPattern, -1);
-            }
-        };
 
         FirebaseRef.dependentRer.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -165,9 +109,33 @@ public class HealthActivity extends AppCompatActivity {
 
                 long distanceTraveled = dependent.distances.get(0);
 
-                Log.d("BMR", String.valueOf(bmr));
                 bmrValue.setText(String.valueOf(bmr));
                 distanceValue.setText(String.valueOf(distanceTraveled));
+
+//                Coordinate curLoc = dataReader.getGPSData();
+//                if (curLoc == null) {
+//                    curLoc = new Coordinate((float)dlat,(float)dlng);
+//
+//                }
+
+//                int newHeartrateReading = dataReader.getHRData();
+//
+//                hearRateValue.setText(Integer.toString(newHeartrateReading));
+//
+//                boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
+//
+//                if (!isHeartrateNormal) {
+//                    MessagingService.broadcastForHelp(MessagingService.Reason.ABNORMAL_HEARTRATE,
+//                            curLoc.lat, curLoc.lng, getCallback());
+//                }else{
+//                    if(newHeartrateReading>0){
+//                        Collections.reverse(dependent.heartRates);
+//                        dependent.heartRates.add((long) newHeartrateReading);
+//                        Collections.reverse(dependent.heartRates);
+//                    }
+//                }
+//
+//                FirebaseQuery.updateDependent(dependent);
 
                 int num_star = HealthAlgorithm.healthEvaluate(dependent);
                 healthRatingBar.setNumStars(5);
@@ -224,6 +192,68 @@ public class HealthActivity extends AppCompatActivity {
             }
         });
         new BlueToothData().execute();
+
+
+        // -----------------------------------------------------------------------------------------
+        // Obtain access to the phone's vibration services to alert the user of incoming messages
+        // -----------------------------------------------------------------------------------------
+        if (vibrationService == null) {
+            vibrationService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        }
+
+
+        caretakerPromptReciever = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final String caretakerName = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_NAME);
+                final String caretakerId = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_ID);
+
+                final AlertDialog alertDialog = new AlertDialog.Builder(HealthActivity.this).create();
+                alertDialog.setTitle("Safety prompt");
+                alertDialog.setMessage(caretakerName + " wants to see if you're safe. \n You have 10 seconds to reply...");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "I am Safe",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                MessagingService.respondSafetyPrompt(caretakerId, getCallback());
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+
+                // Hide after some seconds
+                final Handler handler = new Handler();
+                final Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (alertDialog.isShowing()) {
+                            alertDialog.dismiss();
+                            displayMessage("Failed to respond in time");
+                            Coordinate curLoc = dataReader.getGPSData();
+                            if (curLoc != null) {
+                                MessagingService.broadcastForHelp(MessagingService.Reason.FAILED_RESPONSE,
+                                        curLoc.lat, curLoc.lng, getCallback());
+                            } else {
+                                displayMessage("Failed to obtain location :(");
+                                MessagingService.broadcastForHelp(MessagingService.Reason.FAILED_RESPONSE,
+                                        dlat, dlng, getCallback());
+                            }
+
+                        }
+                    }
+                };
+
+                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        handler.removeCallbacks(runnable);
+                    }
+                });
+
+                handler.postDelayed(runnable, 10000);
+
+                vibrationService.vibrate(vibrationPattern, -1);
+            }
+        };
 
     }
 
@@ -296,22 +326,14 @@ public class HealthActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Void... voids) {
 
-            int sum = 0;
-            for (int i = 0; i < 3; i++) {
-                sum += dataReader.getHRData();
-            }
 
             Coordinate curLoc = dataReader.getGPSData();
             if (curLoc == null) {
-                curLoc = new Coordinate((float) 1000.0, (float) 1000.0);
+                curLoc = new Coordinate((float)dlat,(float)dlng);
 
             }
 
-            int newHeartrateReading = sum / 3;
-
-            Collections.reverse(dependent.heartRates);
-            dependent.heartRates.add((long) newHeartrateReading);
-            Collections.reverse(dependent.heartRates);
+            int newHeartrateReading = dataReader.getHRData();
 
             boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
 

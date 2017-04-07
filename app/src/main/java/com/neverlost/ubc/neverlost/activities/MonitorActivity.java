@@ -95,7 +95,6 @@ public class MonitorActivity extends AppCompatActivity {
                 double lat = intent.getDoubleExtra(MessagingService.FCM_DATA_LAT, 0);
                 double lng = intent.getDoubleExtra(MessagingService.FCM_DATA_LNG, 0);
 
-                if(lat >= 0 && lat <= 360 && lng >= 0 && lng <= 360){
                     LatLng dependant = new LatLng(lat, lng);
                     Intent mapIntent = new Intent(MonitorActivity.this, MapActivity.class);
 
@@ -104,9 +103,7 @@ public class MonitorActivity extends AppCompatActivity {
                     mapIntent.putExtra(MessagingService.FCM_DATA_DEPENDANT_NAME, name);
 
                     startActivity(mapIntent);
-                } else{
-                    displayMessage("Unable to obtain their location :(");
-                }
+
                 vibrationService.vibrate(vibrationPattern, -1);
             }
         };
@@ -119,8 +116,6 @@ public class MonitorActivity extends AppCompatActivity {
         FirebaseRef.dependentRer.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-
                 Dependent dependent = FirebaseQuery.getDependent(uid, dataSnapshot);
 
                 name.setText(dependent.name);
