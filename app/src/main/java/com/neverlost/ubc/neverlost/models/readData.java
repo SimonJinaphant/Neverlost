@@ -24,9 +24,11 @@ public class readData  {
             String s = ReadFromBTDevice();
             latitude = s.replaceAll("[^0-9.\\-]+" , "");
             counter++;
-        } while (latitude.equals("") && counter <= 5);
+        } while (latitude.equals("") && counter <= 3);
         if (latitude.equals(""))
             return null;
+
+        Log.d("Latitude", latitude);
 
         String longitude;
         counter = 0;
@@ -37,10 +39,11 @@ public class readData  {
             String s = ReadFromBTDevice();
             longitude = s.replaceAll("[^0-9.\\-]+", "");
             counter++;
-        } while (longitude.equals("") && counter <= 5);
+        } while (longitude.equals("") && counter <= 3);
         if (longitude.equals(""))
             return null;
 
+        Log.d("Longitude", longitude);
 
         Coordinate c = new Coordinate(Float.parseFloat(latitude), Float.parseFloat(longitude));
 
@@ -58,7 +61,7 @@ public class readData  {
             String s = ReadFromBTDevice();
             reading = s.replaceAll("[^0-9]", "");
             counter++;
-        } while (reading.equals("") && counter <= 5);
+        } while (reading.equals("") && counter <= 3);
         Log.d("HR data", reading);
         if (reading.equals(""))
             reading = "-1";
@@ -75,7 +78,7 @@ public class readData  {
             }
             reading = ReadFromBTDevice();
             counter++;
-        } while (reading.equals("") && counter <= 5);
+        } while (reading.equals("") && counter <= 3);
         Log.d("Name", reading);
         if (reading.equals(""))
             return false;
