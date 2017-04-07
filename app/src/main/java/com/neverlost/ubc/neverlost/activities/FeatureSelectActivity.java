@@ -35,14 +35,6 @@ public class FeatureSelectActivity extends AppCompatActivity {
                 Intent depInt = new Intent(view.getContext(),BluetoothActivity.class);
                 startActivity(depInt);
 
-                //this button now goes to dependent health page
-                //create gps button on that page if needed
-
-                /*Intent gpsInt = new Intent(view.getContext(), MainActivity.class);
-                /*Intent gpsInt = new Intent(view.getContext(), MapActivity.class);
-                gpsInt.putExtra("key","Logan");
-                startActivity(gpsInt);
-                */
             }
         });
 
@@ -54,14 +46,5 @@ public class FeatureSelectActivity extends AppCompatActivity {
             }
         });
 
-        /*
-        mapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FeatureSelectActivity.this, MapActivity.class);
-                startActivity(intent);
-            }
-        });
-        */
     }
 }

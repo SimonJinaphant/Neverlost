@@ -202,6 +202,7 @@ public class HealthActivity extends AppCompatActivity {
             }
         });
 
+        new BlueToothData().execute();
     }
 
     @Override
