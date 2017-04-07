@@ -13,7 +13,7 @@
     tools:context="com.neverlost.ubc.neverlost.activities.HeartRateActivity">
 
     <TextView
-        android:text="Heart Rate"
+        android:text="Last 5 Readings HR"
         android:textSize="25dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

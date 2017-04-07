@@ -28,7 +28,7 @@ public class HealthAlgorithm {
         long mean = StatisticMethod.computeMeanI(histHeartRate);
         double sd = StatisticMethod.computeStdI(histHeartRate);
 
-        if(newReading >= mean + 2*sd || newReading <= mean - 2*sd) return false;
+        if(newReading >= mean + 2*10 || newReading <= mean - 2*10) return false;
 
         return true;
     }

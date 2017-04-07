@@ -59,7 +59,7 @@ public class HeartRateActivity extends AppCompatActivity {
                     temp.add(dependent.heartRates.get(size-i-1));
                 }
 
-                double fluct = Math.round(StatisticMethod.computeStdI(temp));
+                double fluct = Math.round(StatisticMethod.computeVarI(temp));
                 String fluctStr = String.valueOf(fluct);
                 fluctValue.setText(fluctStr);
 

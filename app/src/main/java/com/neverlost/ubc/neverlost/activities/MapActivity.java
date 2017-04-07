@@ -180,7 +180,7 @@ public class MapActivity extends AppCompatActivity
                 .title(dependantName)
         );
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(dependentLocation,15));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(dependentLocation,13));
 
     }
 

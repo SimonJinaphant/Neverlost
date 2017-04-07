@@ -186,6 +186,8 @@ public class HealthActivity extends AppCompatActivity {
                             curLoc.lat, curLoc.lng, getCallback());
                 } else {
                     displayMessage("Failed to obtain location :(");
+                    MessagingService.broadcastForHelp(MessagingService.Reason.PANIC_BUTTON,
+                            dlat, dlng, getCallback());
                 }
 
             }
@@ -333,21 +335,41 @@ public class HealthActivity extends AppCompatActivity {
             }
 
             int newHeartrateReading = readData.getHRData();
-
-            boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
-
-            if (!isHeartrateNormal) {
-                MessagingService.broadcastForHelp(MessagingService.Reason.ABNORMAL_HEARTRATE,
-                        curLoc.lat, curLoc.lng, getCallback());
-            }else{
-                if(newHeartrateReading>0){
-                    Collections.reverse(dependent.heartRates);
-                    dependent.heartRates.add((long) newHeartrateReading);
-                    Collections.reverse(dependent.heartRates);
-                }
+            if(newHeartrateReading == 511){
+                newHeartrateReading = 0;
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(HealthActivity.this, "No reading from Biomed Sensor", Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                });
             }
 
-            FirebaseQuery.updateDependent(dependent);
+            if(newHeartrateReading != -1) {
+
+                boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
+
+                if (!isHeartrateNormal) {
+                    MessagingService.broadcastForHelp(MessagingService.Reason.ABNORMAL_HEARTRATE,
+                            curLoc.lat, curLoc.lng, getCallback());
+                } else {
+                    if (newHeartrateReading > 0) {
+                        Collections.reverse(dependent.heartRates);
+                        dependent.heartRates.add((long) newHeartrateReading);
+                        Collections.reverse(dependent.heartRates);
+                    }
+                }
+
+                FirebaseQuery.updateDependent(dependent);
+            }else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(HealthActivity.this, "Unable to read from bluetooth", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
 
             return newHeartrateReading;
         }
