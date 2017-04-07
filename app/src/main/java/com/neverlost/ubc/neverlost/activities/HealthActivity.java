@@ -119,7 +119,7 @@ public class HealthActivity extends AppCompatActivity {
                             if (curLoc != null) {
                                 MessagingService.broadcastForHelp(MessagingService.Reason.FAILED_RESPONSE,
                                         curLoc.lat, curLoc.lng, getCallback());
-                            }else{
+                            } else {
                                 displayMessage("Failed to obtain location :(");
                             }
 
@@ -203,14 +203,16 @@ public class HealthActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Coordinate curLoc = dataReader.getGPSData();
                 if (curLoc != null) {
+                    displayMessage("Panic - Sent for help!");
                     MessagingService.broadcastForHelp(MessagingService.Reason.PANIC_BUTTON,
                             curLoc.lat, curLoc.lng, getCallback());
-                }else{
+                } else {
                     displayMessage("Failed to obtain location :(");
                 }
 
             }
         });
+        new BlueToothData().execute();
 
     }
 
@@ -231,6 +233,8 @@ public class HealthActivity extends AppCompatActivity {
                 }
             }
         };
+
+
     }
 
     @Override
@@ -300,7 +304,7 @@ public class HealthActivity extends AppCompatActivity {
 
             if (!isHeartrateNormal) {
                 MessagingService.broadcastForHelp(MessagingService.Reason.ABNORMAL_HEARTRATE,
-                        curLoc.lat, curLoc.lng,getCallback());
+                        curLoc.lat, curLoc.lng, getCallback());
             }
 
             return newHeartrateReading;

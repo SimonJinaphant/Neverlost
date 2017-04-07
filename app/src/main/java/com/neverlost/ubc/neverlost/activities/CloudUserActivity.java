@@ -11,10 +11,19 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.facebook.Profile;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.neverlost.ubc.neverlost.CloudUserListAdapter;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.firebase.CloudMessageUser;
+import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
+import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
 import com.neverlost.ubc.neverlost.firebase.MessagingService;
+import com.neverlost.ubc.neverlost.objects.Caretaker;
+import com.neverlost.ubc.neverlost.objects.Dependent;
 
 import java.util.ArrayList;
 
@@ -32,6 +41,23 @@ public class CloudUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clouduser);
+
+        //update firebase id for caretaker
+        FirebaseRef.caretakerRer.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Caretaker caretaker = FirebaseQuery.getCaretaker(Profile.getCurrentProfile().getId(), dataSnapshot);
+                caretaker.firebaseID = FirebaseInstanceId.getInstance().getToken();
+                FirebaseQuery.updateCaretaker(caretaker);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         userListView = (ListView) findViewById(R.id.user_listview);
         addCloudUserFab = (FloatingActionButton) findViewById(R.id.add_clouduser_fab);
