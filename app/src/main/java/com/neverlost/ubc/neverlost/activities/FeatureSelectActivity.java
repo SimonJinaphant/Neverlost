@@ -11,9 +11,7 @@ import com.neverlost.ubc.neverlost.R;
 public class FeatureSelectActivity extends AppCompatActivity {
 
     Button dependent;
-    //Button caretaker;
-    private Button userlistButton;
-    //private Button mapButton;
+    Button userlistButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,17 +19,12 @@ public class FeatureSelectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_feature_select);
 
         dependent = (Button) findViewById(R.id.dependent);
-        //caretaker = (Button) findViewById(R.id.caretaker);
-
         userlistButton = (Button) findViewById(R.id.userlist_button);
-        //mapButton = (Button) findViewById(R.id.map_button);
 
         dependent.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-
-
                 Intent depInt = new Intent(view.getContext(),BluetoothActivity.class);
                 startActivity(depInt);
 
