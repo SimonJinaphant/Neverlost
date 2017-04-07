@@ -60,7 +60,9 @@ public class HealthActivity extends AppCompatActivity {
     // Vibration to alert the caretaker that something has happened to their dependant
     private Vibrator vibrationService;
 
+    private Button panicButton;
     Dependent dependent;
+    readData dataReader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class HealthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_health);
         Intent intent = getIntent();
         final String uid = intent.getStringExtra("key");
+        dataReader = new readData();
 
         prolioPic = (ImageView) findViewById(R.id.prolioPic);
         hearRateButton = (Button) findViewById(R.id.heartRateButton);
@@ -78,6 +81,7 @@ public class HealthActivity extends AppCompatActivity {
         healthRatingBar = (RatingBar) findViewById(R.id.healthRatingBar);
         healthEvaluation = (TextView) findViewById(R.id.healthEval);
         bmrValue = (TextView) findViewById(R.id.bmrValue);
+        panicButton = (Button) findViewById(R.id.panic);
         // -----------------------------------------------------------------------------------------
         // Obtain access to the phone's vibration services to alert the user of incoming messages
         // -----------------------------------------------------------------------------------------
@@ -86,10 +90,9 @@ public class HealthActivity extends AppCompatActivity {
         }
 
         caretakerPromptReciever = new BroadcastReceiver() {
-
             @Override
             public void onReceive(Context context, Intent intent) {
-                String caretakerName = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_NAME);
+                final String caretakerName = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_NAME);
                 final String caretakerId = intent.getStringExtra(MessagingService.FCM_DATA_CARETAKER_ID);
 
                 final AlertDialog alertDialog = new AlertDialog.Builder(HealthActivity.this).create();
@@ -98,22 +101,7 @@ public class HealthActivity extends AppCompatActivity {
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "I am Safe",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                MessagingService.respondSafetyPrompt(caretakerId, true, new Callback() {
-                                    @Override
-                                    public void onFailure(Call call, IOException e) {
-                                        displayMessage("Neverlost failed to reply to the caretaker");
-
-                                    }
-
-                                    @Override
-                                    public void onResponse(Call call, Response response) throws IOException {
-                                        if (response.isSuccessful()) {
-                                            displayMessage("Safety reply sent!");
-                                        } else {
-                                            displayMessage("panic: I don't know how to handle this!");
-                                        }
-                                    }
-                                });
+                                MessagingService.respondSafetyPrompt(caretakerId, getCallback());
                                 dialog.dismiss();
                             }
                         });
@@ -127,6 +115,14 @@ public class HealthActivity extends AppCompatActivity {
                         if (alertDialog.isShowing()) {
                             alertDialog.dismiss();
                             displayMessage("Failed to respond in time");
+                            Coordinate curLoc = dataReader.getGPSData();
+                            if (curLoc != null) {
+                                MessagingService.broadcastForHelp(MessagingService.Reason.FAILED_RESPONSE,
+                                        curLoc.lat, curLoc.lng, getCallback());
+                            } else {
+                                displayMessage("Failed to obtain location :(");
+                            }
+
                         }
                     }
                 };
@@ -202,7 +198,43 @@ public class HealthActivity extends AppCompatActivity {
             }
         });
 
+        panicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Coordinate curLoc = dataReader.getGPSData();
+                if (curLoc != null) {
+                    displayMessage("Panic - Sent for help!");
+                    MessagingService.broadcastForHelp(MessagingService.Reason.PANIC_BUTTON,
+                            curLoc.lat, curLoc.lng, getCallback());
+                } else {
+                    displayMessage("Failed to obtain location :(");
+                }
+
+            }
+        });
         new BlueToothData().execute();
+
+    }
+
+    @NonNull
+    private Callback getCallback() {
+        return new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                displayMessage("Neverlost failed to reply to the caretaker");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    displayMessage("Response sent!");
+                } else {
+                    displayMessage("panic: I don't know how to handle this!");
+                }
+            }
+        };
+
+
     }
 
     @Override
@@ -252,7 +284,6 @@ public class HealthActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Void... voids) {
 
-            readData dataReader = new readData();
             int sum = 0;
             for (int i = 0; i < 3; i++) {
                 sum += dataReader.getHRData();
@@ -272,24 +303,8 @@ public class HealthActivity extends AppCompatActivity {
             boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
 
             if (!isHeartrateNormal) {
-                MessagingService.broadcastForHelpHP(curLoc, dependent.name, new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        displayMessage("Neverlost failed to send help over the network; good luck...");
-
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            displayMessage("Help is on the way!");
-                        } else {
-                            displayMessage("panic: I don't know how to handle this!");
-                        }
-                    }
-                });
-
-
+                MessagingService.broadcastForHelp(MessagingService.Reason.ABNORMAL_HEARTRATE,
+                        curLoc.lat, curLoc.lng, getCallback());
             }
 
             return newHeartrateReading;
