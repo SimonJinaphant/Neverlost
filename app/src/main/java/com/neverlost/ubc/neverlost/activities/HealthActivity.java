@@ -21,9 +21,11 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Profile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.neverlost.ubc.neverlost.R;
 import com.neverlost.ubc.neverlost.algorithm.HealthAlgorithm;
 import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
@@ -167,9 +169,6 @@ public class HealthActivity extends AppCompatActivity {
                     healthEvaluation.setText("GOOD");
                 }
 
-                //FirebaseQuery.updateDependent(dependent);
-
-
             }
 
 
@@ -306,6 +305,8 @@ public class HealthActivity extends AppCompatActivity {
                 MessagingService.broadcastForHelp(MessagingService.Reason.ABNORMAL_HEARTRATE,
                         curLoc.lat, curLoc.lng, getCallback());
             }
+
+            FirebaseQuery.updateDependent(dependent);
 
             return newHeartrateReading;
         }
