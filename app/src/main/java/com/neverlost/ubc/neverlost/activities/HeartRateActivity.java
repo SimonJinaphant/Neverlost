@@ -56,7 +56,7 @@ public class HeartRateActivity extends AppCompatActivity {
 
                 for(int i=0; i<5; i++){
                     graphEntries.add(new BarEntry(i,dependent.heartRates.get(i)));
-                    temp.add(dependent.heartRates.get(i));
+                    temp.add(dependent.heartRates.get(size-i-1));
                 }
 
                 double fluct = Math.round(StatisticMethod.computeStdI(temp));
