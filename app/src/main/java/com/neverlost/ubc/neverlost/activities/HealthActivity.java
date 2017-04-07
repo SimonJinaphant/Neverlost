@@ -84,7 +84,6 @@ public class HealthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_health);
         Intent intent = getIntent();
         final String uid = intent.getStringExtra("key");
-        dataReader = new readData();
 
         prolioPic = (ImageView) findViewById(R.id.prolioPic);
         hearRateButton = (Button) findViewById(R.id.heartRateButton);
@@ -327,13 +326,13 @@ public class HealthActivity extends AppCompatActivity {
         protected Integer doInBackground(Void... voids) {
 
 
-            Coordinate curLoc = dataReader.getGPSData();
+            Coordinate curLoc = readData.getGPSData();
             if (curLoc == null) {
                 curLoc = new Coordinate((float)dlat,(float)dlng);
 
             }
 
-            int newHeartrateReading = dataReader.getHRData();
+            int newHeartrateReading = readData.getHRData();
 
             boolean isHeartrateNormal = HealthAlgorithm.IsHeartRateAbnormal(dependent, newHeartrateReading);
 

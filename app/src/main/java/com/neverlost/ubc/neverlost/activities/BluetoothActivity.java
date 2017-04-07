@@ -37,7 +37,7 @@ import java.util.UUID;
 
 public class BluetoothActivity extends AppCompatActivity {
 
-    private String my_macs[] = new String[]{"00:06:66:72:7A:18"};
+    private String my_macs[] = new String[]{"00:06:66:72:7A:18", "00:06:66:6C:A5:F8"};
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBluetoothAdapter;
     private Context context;
