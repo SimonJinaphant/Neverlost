@@ -173,13 +173,6 @@ public class BluetoothActivity extends AppCompatActivity {
                 }
             }
         });
-        Button button2=(Button)findViewById(R.id.skip);
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), FeatureSelectActivity.class));
-            }
-        });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
