@@ -69,19 +69,11 @@ public class readData  {
     }
 
     public static boolean sendName() {
-        String reading;
-        int counter = 0;
-        do {
-            for (int i = 0; i < 3; i++) {
-                WriteToBTDevice("UserName");
-                WriteToBTDevice(Profile.getCurrentProfile().getName());
-            }
-            reading = ReadFromBTDevice();
-            counter++;
-        } while (reading.equals("") && counter <= 3);
-        Log.d("Name", reading);
-        if (reading.equals(""))
-            return false;
+        for (int i = 0; i < 3; i++){
+            WriteToBTDevice("UserName");
+            WriteToBTDevice(Profile.getCurrentProfile().getName());
+        }
+
         return true;
     }
 

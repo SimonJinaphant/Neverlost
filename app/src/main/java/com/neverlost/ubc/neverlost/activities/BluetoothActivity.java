@@ -195,6 +195,7 @@ public class BluetoothActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Connected) {
+                    readData.sendName();
                     Intent healthAct = new Intent(v.getContext(), HealthActivity.class);
                     healthAct.putExtra("key", Profile.getCurrentProfile().getId());
                     startActivity(healthAct);
