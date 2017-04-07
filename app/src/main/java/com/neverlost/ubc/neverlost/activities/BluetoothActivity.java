@@ -16,9 +16,16 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.neverlost.ubc.neverlost.R;
+import com.neverlost.ubc.neverlost.firebase.FirebaseQuery;
+import com.neverlost.ubc.neverlost.firebase.FirebaseRef;
 import com.neverlost.ubc.neverlost.models.MyCustomArrayAdaptor;
 import com.neverlost.ubc.neverlost.models.readData;
+import com.neverlost.ubc.neverlost.objects.Dependent;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +36,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class BluetoothActivity extends AppCompatActivity {
+
     private String my_macs[] = new String[]{"00:06:66:72:7A:18"};
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBluetoothAdapter;
@@ -46,6 +54,7 @@ public class BluetoothActivity extends AppCompatActivity {
     public static InputStream mmInStream = null;
     public static OutputStream mmOutStream = null;
     private boolean Connected = false;
+
     private AdapterView.OnItemClickListener mPairedClickedHandler = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
             String text = "Paired Device: " +
@@ -91,6 +100,26 @@ public class BluetoothActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bluetooth);
         context = getApplicationContext();
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        //update firebase id for dependent
+        FirebaseRef.dependentRer.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Dependent dependent = FirebaseQuery.getDependent(Profile.getCurrentProfile().getId(), dataSnapshot);
+                dependent.firebaseID = FirebaseInstanceId.getInstance().getToken();
+                FirebaseQuery.updateDependent(dependent);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
         if (mBluetoothAdapter == null) {
             Toast toast = Toast.makeText(context, "No Bluetooth", Toast.LENGTH_SHORT);
             toast.show();

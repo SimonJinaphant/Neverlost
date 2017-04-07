@@ -15,9 +15,9 @@ public class Dependent extends User {
     public List<Long> distances;
 
     public Dependent(String name, long age, long weight, long height,
-                     List<Long> heartRates, List<Long> distances) {
+                     List<Long> heartRates, List<Long> distances, String firebaseID) {
 
-        super(name, age, weight, height);
+        super(name, age, weight, height,firebaseID);
         this.heartRates = heartRates;
         this.distances = distances;
     }

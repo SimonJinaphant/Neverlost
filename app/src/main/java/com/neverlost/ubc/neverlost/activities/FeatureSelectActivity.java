@@ -27,6 +27,7 @@ public class FeatureSelectActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent depInt = new Intent(view.getContext(),BluetoothActivity.class);
                 startActivity(depInt);
+
             }
         });
 

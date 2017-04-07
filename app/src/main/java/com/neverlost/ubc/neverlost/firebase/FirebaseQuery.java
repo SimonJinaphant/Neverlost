@@ -28,9 +28,10 @@ public class FirebaseQuery {
         long              height        = (long)        user.child("height").getValue();
         List<Long>        heartRates    = (List<Long>)  user.child("heartRates").getValue();
         List<Long>        distances     = (List<Long>)  user.child("distances").getValue();
+        String            firebaseID     = (String)     user.child("firebaseID").getValue();
 
 
-        return new Dependent(uname, age, weight, height, heartRates, distances);
+        return new Dependent(uname, age, weight, height, heartRates, distances, firebaseID);
 
     };
 
@@ -43,11 +44,12 @@ public class FirebaseQuery {
         long              weight         = (long)  user.child("weight").getValue();
         long              height         = (long)  user.child("height").getValue();
         List<String>      dependents     = (List<String>)  user.child("dependents").getValue();
+        String            firebaseID     = (String)     user.child("firebaseID").getValue();
 
         if (dependents == null)
-            return new Caretaker(uname, age, weight, height, new ArrayList<String>());
+            return new Caretaker(uname, age, weight, height, new ArrayList<String>(),firebaseID);
 
-        return new Caretaker(uname, age, weight, height, dependents);
+        return new Caretaker(uname, age, weight, height, dependents,firebaseID);
 
     };
 
@@ -60,6 +62,7 @@ public class FirebaseQuery {
         userRef.child("height").setValue(dependent.height);
         userRef.child("heartRates").setValue(dependent.heartRates);
         userRef.child("distances").setValue(dependent.distances);
+        userRef.child("firebaseID").setValue(dependent.firebaseID);
     }
 
     public static void updateCaretaker(Caretaker caretaker){
@@ -70,6 +73,7 @@ public class FirebaseQuery {
         userRef.child("weight").setValue(caretaker.weight);
         userRef.child("height").setValue(caretaker.height);
         userRef.child("dependents").setValue(caretaker.dependents);
+        userRef.child("firebaseID").setValue(caretaker.firebaseID);
 
     }
 
